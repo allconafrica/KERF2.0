@@ -1,918 +1,1573 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ALLCON KERF PORTAL</title>
+  <title>KERF Portal</title>
   
+  <!-- RED WRENCH FAVICON -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path fill='%23dc2626' d='M501.1 395.7L384 278.6c-4.5-4.5-10.6-7-17-7h-14.1l-24.8-24.8c42.7-56.4 39.4-136.5-10.4-189.2-56.7-60.1-152-61.9-211-.9l81.3 81.3c9.4 9.4 9.4 24.6 0 33.9l-33.9 33.9c-9.4 9.4-24.6 9.4-33.9 0L39.1 124.6c-61 59-59.2 154.3.9 211 52.8 49.8 132.8 53.1 189.2 10.4l24.8 24.8v14.1c0 6.4 2.5 12.5 7 17l117.1 117.1c14.6 14.6 38.2 14.6 52.8 0l50.3-50.3c14.6-14.7 14.6-38.4 0-53z'/></svg>">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    tailwind.config = { darkMode: 'class' }
+  </script>
   <style>
-    /* ========================================== */
-    /* ALLCON BRAND THEMING & CSS VARIABLES       */
-    /* ========================================== */
-    :root {
-      --bg-body: #0d0e12;
-      --bg-card: #181920;
-      --bg-subpanel: #22242e;
-      --bg-input: #323543;
-      --border-color: #2a2c38;
-      --text-main: #f1f5f9;
-      --text-muted: #94a3b8;
-      --text-label: #cbd5e1;
-      --accent-red: #e52e2e;
-      --accent-red-hover: #cc2525;
-      --header-bg: #111217;
-      --nav-btn-bg: #22242e;
-      --nav-btn-text: #cbd5e1;
-      --table-header-bg: #252733;
+    /* Dark Mode Theme Overrides */
+    html.dark, html.dark body {
+      background-color: #0b0b0c !important;
+      color: #f4f4f5 !important;
     }
 
-    body.light-mode {
-      --bg-body: #f1f5f9;
-      --bg-card: #ffffff;
-      --bg-subpanel: #f8fafc;
-      --bg-input: #ffffff;
-      --border-color: #cbd5e1;
-      --text-main: #0f172a;
-      --text-muted: #64748b;
-      --text-label: #334155;
-      --accent-red: #d90429;
-      --accent-red-hover: #ef233c;
-      --header-bg: #ffffff;
-      --nav-btn-bg: #e2e8f0;
-      --nav-btn-text: #1e293b;
-      --table-header-bg: #f1f5f9;
+    /* Main Builder Outer Frame */
+    html.dark .builder-frame {
+      background-color: #1e1e24 !important;
+      border-color: #3f3f46 !important;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    /* Builder Sub-sections */
+    html.dark .builder-section {
+      background-color: #27272a !important;
+      border-color: #3f3f46 !important;
     }
 
-    body {
-      background-color: var(--bg-body);
-      color: var(--text-main);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      transition: background-color 0.25s ease, color 0.25s ease;
+    /* Form Text Inputs & Selects */
+    html.dark input, 
+    html.dark textarea, 
+    html.dark select {
+      background-color: #3f3f46 !important;
+      color: #ffffff !important;
+      border-color: #52525b !important;
     }
 
-    /* HEADER & BRANDING */
-    header {
-      background: var(--header-bg);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    html.dark input::placeholder, 
+    html.dark textarea::placeholder {
+      color: #d4d4d8 !important;
     }
 
-    .nav-container {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 0.75rem 1.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-
-    .brand-block {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      cursor: pointer;
-    }
-
-    .allcon-badge {
-      background: #ffffff;
-      border: 2px solid var(--accent-red);
-      padding: 2px 8px;
-      border-radius: 4px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      line-height: 1;
-    }
-
-    .allcon-badge .logo-title {
-      color: var(--accent-red);
-      font-weight: 900;
-      font-size: 1.1rem;
-      letter-spacing: 0.05em;
-    }
-
-    .allcon-badge .logo-sub {
-      color: #000000;
-      font-size: 0.45rem;
-      font-weight: 800;
-      letter-spacing: -0.02em;
-    }
-
-    .brand-portal-text {
-      font-size: 1.25rem;
-      font-weight: 900;
-      color: #ffffff;
-      letter-spacing: 0.05em;
-    }
-
-    body.light-mode .brand-portal-text {
-      color: var(--text-main);
-    }
-
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 1.25rem;
-    }
-
-    /* LIGHT / DARK TOGGLE SWITCH */
-    .theme-toggle-wrapper {
-      display: flex;
-      align-items: center;
-      background: var(--bg-subpanel);
-      padding: 4px 10px;
-      border-radius: 20px;
-      border: 1px solid var(--border-color);
-      gap: 8px;
-    }
-
-    .toggle-text {
-      font-size: 0.7rem;
-      font-weight: 800;
-      color: var(--text-muted);
-      letter-spacing: 0.05em;
-    }
-
-    .toggle-text.active {
-      color: var(--accent-red);
-    }
-
-    .switch {
-      position: relative;
-      display: inline-block;
-      width: 36px;
-      height: 20px;
-    }
-
-    .switch input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-
-    .slider {
-      position: absolute;
-      cursor: pointer;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background-color: var(--accent-red);
-      transition: .2s;
-      border-radius: 20px;
-    }
-
-    .slider:before {
-      position: absolute;
-      content: "";
-      height: 14px;
-      width: 14px;
-      left: 3px;
-      bottom: 3px;
-      background-color: white;
-      transition: .2s;
-      border-radius: 50%;
-    }
-
-    input:checked + .slider:before {
-      transform: translateX(16px);
-    }
-
-    /* NAVIGATION BUTTON PILLS */
-    .nav-pills {
-      display: flex;
-      gap: 0.375rem;
-      flex-wrap: wrap;
-    }
-
-    .nav-btn {
-      background: var(--nav-btn-bg);
-      border: none;
-      color: var(--nav-btn-text);
-      padding: 0.5rem 0.875rem;
-      border-radius: 6px;
-      font-size: 0.8125rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
-
-    .nav-btn:hover {
-      background: var(--border-color);
-    }
-
-    .nav-btn.active {
-      background: var(--accent-red);
-      color: #ffffff;
-    }
-
-    .red-divider-bar {
-      height: 3px;
-      background: var(--accent-red);
-      width: 100%;
-    }
-
-    /* LAYOUT CONTAINERS */
-    main {
-      max-width: 1400px;
-      width: 100%;
-      margin: 0 auto;
-      padding: 1.5rem 1rem;
-      flex-grow: 1;
-    }
-
-    .view-section {
-      display: none;
-      animation: fadeIn 0.2s ease-in-out;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    .card-panel {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: 10px;
-      padding: 1.5rem;
-      margin-bottom: 1.5rem;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-    }
-
-    .sub-panel {
-      background: var(--bg-subpanel);
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      padding: 1.25rem;
-      margin-top: 1.25rem;
-    }
-
-    .section-title {
-      font-size: 1.25rem;
-      font-weight: 800;
-      color: var(--accent-red);
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin-bottom: 1.25rem;
-    }
-
-    /* FORMS & INPUTS */
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1rem;
-    }
-
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 0.375rem;
-    }
-
-    .form-group label {
-      font-size: 0.75rem;
-      font-weight: 700;
-      color: var(--text-label);
-    }
-
-    .form-control {
-      width: 100%;
-      padding: 0.625rem 0.75rem;
-      border-radius: 6px;
-      border: 1px solid var(--border-color);
-      background: var(--bg-input);
-      color: var(--text-main);
-      font-size: 0.875rem;
+    html.dark input:focus, 
+    html.dark textarea:focus, 
+    html.dark select:focus {
       outline: none;
+      border-color: #dc2626 !important;
+      box-shadow: 0 0 0 1px #dc2626;
     }
 
-    .form-control:focus {
-      border-color: var(--accent-red);
+    /* Hide Print Templates on Screen */
+    #print-template, #print-template-bom {
+      display: none;
     }
 
-    .btn {
-      padding: 0.625rem 1.25rem;
-      border-radius: 6px;
-      font-size: 0.875rem;
-      font-weight: 700;
-      cursor: pointer;
-      border: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      transition: background 0.15s ease;
-    }
+    /* ==========================================
+       NATIVE PRINT / PDF ENGINE (@media print)
+       ========================================== */
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 10mm;
+      }
 
-    .btn-red {
-      background: var(--accent-red);
-      color: #ffffff;
-    }
+      *, *:before, *:after {
+        box-sizing: border-box !important;
+      }
 
-    .btn-red:hover {
-      background: var(--accent-red-hover);
-    }
+      /* STRICT WHITE BACKGROUND OVERRIDE FOR PRINTING */
+      html, body {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+      }
 
-    /* TABLES */
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 1rem;
-      font-size: 0.875rem;
-    }
+      /* Hide web portal UI completely */
+      header, main, nav, button, .builder-frame {
+        display: none !important;
+      }
 
-    th, td {
-      padding: 0.75rem 1rem;
-      text-align: left;
-      border-bottom: 1px solid var(--border-color);
-    }
+      /* Display active print template exclusively */
+      body.printing-transmittal #print-template {
+        display: block !important;
+        width: calc(100% - 2px) !important;
+        margin: 0 auto !important;
+        font-family: Arial, Helvetica, sans-serif !important;
+        font-size: 8.5pt;
+        color: #000000 !important;
+        background-color: #ffffff !important;
+      }
 
-    th {
-      background: var(--table-header-bg);
-      font-weight: 800;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      font-size: 0.75rem;
-      letter-spacing: 0.05em;
-    }
+      body.printing-bom #print-template-bom {
+        display: block !important;
+        width: calc(100% - 2px) !important;
+        margin: 0 auto !important;
+        font-family: Arial, Helvetica, sans-serif !important;
+        font-size: 8.5pt;
+        color: #000000 !important;
+        background-color: #ffffff !important;
+      }
 
-    /* LIVE SYNC PILL */
-    .sync-status {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 0.75rem;
-      font-weight: 700;
-      padding: 4px 10px;
-      border-radius: 20px;
-      background: rgba(16, 185, 129, 0.15);
-      color: #10b981;
-    }
+      .print-header-banner {
+        background-color: #dc2626 !important;
+        color: #ffffff !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
 
-    .sync-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: #10b981;
+      /* Light Red Tint Header */
+      .print-table-header {
+        background-color: #fef2f2 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      /* Table Structure & Border Lockdown */
+      .print-container table {
+        display: table !important;
+        width: 100% !important;
+        border-collapse: collapse !important;
+        table-layout: fixed !important;
+        margin-bottom: 8px !important;
+        border: 1px solid #000000 !important;
+        box-sizing: border-box !important;
+      }
+
+      .print-container tr { 
+        display: table-row !important; 
+      }
+
+      .print-container th, 
+      .print-container td { 
+        display: table-cell !important;
+        border: 1px solid #000000 !important;
+        padding: 5px 8px !important;
+        word-wrap: break-word !important;
+        overflow-wrap: break-word !important;
+        vertical-align: middle !important;
+        box-sizing: border-box !important;
+      }
+
+      /* Remove outer borders for clean top header table */
+      .print-container table.no-border, 
+      .print-container table.no-border td {
+        border: none !important;
+      }
     }
   </style>
 </head>
-<body class="dark-mode">
+<body class="bg-zinc-200 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 font-sans min-h-screen flex flex-col transition-colors duration-200">
 
-  <!-- NAVIGATION HEADER -->
-  <header>
-    <div class="nav-container">
-      <div class="brand-block" onclick="navigateToView('view-suppliers')">
-        <div class="allcon-badge">
-          <span class="logo-title">ALLCON</span>
-          <span class="logo-sub">FABRICATION & ENGINEERING (PTY) LTD.</span>
+  <!-- WEB HEADER -->
+  <header class="bg-black text-white shadow-lg border-b-4 border-red-600">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col sm:flex-row justify-between items-center gap-4">
+      
+      <div class="flex items-center gap-4">
+        <div class="bg-white p-1 rounded flex items-center justify-center h-12 min-w-[120px]">
+          <img src="./ALLCON-Logo.jpg" alt="ALLCON Logo" class="h-10 w-auto object-contain" onerror="this.onerror=null; this.outerHTML='<div class=\'bg-red-600 text-white font-black px-3 py-1 rounded text-xl tracking-wider\'>ALLCON</div>';">
         </div>
-        <span class="brand-portal-text">KERF PORTAL</span>
+        <div>
+          <h1 class="text-xl font-black tracking-wider text-white uppercase">KERF Portal</h1>
+        </div>
       </div>
-
-      <div class="header-right">
-        <!-- LIGHT / DARK MODE TOGGLE SWITCH -->
-        <div class="theme-toggle-wrapper">
-          <span class="toggle-text" id="lbl-light">LIGHT</span>
-          <label class="switch">
-            <input type="checkbox" id="theme-toggle" onchange="toggleTheme()" checked>
-            <span class="slider"></span>
-          </label>
-          <span class="toggle-text active" id="lbl-dark">DARK</span>
+      
+      <div class="flex items-center gap-5">
+        <div class="flex items-center gap-2 bg-zinc-900 p-1.5 rounded-full border border-zinc-700">
+          <span class="text-[10px] font-bold px-1 text-zinc-400 dark:text-zinc-500">LIGHT</span>
+          <button id="theme-toggle" onclick="toggleDarkMode()" class="w-12 h-6 bg-zinc-600 dark:bg-red-600 rounded-full p-1 transition-colors duration-200 focus:outline-none flex items-center">
+            <div id="toggle-circle" class="w-4 h-4 bg-white rounded-full shadow-md transform transition-transform duration-200 translate-x-6"></div>
+          </button>
+          <span class="text-[10px] font-bold px-1 text-zinc-500 dark:text-red-500">DARK</span>
         </div>
 
-        <!-- NAV BUTTONS -->
-        <nav class="nav-pills">
-          <button class="nav-btn active" id="btn-suppliers" onclick="navigateToView('view-suppliers')">Suppliers</button>
-          <button class="nav-btn" id="btn-transmittal" onclick="navigateToView('view-transmittal')">Project Transmittal</button>
-          <button class="nav-btn" id="btn-bom" onclick="navigateToView('view-bom')">BOM Calculator</button>
-          <button class="nav-btn" id="btn-estimator" onclick="navigateToView('view-estimator')">Estimator</button>
-          <button class="nav-btn" id="btn-rfq" onclick="navigateToView('view-rfq')">Quick RFQ</button>
-          <button class="nav-btn" id="btn-staff" onclick="navigateToView('view-staff')">Staff</button>
+        <nav class="flex flex-wrap bg-zinc-900 p-1 rounded-lg border border-zinc-800 text-xs font-semibold gap-1">
+          <button id="tab-dashboard" onclick="switchTab('dashboard')" class="px-3 py-1.5 rounded-md bg-red-600 text-white">Dashboard</button>
+          <button id="tab-suppliers" onclick="switchTab('suppliers')" class="px-3 py-1.5 rounded-md text-zinc-400 hover:text-white">Suppliers</button>
+          <button id="tab-generator" onclick="switchTab('generator')" class="px-3 py-1.5 rounded-md text-zinc-400 hover:text-white">Project Transmittal</button>
+          <button id="tab-bom" onclick="switchTab('bom')" class="px-3 py-1.5 rounded-md text-zinc-400 hover:text-white">BOM Calculator</button>
+          <button id="tab-staff" onclick="switchTab('staff')" class="px-3 py-1.5 rounded-md text-zinc-400 hover:text-white">Staff</button>
         </nav>
-
-        <div class="sync-status">
-          <span class="sync-dot"></span>
-          <span id="sync-text">Live Sync</span>
-        </div>
       </div>
     </div>
-    <div class="red-divider-bar"></div>
   </header>
 
-  <!-- MAIN CONTENT VIEWS -->
-  <main>
+  <!-- MAIN APPLICATION CONTAINER -->
+  <main class="max-w-7xl mx-auto px-4 py-6 flex-grow w-full">
 
-    <!-- 1. SUPPLIERS VIEW -->
-    <section id="view-suppliers" class="view-section" style="display: block;">
-      <div class="card-panel">
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem;">
-          <h2 class="section-title">🏢 Suppliers Directory</h2>
-          <input type="text" id="supplier-search" class="form-control" placeholder="🔍 Search supplier, category, or contact..." oninput="renderSuppliers()" style="max-width: 300px;">
+    <!-- VIEW 0: DASHBOARD OVERVIEW -->
+    <section id="view-dashboard" class="block">
+      <!-- WELCOME HERO BANNER -->
+      <div class="bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-2xl p-6 mb-6 shadow-md relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-64 h-full bg-gradient-to-l from-red-600/10 to-transparent pointer-events-none"></div>
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 relative z-10">
+          <div>
+            <span class="bg-red-600 text-white text-[10px] font-black px-2.5 py-0.5 rounded tracking-wider uppercase mb-2 inline-block">ALLCON Procurement Engine</span>
+            <h2 class="text-2xl font-black text-zinc-900 dark:text-zinc-100">Welcome to KERF Portal</h2>
+            <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-1 max-w-2xl">
+              Centralized platform for live supplier records, project transmittals, material BOM requirements, and internal staff directories.
+            </p>
+          </div>
+          <div class="flex gap-2">
+            <button onclick="switchTab('generator')" class="bg-red-600 hover:bg-red-700 text-white font-bold text-xs px-4 py-2.5 rounded-lg shadow transition flex items-center gap-2">
+              <i class="fa-solid fa-plus"></i> New Transmittal
+            </button>
+            <button onclick="switchTab('bom')" class="bg-zinc-800 hover:bg-zinc-700 text-white font-bold text-xs px-4 py-2.5 rounded-lg shadow transition flex items-center gap-2">
+              <i class="fa-solid fa-calculator"></i> Build BOM
+            </button>
+          </div>
         </div>
-        <div style="overflow-x: auto;">
-          <table id="tbl-suppliers">
-            <thead>
-              <tr>
-                <th>Status</th>
-                <th>Supplier Name</th>
-                <th>Category / Services</th>
-                <th>POC Name</th>
-                <th>POC Email</th>
-                <th>POC Phone</th>
-              </tr>
-            </thead>
-            <tbody><!-- Dynamic Content --></tbody>
-          </table>
+      </div>
+
+      <!-- METRICS GRID -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div class="bg-white dark:bg-zinc-900 p-5 rounded-xl border border-zinc-300 dark:border-zinc-800 shadow-sm flex items-center justify-between">
+          <div>
+            <p class="text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Total Suppliers</p>
+            <h3 class="text-2xl font-black mt-1 text-zinc-900 dark:text-zinc-100" id="dash-stat-suppliers">--</h3>
+            <span class="text-[10px] text-emerald-500 font-semibold mt-1 inline-block" id="dash-stat-approved-badge"><i class="fa-solid fa-check-circle mr-1"></i>-- Approved</span>
+          </div>
+          <div class="w-12 h-12 rounded-xl bg-red-600/10 border border-red-600/20 text-red-600 flex items-center justify-center text-xl font-bold">
+            <i class="fa-solid fa-truck-field"></i>
+          </div>
+        </div>
+
+        <div class="bg-white dark:bg-zinc-900 p-5 rounded-xl border border-zinc-300 dark:border-zinc-800 shadow-sm flex items-center justify-between">
+          <div>
+            <p class="text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Active Job IDs</p>
+            <h3 class="text-2xl font-black mt-1 text-zinc-900 dark:text-zinc-100" id="dash-stat-jobs">0</h3>
+            <span class="text-[10px] text-zinc-400 font-semibold mt-1 inline-block">Transmittal Builder</span>
+          </div>
+          <div class="w-12 h-12 rounded-xl bg-red-600/10 border border-red-600/20 text-red-600 flex items-center justify-center text-xl font-bold">
+            <i class="fa-solid fa-diagram-project"></i>
+          </div>
+        </div>
+
+        <div class="bg-white dark:bg-zinc-900 p-5 rounded-xl border border-zinc-300 dark:border-zinc-800 shadow-sm flex items-center justify-between">
+          <div>
+            <p class="text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">BOM Items</p>
+            <h3 class="text-2xl font-black mt-1 text-zinc-900 dark:text-zinc-100" id="dash-stat-bom">0</h3>
+            <span class="text-[10px] text-zinc-400 font-semibold mt-1 inline-block">Linears, Plates & Hardware</span>
+          </div>
+          <div class="w-12 h-12 rounded-xl bg-red-600/10 border border-red-600/20 text-red-600 flex items-center justify-center text-xl font-bold">
+            <i class="fa-solid fa-calculator"></i>
+          </div>
+        </div>
+
+        <div class="bg-white dark:bg-zinc-900 p-5 rounded-xl border border-zinc-300 dark:border-zinc-800 shadow-sm flex items-center justify-between">
+          <div>
+            <p class="text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Staff Directory</p>
+            <h3 class="text-2xl font-black mt-1 text-zinc-900 dark:text-zinc-100" id="dash-stat-staff">--</h3>
+            <span class="text-[10px] text-zinc-400 font-semibold mt-1 inline-block">Internal Personnel</span>
+          </div>
+          <div class="w-12 h-12 rounded-xl bg-red-600/10 border border-red-600/20 text-red-600 flex items-center justify-center text-xl font-bold">
+            <i class="fa-solid fa-users"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- QUICK NAVIGATION / FEATURE TILES -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div onclick="switchTab('suppliers')" class="bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-xl p-5 hover:border-red-600 cursor-pointer transition shadow-sm group">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-10 h-10 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-red-600 flex items-center justify-center text-lg group-hover:bg-red-600 group-hover:text-white transition">
+              <i class="fa-solid fa-boxes-packing"></i>
+            </div>
+            <h3 class="font-bold text-sm text-zinc-900 dark:text-zinc-100">Supplier Directory</h3>
+          </div>
+          <p class="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
+            Browse and search live supplier contacts, approved status, payment terms, and offered services.
+          </p>
+        </div>
+
+        <div onclick="switchTab('generator')" class="bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-xl p-5 hover:border-red-600 cursor-pointer transition shadow-sm group">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-10 h-10 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-red-600 flex items-center justify-center text-lg group-hover:bg-red-600 group-hover:text-white transition">
+              <i class="fa-solid fa-file-pdf"></i>
+            </div>
+            <h3 class="font-bold text-sm text-zinc-900 dark:text-zinc-100">Project Transmittal</h3>
+          </div>
+          <p class="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
+            Construct official project schedules linked with Job IDs, AC numbers, suppliers, and export PDF sheets.
+          </p>
+        </div>
+
+        <div onclick="switchTab('bom')" class="bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-xl p-5 hover:border-red-600 cursor-pointer transition shadow-sm group">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-10 h-10 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-red-600 flex items-center justify-center text-lg group-hover:bg-red-600 group-hover:text-white transition">
+              <i class="fa-solid fa-ruler-combined"></i>
+            </div>
+            <h3 class="font-bold text-sm text-zinc-900 dark:text-zinc-100">BOM Calculator</h3>
+          </div>
+          <p class="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
+            Auto-aggregate linear bar stock requirements and calculate 25% kerf dimensions for plates.
+          </p>
+        </div>
+
+        <div onclick="switchTab('staff')" class="bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-xl p-5 hover:border-red-600 cursor-pointer transition shadow-sm group">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-10 h-10 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-red-600 flex items-center justify-center text-lg group-hover:bg-red-600 group-hover:text-white transition">
+              <i class="fa-solid fa-address-book"></i>
+            </div>
+            <h3 class="font-bold text-sm text-zinc-900 dark:text-zinc-100">Staff Directory</h3>
+          </div>
+          <p class="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
+            Find direct telephone numbers, emails, and job titles for internal ALLCON team members.
+          </p>
         </div>
       </div>
     </section>
 
-    <!-- 2. PROJECT TRANSMITTAL VIEW -->
-    <section id="view-transmittal" class="view-section">
-      <div class="card-panel">
-        <h2 class="section-title">📄 Project Transmittal Builder</h2>
-        
-        <div class="sub-panel" style="margin-top: 0;">
-          <div class="form-grid">
-            <div class="form-group">
-              <label>Client Name</label>
-              <input type="text" id="tr-client" class="form-control" placeholder="e.g. NCP International">
-            </div>
-            <div class="form-group">
-              <label>Project Name</label>
-              <input type="text" id="tr-project" class="form-control" placeholder="e.g. SHANTA NEW - CHOCKEY BLOCKS">
-            </div>
-            <div class="form-group">
-              <label>Date Info Sheet Generated</label>
-              <input type="date" id="tr-date" class="form-control">
-            </div>
-            <div class="form-group">
-              <label>Target Completion Date</label>
-              <input type="text" id="tr-target-date" class="form-control" placeholder="e.g. 11 SEPT 2026">
-            </div>
-            <div class="form-group" style="grid-column: span 2;">
-              <label>Technical Buyer</label>
-              <input type="text" id="tr-buyer" class="form-control" placeholder="Enter Buyer Name">
-            </div>
-          </div>
+    <!-- VIEW 1: SUPPLIERS DIRECTORY -->
+    <section id="view-suppliers" class="hidden">
+      <div class="bg-white dark:bg-zinc-900 p-4 rounded-xl border border-zinc-300 dark:border-zinc-800 mb-6 flex flex-col md:flex-row justify-between items-center gap-4">
+        <div class="w-full md:w-1/2 relative">
+          <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-zinc-400"></i>
+          <input type="text" id="supplier-search" onkeyup="renderSuppliers()" placeholder="Search suppliers by name, category, services, or contact person..." class="w-full pl-9 pr-4 py-2 rounded-lg text-sm border border-zinc-300 dark:border-zinc-700">
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="text-xs text-zinc-500 font-semibold" id="supplier-count">Loading Suppliers...</div>
+          <button onclick="expandAllSuppliers()" class="text-xs bg-zinc-200 dark:bg-zinc-800 hover:bg-zinc-300 dark:hover:bg-zinc-700 px-3 py-1.5 rounded-lg font-semibold transition">Expand All</button>
+          <button onclick="collapseAllSuppliers()" class="text-xs bg-zinc-200 dark:bg-zinc-800 hover:bg-zinc-300 dark:hover:bg-zinc-700 px-3 py-1.5 rounded-lg font-semibold transition">Collapse All</button>
+        </div>
+      </div>
 
-          <div class="form-grid" style="margin-top: 1rem;">
-            <div class="form-group">
-              <label>Inclusions</label>
-              <textarea id="tr-inclusions" class="form-control" rows="3" placeholder="e.g. MATERIAL S355, FABRICATION, MACHINING..."></textarea>
-            </div>
-            <div class="form-group">
-              <label>Exclusions</label>
-              <textarea id="tr-exclusions" class="form-control" rows="3" placeholder="e.g. SAND BLAST & PAINT, MPI, WELDING..."></textarea>
-            </div>
+      <div id="suppliers-list-container" class="space-y-6">
+        <div class="text-center p-8 text-zinc-500"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Fetching Live Supplier Data...</div>
+      </div>
+    </section>
+
+    <!-- VIEW 2: PROJECT TRANSMITTAL -->
+    <section id="view-generator" class="hidden">
+      <div class="builder-frame bg-white rounded-2xl shadow-xl border border-zinc-300 p-6 mb-6 transition-colors duration-200">
+        <h2 class="text-xl font-bold mb-5 text-red-600 dark:text-red-500 flex items-center gap-2">
+          <i class="fa-solid fa-file-pdf"></i> Project Transmittal Builder
+        </h2>
+
+        <!-- METADATA FORM -->
+        <div class="builder-section grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 bg-zinc-100 p-4 rounded-xl text-xs border border-zinc-200">
+          <div>
+            <label class="block font-semibold mb-1 text-zinc-700 dark:text-zinc-300">Client Name</label>
+            <input type="text" id="meta-client" placeholder="e.g. NCP International" class="w-full p-2.5 rounded-lg text-sm">
+          </div>
+          <div>
+            <label class="block font-semibold mb-1 text-zinc-700 dark:text-zinc-300">Project Name</label>
+            <input type="text" id="meta-project" placeholder="e.g. SHANTA NEW - CHOCKEY BLOCKS" class="w-full p-2.5 rounded-lg text-sm">
+          </div>
+          <div>
+            <label class="block font-semibold mb-1 text-zinc-700 dark:text-zinc-300">Date Info Sheet Generated</label>
+            <input type="date" id="meta-date-gen" class="w-full p-2.5 rounded-lg text-sm">
+          </div>
+          <div>
+            <label class="block font-semibold mb-1 text-red-600 dark:text-red-400">Target Completion Date</label>
+            <input type="text" id="meta-date-comp" placeholder="e.g. 11 SEPT 2026" class="w-full p-2.5 rounded-lg text-sm border-red-300 dark:border-red-900/50">
+          </div>
+          <div>
+            <label class="block font-semibold mb-1 text-zinc-700 dark:text-zinc-300">Technical Buyer</label>
+            <input type="text" id="meta-buyer" placeholder="Enter Buyer Name" class="w-full p-2.5 rounded-lg font-semibold text-sm">
           </div>
         </div>
 
-        <div class="sub-panel">
-          <h3 style="font-size: 0.875rem; font-weight: 800; color: var(--accent-red); margin-bottom: 1rem; text-transform: uppercase;">
-            🔻 JOB ID SCHEDULE BUILDER
-          </h3>
-          <div class="form-grid">
-            <div class="form-group">
-              <label>Job ID *</label>
-              <input type="text" class="form-control" placeholder="e.g. 5276">
+        <!-- INCLUSIONS & EXCLUSIONS -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 text-xs">
+          <div>
+            <label class="block font-semibold mb-1 text-zinc-700 dark:text-zinc-300">Inclusions</label>
+            <textarea id="meta-inclusions" rows="3" placeholder="e.g. MATERIAL S355, FABRICATION, MACHINING..." class="w-full p-2.5 rounded-lg text-sm"></textarea>
+          </div>
+          <div>
+            <label class="block font-semibold mb-1 text-zinc-700 dark:text-zinc-300">Exclusions</label>
+            <textarea id="meta-exclusions" rows="3" placeholder="e.g. SAND BLAST & PAINT, MPI, WELDING..." class="w-full p-2.5 rounded-lg text-sm"></textarea>
+          </div>
+        </div>
+
+        <!-- JOB ID SCHEDULE BUILDER -->
+        <div class="builder-section bg-red-950/20 p-4 rounded-xl border border-red-200 dark:border-zinc-700 mb-6 relative pb-16">
+          <h3 class="text-xs font-bold uppercase mb-3 text-red-600 dark:text-red-400"><i class="fa-solid fa-diagram-project mr-2"></i>Job ID Schedule Builder</h3>
+          
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 mb-4 bg-zinc-200 dark:bg-zinc-900 p-3 rounded-lg text-xs">
+            <div>
+              <label class="block font-bold mb-1 text-zinc-700 dark:text-zinc-300">Job ID *</label>
+              <input type="text" id="input-job-id" placeholder="e.g. 5276" class="w-full p-2 rounded-lg font-bold">
             </div>
-            <div class="form-group">
-              <label>AC Number</label>
-              <input type="text" class="form-control" placeholder="e.g. AC2902">
+            <div>
+              <label class="block font-bold mb-1 text-zinc-700 dark:text-zinc-300">AC Number</label>
+              <input type="text" id="input-ac-num" placeholder="e.g. AC2902" class="w-full p-2 rounded-lg font-bold">
             </div>
-            <div class="form-group">
-              <label>Description</label>
-              <input type="text" class="form-control" placeholder="e.g. PINION">
+            <div class="sm:col-span-2">
+              <label class="block font-bold mb-1 text-zinc-700 dark:text-zinc-300">Description</label>
+              <input type="text" id="input-ac-desc" placeholder="e.g. PINION" class="w-full p-2 rounded-lg">
             </div>
-            <div class="form-group">
-              <label>Category</label>
-              <select class="form-control">
-                <option>-- Select Category --</option>
+            <div>
+              <label class="block font-bold mb-1 text-zinc-700 dark:text-zinc-300">Category</label>
+              <select id="input-ac-category" class="w-full p-2 rounded-lg">
+                <option value="">-- Select Category --</option>
+                <option value="MATERIAL">MATERIAL</option>
+                <option value="MACHINING">MACHINING</option>
+                <option value="FABRICATION">FABRICATION</option>
+                <option value="COATING">COATING</option>
+                <option value="TRANSPORT">TRANSPORT</option>
               </select>
             </div>
-            <div class="form-group">
-              <label>Sub-Category</label>
-              <input type="text" class="form-control" placeholder="e.g. STRUCTURAL">
+            <div>
+              <label class="block font-bold mb-1 text-zinc-700 dark:text-zinc-300">Sub-Category</label>
+              <input type="text" id="input-ac-subcategory" placeholder="e.g. STRUCTURAL" class="w-full p-2 rounded-lg">
             </div>
-            <div class="form-group">
-              <label>Supplier Name</label>
-              <select id="tr-supplier-select" class="form-control">
-                <option>-- Select Supplier --</option>
+            <div>
+              <label class="block font-bold mb-1 text-zinc-700 dark:text-zinc-300">Supplier Name</label>
+              <select id="input-ac-supplier" class="w-full p-2 rounded-lg">
+                <option value="">-- Select Supplier --</option>
               </select>
             </div>
-            <div class="form-group">
-              <label>Purchase Order</label>
-              <input type="text" class="form-control" placeholder="PO18008">
+            <div>
+              <label class="block font-bold mb-1 text-zinc-700 dark:text-zinc-300">Purchase Order</label>
+              <input type="text" id="input-ac-po" placeholder="PO18008" class="w-full p-2 rounded-lg font-bold">
             </div>
+          </div>
+
+          <!-- STATIC BOTTOM RIGHT BUTTON -->
+          <div class="absolute right-4 bottom-4">
+            <button onclick="addLinkedACLine()" class="bg-red-600 hover:bg-red-700 text-white font-bold px-5 py-2.5 rounded-lg text-xs transition shadow flex items-center gap-1.5">
+              <i class="fa-solid fa-plus"></i> Add Entry
+            </button>
+          </div>
+
+          <div id="grouped-ac-container" class="space-y-4">
+            <div class="text-xs text-zinc-400 italic">No Job IDs or entries added yet.</div>
           </div>
         </div>
 
-        <button class="btn btn-red" onclick="window.print()" style="margin-top: 1.25rem;">🖨️ Print Transmittal Document</button>
-      </div>
-    </section>
-
-    <!-- 3. BOM CALCULATOR VIEW -->
-    <section id="view-bom" class="view-section">
-      <div class="card-panel">
-        <h2 class="section-title">🧮 Bill of Materials (BOM) Calculator</h2>
-        <div style="overflow-x: auto;">
-          <table>
-            <thead>
-              <tr>
-                <th>Item #</th>
-                <th>Description</th>
-                <th>Material</th>
-                <th>Qty</th>
-                <th>Unit Weight (kg)</th>
-                <th>Total Weight (kg)</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>1</td>
-                <td><input type="text" class="form-control" value="Chute Base Plate 12mm"></td>
-                <td><input type="text" class="form-control" value="S355 JR"></td>
-                <td><input type="number" class="form-control" value="4"></td>
-                <td><input type="number" class="form-control" value="45.2"></td>
-                <td style="font-weight: 800; color: var(--accent-red);">180.80 kg</td>
-              </tr>
-            </tbody>
-          </table>
+        <div class="flex justify-end">
+          <button onclick="triggerPrintPDF()" class="bg-red-600 hover:bg-red-700 text-white font-bold px-6 py-3 rounded-lg text-sm flex items-center gap-2 shadow-md transition">
+            <i class="fa-solid fa-print"></i> Generate / Print Official PDF Transmittal Sheet
+          </button>
         </div>
       </div>
     </section>
 
-    <!-- 4. ESTIMATOR & MATERIAL WEIGHT ENGINE -->
-    <section id="view-estimator" class="view-section">
-      <div class="card-panel">
-        <h2 class="section-title">⚖️ Estimator & Weight Engine</h2>
-        <p style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 1.25rem;">
-          Select material grade synced from Google Sheets to calculate weight, surface area, and live ZAR cost.
-        </p>
+    <!-- VIEW 3: BOM CALCULATOR -->
+    <section id="view-bom" class="hidden">
+      <div class="builder-frame bg-white rounded-2xl shadow-xl border border-zinc-300 p-6 mb-6 transition-colors duration-200">
+        <h2 class="text-xl font-bold mb-2 text-red-600 dark:text-red-500 flex items-center gap-2">
+          <i class="fa-solid fa-calculator"></i> BOM & Material Requirement Calculator
+        </h2>
+        <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-6">Capture drawing measurements on the fly. Linear items are automatically aggregated per material type to calculate stock bar requirements, and plates are dynamically calculated with a 25% kerf/waste line dimension.</p>
 
-        <div class="sub-panel">
-          <div class="form-grid">
-            <div class="form-group" style="grid-column: span 2;">
-              <label>Material Grade</label>
-              <select id="est-material-select" class="form-control" onchange="updateEstimatorRate()">
-                <option value="">-- Select Material Grade --</option>
+        <!-- BOM METADATA FORM (INCLUDING JOB ID & AC NUMBER) -->
+        <div class="builder-section grid grid-cols-1 md:grid-cols-5 gap-3 mb-6 bg-zinc-100 p-4 rounded-xl text-xs border border-zinc-200">
+          <div>
+            <label class="block font-semibold mb-1 text-zinc-700 dark:text-zinc-300">Client Name</label>
+            <input type="text" id="bom-meta-client" placeholder="e.g. NCP International" class="w-full p-2 rounded-lg text-sm">
+          </div>
+          <div class="md:col-span-2">
+            <label class="block font-semibold mb-1 text-zinc-700 dark:text-zinc-300">Project Name</label>
+            <input type="text" id="bom-meta-project" placeholder="e.g. SHANTA NEW - CHOCKEY BLOCKS" class="w-full p-2 rounded-lg text-sm">
+          </div>
+          <div>
+            <label class="block font-semibold mb-1 text-zinc-700 dark:text-zinc-300">Job ID *</label>
+            <input type="text" id="bom-meta-jobid" placeholder="e.g. 5276" class="w-full p-2 rounded-lg font-bold text-sm">
+          </div>
+          <div>
+            <label class="block font-semibold mb-1 text-zinc-700 dark:text-zinc-300">AC Number *</label>
+            <input type="text" id="bom-meta-acnum" placeholder="e.g. AC2902" class="w-full p-2 rounded-lg font-bold text-sm">
+          </div>
+          <div class="md:col-span-2">
+            <label class="block font-semibold mb-1 text-zinc-700 dark:text-zinc-300">Technical Buyer</label>
+            <input type="text" id="bom-meta-buyer" placeholder="Enter Buyer Name" class="w-full p-2 rounded-lg font-semibold text-sm">
+          </div>
+        </div>
+
+        <!-- BOM ENTRY FORM -->
+        <div class="builder-section bg-red-950/20 p-4 rounded-xl border border-red-200 dark:border-zinc-700 mb-6 relative pb-16">
+          <h3 class="text-xs font-bold uppercase mb-3 text-red-600 dark:text-red-400"><i class="fa-solid fa-plus-circle mr-2"></i>Add Material Item</h3>
+          
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-3 mb-4 bg-zinc-200 dark:bg-zinc-900 p-3 rounded-lg text-xs">
+            <div>
+              <label class="block font-bold mb-1 text-zinc-700 dark:text-zinc-300">Material Type *</label>
+              <select id="bom-type" onchange="toggleBomInputs()" class="w-full p-2 rounded-lg font-bold">
+                <option value="LINEAR">Linear (Angle/Pipe/Tube)</option>
+                <option value="PLATE">Plate</option>
+                <option value="HARDWARE">Hardware (Bolts/Nuts)</option>
               </select>
             </div>
-            <div class="form-group">
-              <label>Thickness / T (mm)</label>
-              <input type="number" id="est-thickness" class="form-control" value="10" oninput="calculateEstimatorTotals()">
+            <div class="md:col-span-2">
+              <label class="block font-bold mb-1 text-zinc-700 dark:text-zinc-300">Subject / Material Name *</label>
+              <input type="text" id="bom-subject" placeholder="e.g. 50X50X6 ANGLE IRON" class="w-full p-2 rounded-lg font-bold uppercase">
             </div>
-            <div class="form-group">
-              <label>Width / W (mm)</label>
-              <input type="number" id="est-width" class="form-control" value="1200" oninput="calculateEstimatorTotals()">
+            <div>
+              <label class="block font-bold mb-1 text-zinc-700 dark:text-zinc-300">Item / Mark</label>
+              <input type="text" id="bom-mark" placeholder="e.g. 1A or Gusset" class="w-full p-2 rounded-lg">
             </div>
-            <div class="form-group">
-              <label>Length / L (mm)</label>
-              <input type="number" id="est-length" class="form-control" value="2400" oninput="calculateEstimatorTotals()">
+            <div>
+              <label class="block font-bold mb-1 text-zinc-700 dark:text-zinc-300">Quantity *</label>
+              <input type="number" id="bom-qty" placeholder="e.g. 5" class="w-full p-2 rounded-lg font-bold">
             </div>
-            <div class="form-group">
-              <label>Quantity (Offs)</label>
-              <input type="number" id="est-qty" class="form-control" value="1" oninput="calculateEstimatorTotals()">
+            <div id="wrapper-length" class="block">
+              <label class="block font-bold mb-1 text-zinc-700 dark:text-zinc-300">Length (mm)</label>
+              <input type="number" id="bom-length" placeholder="e.g. 1050" class="w-full p-2 rounded-lg">
             </div>
-            <div class="form-group">
-              <label>Active Rate (R/kg)</label>
-              <input type="number" id="est-rate" class="form-control" value="0.00" step="0.01" oninput="calculateEstimatorTotals()">
+            <div id="wrapper-width" class="hidden">
+              <label class="block font-bold mb-1 text-zinc-700 dark:text-zinc-300">Width (mm)</label>
+              <input type="number" id="bom-width" placeholder="e.g. 110" class="w-full p-2 rounded-lg">
             </div>
+            <div id="wrapper-notes" class="hidden sm:col-span-2">
+              <label class="block font-bold mb-1 text-zinc-700 dark:text-zinc-300">Size / Notes</label>
+              <input type="text" id="bom-notes" placeholder="e.g. 50mm Long / Standard" class="w-full p-2 rounded-lg">
+            </div>
+            <div id="wrapper-stock" class="block">
+              <label class="block font-bold mb-1 text-zinc-700 dark:text-zinc-300">Stock Bar (mm)</label>
+              <input type="number" id="bom-stock-len" value="6000" class="w-full p-2 rounded-lg font-bold">
+            </div>
+          </div>
+
+          <!-- STATIC BOTTOM RIGHT BUTTON -->
+          <div class="absolute right-4 bottom-4">
+            <button onclick="addBomItem()" class="bg-red-600 hover:bg-red-700 text-white font-bold px-5 py-2.5 rounded-lg text-xs transition shadow flex items-center gap-1.5">
+              <i class="fa-solid fa-plus"></i> Add to BOM
+            </button>
           </div>
         </div>
 
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1.25rem;">
-          <div class="sub-panel">
-            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700;">TOTAL MASS</div>
-            <div id="res-total-mass" style="font-size: 1.5rem; font-weight: 900; color: var(--text-main); margin-top: 4px;">0.00 kg</div>
-          </div>
-          <div class="sub-panel">
-            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700;">SURFACE AREA</div>
-            <div id="res-total-area" style="font-size: 1.5rem; font-weight: 900; color: #0284c7; margin-top: 4px;">0.00 m²</div>
-          </div>
-          <div class="sub-panel">
-            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700;">EST. MATERIAL COST</div>
-            <div id="res-total-cost" style="font-size: 1.5rem; font-weight: 900; color: #16a34a; margin-top: 4px;">R 0.00</div>
-          </div>
+        <!-- BOM TABLES CONTAINER -->
+        <div class="space-y-6" id="bom-tables-container">
+          <div class="text-xs text-zinc-400 italic text-center p-6">No materials added to the BOM calculator yet.</div>
+        </div>
+
+        <!-- BOM GENERAL NOTES SECTION -->
+        <div class="builder-section bg-zinc-100 dark:bg-zinc-800/60 p-4 rounded-xl border border-zinc-200 dark:border-zinc-700/60 mt-6">
+          <label class="block font-bold text-xs uppercase mb-2 text-zinc-700 dark:text-zinc-300 flex items-center gap-1.5">
+            <i class="fa-solid fa-note-sticky text-red-600 dark:text-red-500"></i> General Notes & Special Instructions
+          </label>
+          <textarea id="bom-general-notes" rows="3" placeholder="Enter any general project notes, material specifications, surface finishes, or delivery instructions..." class="w-full p-2.5 rounded-lg text-xs"></textarea>
+        </div>
+
+        <div class="flex justify-end mt-6">
+          <button onclick="triggerPrintBOM()" class="bg-red-600 hover:bg-red-700 text-white font-bold px-6 py-3 rounded-lg text-sm flex items-center gap-2 shadow-md transition">
+            <i class="fa-solid fa-print"></i> Print / Export BOM Sheet
+          </button>
         </div>
       </div>
     </section>
 
-    <!-- 5. QUICK RFQ GENERATOR -->
-    <section id="view-rfq" class="view-section">
-      <div class="card-panel">
-        <h2 class="section-title">✉️ Quick RFQ Generator</h2>
-        <div class="sub-panel">
-          <div class="form-grid">
-            <div class="form-group">
-              <label>Select Vendor</label>
-              <select id="rfq-supplier-select" class="form-control">
-                <option value="">-- Choose Vendor --</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>RFQ Subject</label>
-              <input type="text" id="rfq-subject" class="form-control" value="RFQ - Material Quote Request">
-            </div>
-          </div>
-          <div class="form-group" style="margin-top: 1rem;">
-            <label>Required Material Specs</label>
-            <textarea id="rfq-body" class="form-control" rows="4" placeholder="e.g. 2 off - 12mm x 1200mm x 2400mm Hardox 500 Plates"></textarea>
-          </div>
+    <!-- VIEW 4: STAFF DIRECTORY -->
+    <section id="view-staff" class="hidden">
+      <div class="bg-white dark:bg-zinc-900 p-4 rounded-xl border border-zinc-300 dark:border-zinc-800 mb-6 flex flex-col md:flex-row justify-between items-center gap-4">
+        <div class="w-full md:w-1/2 relative">
+          <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-zinc-400"></i>
+          <input type="text" id="staff-search" onkeyup="renderStaff()" placeholder="Search staff by name, surname, job title, phone, or email..." class="w-full pl-9 pr-4 py-2 rounded-lg text-sm border border-zinc-300 dark:border-zinc-700">
         </div>
-        <button class="btn btn-red" onclick="generateOutlookEmail()" style="margin-top: 1.25rem;">✉️ Draft Vendor Email</button>
+        <div class="text-xs text-zinc-500 font-semibold" id="staff-count">Loading Staff...</div>
       </div>
-    </section>
 
-    <!-- 6. STAFF DIRECTORY VIEW -->
-    <section id="view-staff" class="view-section">
-      <div class="card-panel">
-        <h2 class="section-title">👥 Staff Directory</h2>
-        <div style="overflow-x: auto;">
-          <table id="tbl-staff">
-            <thead>
-              <tr>
-                <th>Full Name</th>
-                <th>Job Title</th>
-                <th>Phone</th>
-                <th>Email</th>
-              </tr>
-            </thead>
-            <tbody><!-- Dynamic Content --></tbody>
-          </table>
-        </div>
+      <div id="staff-list-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="col-span-3 text-center p-8 text-zinc-500"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Fetching Live Staff Data...</div>
       </div>
     </section>
 
   </main>
 
-  <!-- JAVASCRIPT CONTROLLER -->
+  <!-- PRINT TEMPLATE 1: PROJECT TRANSMITTAL -->
+  <div id="print-template" class="print-container">
+    
+    <!-- HEADER -->
+    <table class="no-border" style="width: 100%; border-bottom: 2px solid #dc2626 !important; padding-bottom: 8px; margin-bottom: 12px;">
+      <tr>
+        <td style="vertical-align: top; width: 60%; text-align: left;">
+          <div style="margin-bottom: 4px;">
+            <img src="./ALLCON-Logo.jpg" alt="ALLCON Logo" style="height: 44px; width: auto; max-width: 260px; object-fit: contain;" onerror="this.onerror=null; this.outerHTML='<div class=\'print-header-banner\' style=\'font-weight: 900; font-size: 20pt; padding: 4px 12px; display: inline-block; letter-spacing: 2px;\'>ALLCON</div>';">
+          </div>
+          <div style="font-size: 8.5pt; color: #000000; text-transform: uppercase; font-weight: bold; margin-top: 6px;">PROJECT TRANSMITTAL</div>
+        </td>
+        <td style="vertical-align: top; text-align: right; width: 40%;">
+          <div style="font-size: 8.5pt; color: #000000; font-weight: bold;" id="print-out-gen-date"></div>
+        </td>
+      </tr>
+    </table>
+
+    <!-- METADATA TABLE -->
+    <table style="width: 100%; margin-bottom: 12px;">
+      <colgroup>
+        <col style="width: 18%;">
+        <col style="width: 32%;">
+        <col style="width: 22%;">
+        <col style="width: 28%;">
+      </colgroup>
+      <tbody>
+        <tr>
+          <td style="font-weight: bold;">CLIENT:</td>
+          <td id="print-out-client">N/A</td>
+          <td style="font-weight: bold;">TARGET COMPLETION:</td>
+          <td style="font-weight: bold;" id="print-out-comp-date">N/A</td>
+        </tr>
+        <tr>
+          <td style="font-weight: bold;">PROJECT NAME:</td>
+          <td id="print-out-project">N/A</td>
+          <td style="font-weight: bold;">TECHNICAL BUYER:</td>
+          <td id="print-out-buyer">N/A</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- INCLUSIONS & EXCLUSIONS -->
+    <table style="width: 100%; margin-bottom: 12px;">
+      <colgroup>
+        <col style="width: 18%;">
+        <col style="width: 82%;">
+      </colgroup>
+      <tbody>
+        <tr>
+          <td style="font-weight: bold;">Inclusions:</td>
+          <td id="print-out-inclusions">None specified</td>
+        </tr>
+        <tr>
+          <td style="font-weight: bold;">Exclusions:</td>
+          <td id="print-out-exclusions">None specified</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- LINKED AC SCHEDULE CONTAINER -->
+    <div id="print-job-groups-container" style="margin-bottom: 12px;"></div>
+
+  </div>
+
+  <!-- PRINT TEMPLATE 2: SEPARATE BOM CALCULATOR PRINT LAYOUT -->
+  <div id="print-template-bom" class="print-container">
+    
+    <!-- HEADER -->
+    <table class="no-border" style="width: 100%; border-bottom: 2px solid #dc2626 !important; padding-bottom: 8px; margin-bottom: 12px;">
+      <tr>
+        <td style="vertical-align: top; width: 60%; text-align: left;">
+          <div style="margin-bottom: 4px;">
+            <img src="./ALLCON-Logo.jpg" alt="ALLCON Logo" style="height: 44px; width: auto; max-width: 260px; object-fit: contain;" onerror="this.onerror=null; this.outerHTML='<div class=\'print-header-banner\' style=\'font-weight: 900; font-size: 20pt; padding: 4px 12px; display: inline-block; letter-spacing: 2px;\'>ALLCON</div>';">
+          </div>
+          <div style="font-size: 8.5pt; color: #000000; text-transform: uppercase; font-weight: bold; margin-top: 6px;">BOM & MATERIAL REQUIREMENT CALCULATOR</div>
+        </td>
+        <td style="vertical-align: top; text-align: right; width: 40%;">
+          <div style="font-size: 8.5pt; color: #000000; font-weight: bold;" id="print-bom-gen-date"></div>
+        </td>
+      </tr>
+    </table>
+
+    <!-- METADATA TABLE (CLIENT, PROJECT, JOB ID, AC NUMBER, BUYER) -->
+    <table style="width: 100%; margin-bottom: 12px;">
+      <colgroup>
+        <col style="width: 18%;">
+        <col style="width: 32%;">
+        <col style="width: 22%;">
+        <col style="width: 28%;">
+      </colgroup>
+      <tbody>
+        <tr>
+          <td style="font-weight: bold;">CLIENT:</td>
+          <td id="print-bom-client">N/A</td>
+          <td style="font-weight: bold;">JOB ID:</td>
+          <td style="font-weight: bold;" id="print-bom-jobid">N/A</td>
+        </tr>
+        <tr>
+          <td style="font-weight: bold;">PROJECT NAME:</td>
+          <td id="print-bom-project">N/A</td>
+          <td style="font-weight: bold;">AC NUMBER:</td>
+          <td style="font-weight: bold;" id="print-bom-acnum">N/A</td>
+        </tr>
+        <tr>
+          <td style="font-weight: bold;">TECHNICAL BUYER:</td>
+          <td id="print-bom-buyer" colspan="3">N/A</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- BOM TABLES CONTAINER -->
+    <div id="print-bom-groups-container" style="margin-bottom: 12px;"></div>
+
+    <!-- BOM PRINT NOTES CONTAINER -->
+    <div id="print-bom-notes-container" style="margin-bottom: 12px; display: none;">
+      <div style="background-color: #dc2626; color: #ffffff; font-weight: bold; font-size: 8pt; padding: 4px 6px;" class="print-header-banner">NOTES & SPECIAL INSTRUCTIONS</div>
+      <table style="width: 100%; table-layout: fixed; margin-top: 0 !important;">
+        <tbody>
+          <tr>
+            <td id="print-bom-notes-text" style="padding: 6px; white-space: pre-wrap; font-size: 8pt;"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
   <script>
-    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyFlNrtS9tmzjM1dLGwGklTwivXYUqJ-JlVrcOP99JhEKu3xXNxdRAG1L0ak-Kj5tx9/exec';
+    // DEDICATED GOOGLE SHEET TAB ENDPOINTS
+    const STAFF_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSNynT5Snb9PgJp6ti3QpuHUr9fX8bGKEG10H8kjkbCna_ZfkEC7aM06QrwkjHwxR1n6uu3ZgvvaKu6/pub?gid=1666500445&single=true&output=csv";
+    const SUPPLIERS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSNynT5Snb9PgJp6ti3QpuHUr9fX8bGKEG10H8kjkbCna_ZfkEC7aM06QrwkjHwxR1n6uu3ZgvvaKu6/pub?gid=0&single=true&output=csv";
 
-    // Global State
-    window.suppliersData = [];
-    window.staffData = [];
-    window.metalRatesData = [];
-    let currentSelectedDensity = 7.85;
+    let jobDataMap = {}; // Structure: { jobId: { acList: [], supList: [] } }
+    let bomItemsList = []; // Structure: [{type, subject, mark, qty, length, width, notes, stockLen}]
+    let liveStaffData = [];
+    let liveSupplierData = [];
+    let collapsedSuppliers = {}; // Tracks open/closed state per letter group
 
-    // Helper to fetch matching properties safely from objects
-    function getProp(obj, possibleKeys, fallback = '') {
-      if (!obj) return fallback;
-      const keys = Object.keys(obj);
+    // ROBUST CSV PARSER
+    function parseCSV(text) {
+      const lines = text.trim().split(/\r?\n/);
+      if (lines.length < 2) return [];
 
-      for (let p of possibleKeys) {
-        if (obj[p] !== undefined && obj[p] !== null && String(obj[p]).trim() !== '') {
-          return String(obj[p]).trim();
+      const parseRow = (rowText) => {
+        const result = [];
+        let current = '';
+        let inQuotes = false;
+        for (let i = 0; i < rowText.length; i++) {
+          const char = rowText[i];
+          if (char === '"' && rowText[i + 1] === '"') {
+            current += '"';
+            i++;
+          } else if (char === '"') {
+            inQuotes = !inQuotes;
+          } else if (char === ',' && !inQuotes) {
+            result.push(current.trim());
+            current = '';
+          } else {
+            current += char;
+          }
         }
-      }
+        result.push(current.trim());
+        return result;
+      };
 
-      for (let p of possibleKeys) {
-        const cleanP = p.toLowerCase().replace(/[^a-z0-9]/g, '');
-        const match = keys.find(k => k.toLowerCase().replace(/[^a-z0-9]/g, '') === cleanP);
-        if (match && obj[match] !== undefined && obj[match] !== null && String(obj[match]).trim() !== '') {
-          return String(obj[match]).trim();
-        }
-      }
-
-      return fallback;
+      const headers = parseRow(lines[0]).map(h => h.toLowerCase());
+      
+      return lines.slice(1).map(line => {
+        if (!line.trim()) return null;
+        const values = parseRow(line);
+        const entry = {};
+        headers.forEach((h, idx) => {
+          entry[h] = values[idx] || '';
+        });
+        return entry;
+      }).filter(Boolean);
     }
 
-    // Theme Toggle Function
-    function toggleTheme() {
-      const toggle = document.getElementById('theme-toggle');
-      const isDark = toggle.checked;
+    // UPDATE DASHBOARD METRICS DYNAMICALLY
+    function updateDashboardStats() {
+      const totalSuppliers = liveSupplierData.length;
+      const approvedCount = liveSupplierData.filter(s => (s.status || '').toUpperCase() === 'APPROVED').length;
+      const totalStaff = liveStaffData.length;
+      const totalJobs = Object.keys(jobDataMap).length;
+      const totalBom = bomItemsList.length;
 
-      if (isDark) {
-        document.body.classList.remove('light-mode');
-        document.body.classList.add('dark-mode');
-        document.getElementById('lbl-dark').classList.add('active');
-        document.getElementById('lbl-light').classList.remove('active');
-      } else {
-        document.body.classList.remove('dark-mode');
-        document.body.classList.add('light-mode');
-        document.getElementById('lbl-light').classList.add('active');
-        document.getElementById('lbl-dark').classList.remove('active');
-      }
+      const statSuppliersEl = document.getElementById('dash-stat-suppliers');
+      const statApprovedEl = document.getElementById('dash-stat-approved-badge');
+      const statStaffEl = document.getElementById('dash-stat-staff');
+      const statJobsEl = document.getElementById('dash-stat-jobs');
+      const statBomEl = document.getElementById('dash-stat-bom');
+
+      if (statSuppliersEl) statSuppliersEl.innerText = totalSuppliers;
+      if (statApprovedEl) statApprovedEl.innerHTML = `<i class="fa-solid fa-check-circle mr-1"></i>${approvedCount} Approved`;
+      if (statStaffEl) statStaffEl.innerText = totalStaff;
+      if (statJobsEl) statJobsEl.innerText = totalJobs;
+      if (statBomEl) statBomEl.innerText = totalBom;
     }
 
-    // Navigation Switcher
-    function navigateToView(viewId) {
-      document.querySelectorAll('.view-section').forEach(sec => sec.style.display = 'none');
-      document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-
-      const target = document.getElementById(viewId);
-      if (target) target.style.display = 'block';
-
-      const navBtn = document.getElementById('btn-' + viewId.replace('view-', ''));
-      if (navBtn) navBtn.classList.add('active');
-    }
-
-    // Fetch Data from Google Apps Script Web App
-    async function loadPortalData() {
-      const syncText = document.getElementById('sync-text');
+    // LOAD DEDICATED DATA FROM INDIVIDUAL GOOGLE SHEET ENDPOINTS
+    async function loadLiveData() {
       try {
-        syncText.textContent = "Syncing...";
-        const res = await fetch(APPS_SCRIPT_URL);
-        if (!res.ok) throw new Error("HTTP Error");
+        const staffRes = await fetch(STAFF_CSV_URL);
+        const staffCsv = await staffRes.text();
+        const staffRaw = parseCSV(staffCsv);
 
-        const data = await res.json();
-        window.suppliersData = data.suppliers || [];
-        window.staffData = data.staff || [];
-        window.metalRatesData = data.metalRates || [];
+        liveStaffData = staffRaw.map(r => ({
+          name: r['name'] || r['first name'] || '',
+          surname: r['surname'] || r['last name'] || '',
+          jobTitle: r['job title'] || r['title'] || r['position'] || '',
+          phone: r['phone'] || r['mobile'] || r['contact'] || '',
+          email: r['email'] || ''
+        }));
+        renderStaff();
+      } catch (err) {
+        console.error("Failed to load Staff Directory data:", err);
+      }
 
-        syncText.textContent = "Live Sync";
+      try {
+        const suppRes = await fetch(SUPPLIERS_CSV_URL);
+        const suppCsv = await suppRes.text();
+        const suppRaw = parseCSV(suppCsv);
+
+        liveSupplierData = suppRaw.map(r => ({
+          status: r['status'] || 'APPROVED',
+          supplierName: r['supplier name'] || r['company'] || r['supplier'] || '',
+          category: r['category'] || r['service'] || '',
+          pocName: r['poc name'] || r['contact person'] || r['poc'] || '',
+          pocEmail: r['poc email'] || r['email'] || '',
+          pocPhone: r['poc phone'] || r['phone'] || '',
+          servicesOffered: r['services offered'] || r['services'] || '',
+          logistics: r['logistics'] || '',
+          paymentTerms: r['payment terms'] || r['terms'] || '',
+          standardEta: r['standard eta'] || r['eta'] || '',
+          address: r['address'] || '',
+          notes: r['notes'] || ''
+        }));
+
+        // Initialize all letter groups to collapsed by default
+        const uniqueLetters = new Set(liveSupplierData.map(s => {
+          const name = s.supplierName || '';
+          const firstLetter = name.charAt(0).toUpperCase();
+          return /[A-Z]/.test(firstLetter) ? firstLetter : '#';
+        }));
+        uniqueLetters.forEach(l => { collapsedSuppliers[l] = true; });
 
         renderSuppliers();
-        renderStaff();
-        populateEstimatorDropdown();
-        populateSupplierDropdowns();
-
+        populateSupplierDropdown();
       } catch (err) {
-        console.error("Failed to load Google Sheets payload:", err);
-        syncText.textContent = "Offline";
+        console.error("Failed to load Suppliers data:", err);
+      }
+
+      updateDashboardStats();
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const dd = String(today.getDate()).padStart(2, '0');
+      document.getElementById('meta-date-gen').value = `${yyyy}-${mm}-${dd}`;
+      loadLiveData();
+    });
+
+    function populateSupplierDropdown() {
+      const select = document.getElementById('input-ac-supplier');
+      if (!select) return;
+
+      const sortedNames = liveSupplierData
+        .map(s => s.supplierName)
+        .filter(Boolean)
+        .sort((a, b) => a.localeCompare(b));
+
+      const groups = {};
+      sortedNames.forEach(name => {
+        const firstLetter = name.charAt(0).toUpperCase();
+        const key = /[A-Z]/.test(firstLetter) ? firstLetter : '#';
+        if (!groups[key]) groups[key] = [];
+        groups[key].push(name);
+      });
+
+      const sortedKeys = Object.keys(groups).sort((a, b) => {
+        if (a === '#') return 1;
+        if (b === '#') return -1;
+        return a.localeCompare(b);
+      });
+
+      let html = `<option value="">-- Select Supplier --</option>`;
+      sortedKeys.forEach(letter => {
+        html += `<optgroup label="${letter} - (${groups[letter].length})">`;
+        groups[letter].forEach(name => {
+          html += `<option value="${name}">${name}</option>`;
+        });
+        html += `</optgroup>`;
+      });
+
+      select.innerHTML = html;
+    }
+
+    function getStatusBadgeClass(status) {
+      const cleanStatus = (status || '').toUpperCase().trim();
+      switch (cleanStatus) {
+        case 'APPROVED': return 'bg-blue-600';
+        case 'PREFERRED': return 'bg-emerald-600';
+        case 'REJECTED': return 'bg-red-600';
+        case 'PENDING NDA': return 'bg-amber-500';
+        default: return 'bg-zinc-600';
       }
     }
 
-    // Render Suppliers Table (Strict Mapping to Sheet Header Images)
+    function toggleSupplierGroup(letter) {
+      collapsedSuppliers[letter] = !collapsedSuppliers[letter];
+      renderSuppliers();
+    }
+
+    function expandAllSuppliers() {
+      Object.keys(collapsedSuppliers).forEach(l => { collapsedSuppliers[l] = false; });
+      renderSuppliers();
+    }
+
+    function collapseAllSuppliers() {
+      Object.keys(collapsedSuppliers).forEach(l => { collapsedSuppliers[l] = true; });
+      renderSuppliers();
+    }
+
     function renderSuppliers() {
-      const tbody = document.querySelector('#tbl-suppliers tbody');
-      if (!tbody) return;
-
-      const search = (document.getElementById('supplier-search')?.value || '').toLowerCase();
+      const query = (document.getElementById('supplier-search')?.value || '').toLowerCase();
+      const container = document.getElementById('suppliers-list-container');
       
-      const filtered = window.suppliersData.filter(s => {
-        const name = getProp(s, ['SUPPLIER NAME', 'Supplier Name', 'Company Name'], '').toLowerCase();
-        const cat = getProp(s, ['CATEGORY', 'Category', 'SERVICES OFFERED', 'Services Offered'], '').toLowerCase();
-        const contact = getProp(s, ['POC NAME', 'Poc Name', 'Contact Person'], '').toLowerCase();
-        return name.includes(search) || cat.includes(search) || contact.includes(search);
-      });
+      const filtered = liveSupplierData.filter(s => 
+        (s.supplierName || '').toLowerCase().includes(query) ||
+        (s.category || '').toLowerCase().includes(query) ||
+        (s.pocName || '').toLowerCase().includes(query) ||
+        (s.servicesOffered || '').toLowerCase().includes(query)
+      );
 
-      tbody.innerHTML = filtered.map(s => {
-        const status = getProp(s, ['STATUS', 'Status'], 'GENERAL');
-        const company = getProp(s, ['SUPPLIER NAME', 'Supplier Name', 'Company Name'], 'N/A');
-        
-        // Use CATEGORY first, if empty fall back to SERVICES OFFERED
-        let category = getProp(s, ['CATEGORY', 'Category'], '');
-        if (!category) {
-          category = getProp(s, ['SERVICES OFFERED', 'Services Offered'], 'General');
-        }
+      document.getElementById('supplier-count').innerText = `Showing ${filtered.length} Suppliers`;
 
-        const pocName = getProp(s, ['POC NAME', 'Poc Name', 'Contact Person'], '-');
-        const pocEmail = getProp(s, ['POC EMAIL', 'Poc Email', 'Email'], '');
-        const pocPhone = getProp(s, ['POC PHONE', 'Poc Phone', 'Phone'], '-');
-
-        // Status badge color coding
-        let statusStyle = "background:#334155; color:#fff;";
-        if (status.toUpperCase().includes('APPROVED') || status.toUpperCase().includes('PREFERRED')) {
-          statusStyle = "background:rgba(16, 185, 129, 0.2); color:#10b981;";
-        } else if (status.toUpperCase().includes('PENDING')) {
-          statusStyle = "background:rgba(245, 158, 11, 0.2); color:#f59e0b;";
-        } else if (status.toUpperCase().includes('REJECTED')) {
-          statusStyle = "background:rgba(239, 68, 68, 0.2); color:#ef4444;";
-        }
-
-        return `
-          <tr>
-            <td><span style="font-size:0.7rem; font-weight:800; padding:3px 8px; border-radius:4px; ${statusStyle}">${status}</span></td>
-            <td style="font-weight: 700; color: var(--text-main);">${company}</td>
-            <td>${category}</td>
-            <td>${pocName}</td>
-            <td>${pocEmail ? `<a href="mailto:${pocEmail}" style="color:var(--accent-red); font-weight:600;">${pocEmail}</a>` : '-'}</td>
-            <td>${pocPhone}</td>
-          </tr>
-        `;
-      }).join('') || '<tr><td colspan="6" style="text-align:center;">No suppliers found.</td></tr>';
-    }
-
-    // Render Staff Table (Strict Mapping to Sheet Header Images)
-    function renderStaff() {
-      const tbody = document.querySelector('#tbl-staff tbody');
-      if (!tbody) return;
-
-      tbody.innerHTML = window.staffData.map(st => {
-        const firstName = getProp(st, ['NAME', 'Name', 'First Name'], '');
-        const surname = getProp(st, ['SURNAME', 'Surname', 'Last Name'], '');
-        const fullName = (firstName + ' ' + surname).trim() || 'N/A';
-
-        const jobTitle = getProp(st, ['JOB TITLE', 'Job Title', 'Role'], '-');
-        const phone = getProp(st, ['PHONE', 'Phone'], '-');
-        const email = getProp(st, ['EMAIL', 'Email'], '');
-
-        return `
-          <tr>
-            <td style="font-weight: 700; color: var(--text-main);">${fullName}</td>
-            <td>${jobTitle}</td>
-            <td>${phone}</td>
-            <td>${email ? `<a href="mailto:${email}" style="color:var(--accent-red); font-weight:600;">${email}</a>` : '-'}</td>
-          </tr>
-        `;
-      }).join('') || '<tr><td colspan="4" style="text-align:center;">No staff records found.</td></tr>';
-    }
-
-    // Populate Supplier Dropdowns across app
-    function populateSupplierDropdowns() {
-      const selects = [document.getElementById('tr-supplier-select'), document.getElementById('rfq-supplier-select')];
-      selects.forEach(select => {
-        if (!select) return;
-        select.innerHTML = '<option value="">-- Select Supplier --</option>';
-        window.suppliersData.forEach(s => {
-          const name = getProp(s, ['SUPPLIER NAME', 'Supplier Name', 'Company Name'], '');
-          const email = getProp(s, ['POC EMAIL', 'Poc Email', 'Email'], name);
-          if (name) {
-            const opt = document.createElement('option');
-            opt.value = email;
-            opt.textContent = name;
-            select.appendChild(opt);
-          }
-        });
-      });
-    }
-
-    // Populate Estimator Dropdown
-    function populateEstimatorDropdown() {
-      const select = document.getElementById('est-material-select');
-      if (!select || !window.metalRatesData.length) return;
-
-      select.innerHTML = '<option value="">-- Select Material Grade --</option>';
-      window.metalRatesData.forEach((item, idx) => {
-        const grade = getProp(item, ['Grade', 'Material Grade', 'Material'], `Grade ${idx+1}`);
-        const cat = getProp(item, ['Category', 'Type'], 'Steel');
-        const opt = document.createElement('option');
-        opt.value = idx;
-        opt.textContent = `${grade} (${cat})`;
-        select.appendChild(opt);
-      });
-    }
-
-    // Update Estimator Active Rate
-    function updateEstimatorRate() {
-      const select = document.getElementById('est-material-select');
-      if (select.value === '') return;
-
-      const item = window.metalRatesData[select.value];
-      currentSelectedDensity = parseFloat(getProp(item, ['Density', 'Density g/cm3'], 7.85)) || 7.85;
-
-      const activeRate = parseFloat(getProp(item, ['Final Active Rate', 'Live Rate (R\\kg)', 'Live Rate R/kg', 'Live Rate', 'Value'], 0.00)) || 0.00;
-      document.getElementById('est-rate').value = activeRate.toFixed(2);
-
-      calculateEstimatorTotals();
-    }
-
-    // Calculate Estimator Totals
-    function calculateEstimatorTotals() {
-      const t = parseFloat(document.getElementById('est-thickness').value) || 0;
-      const w = parseFloat(document.getElementById('est-width').value) || 0;
-      const l = parseFloat(document.getElementById('est-length').value) || 0;
-      const qty = parseFloat(document.getElementById('est-qty').value) || 0;
-      const ratePerKg = parseFloat(document.getElementById('est-rate').value) || 0;
-
-      const volumeM3 = (t / 1000) * (w / 1000) * (l / 1000);
-      const totalMassKg = volumeM3 * (currentSelectedDensity * 1000) * qty;
-
-      const areaPerPieceM2 = 2 * ((w/1000)*(l/1000) + (w/1000)*(t/1000) + (l/1000)*(t/1000));
-      const totalAreaM2 = areaPerPieceM2 * qty;
-
-      const totalCostZar = totalMassKg * ratePerKg;
-
-      document.getElementById('res-total-mass').textContent = totalMassKg.toFixed(2) + ' kg';
-      document.getElementById('res-total-area').textContent = totalAreaM2.toFixed(2) + ' m²';
-      document.getElementById('res-total-cost').textContent = 'R ' + totalCostZar.toLocaleString('en-ZA', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    }
-
-    // Draft Vendor Email
-    function generateOutlookEmail() {
-      const email = document.getElementById('rfq-supplier-select').value;
-      const subject = encodeURIComponent(document.getElementById('rfq-subject').value);
-      const body = encodeURIComponent(document.getElementById('rfq-body').value);
-
-      if (!email) {
-        alert("Please select a vendor.");
+      if (filtered.length === 0) {
+        container.innerHTML = `<div class="text-center p-8 text-zinc-500">No suppliers found matching your query.</div>`;
         return;
       }
-      window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+
+      filtered.sort((a, b) => (a.supplierName || '').localeCompare(b.supplierName || ''));
+
+      const groups = {};
+      filtered.forEach(s => {
+        const name = s.supplierName || '';
+        const firstLetter = name.charAt(0).toUpperCase();
+        const key = /[A-Z]/.test(firstLetter) ? firstLetter : '#';
+        if (!groups[key]) groups[key] = [];
+        groups[key].push(s);
+      });
+
+      const sortedKeys = Object.keys(groups).sort((a, b) => {
+        if (a === '#') return 1;
+        if (b === '#') return -1;
+        return a.localeCompare(b);
+      });
+
+      container.innerHTML = sortedKeys.map(letter => {
+        const suppliersInGroup = groups[letter];
+        const isCollapsed = query ? false : (collapsedSuppliers[letter] !== false);
+        const iconClass = isCollapsed ? "fa-chevron-right" : "fa-chevron-down";
+
+        const cardsHtml = suppliersInGroup.map(s => {
+          const badgeClass = getStatusBadgeClass(s.status);
+          return `
+            <div class="bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-xl p-5 shadow-sm hover:shadow-md transition">
+              <div class="flex justify-between items-start mb-3">
+                <div>
+                  <span class="text-[10px] font-bold px-2 py-0.5 rounded text-white ${badgeClass}">${s.status || 'N/A'}</span>
+                  <h3 class="text-base font-bold mt-1 text-zinc-900 dark:text-zinc-100">${s.supplierName}</h3>
+                  <p class="text-xs text-red-600 dark:text-red-400 font-semibold">${s.category}</p>
+                </div>
+              </div>
+              <div class="grid grid-cols-1 gap-1.5 text-xs text-zinc-600 dark:text-zinc-300 my-3 bg-zinc-50 dark:bg-zinc-800/50 p-3 rounded-lg border border-zinc-200 dark:border-zinc-700/50">
+                ${s.pocName ? `<div><strong>POC Name:</strong> ${s.pocName}</div>` : ''}
+                ${s.pocEmail ? `<div><strong>POC Email:</strong> <a href="mailto:${s.pocEmail}" class="text-red-600 hover:underline">${s.pocEmail}</a></div>` : ''}
+                ${s.pocPhone ? `<div><strong>POC Phone:</strong> <a href="tel:${s.pocPhone}" class="text-red-600 hover:underline">${s.pocPhone}</a></div>` : ''}
+                ${s.servicesOffered ? `<div><strong>Services Offered:</strong> ${s.servicesOffered}</div>` : ''}
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        return `
+          <div class="border border-zinc-300 dark:border-zinc-800 rounded-xl bg-white dark:bg-zinc-900 overflow-hidden shadow-sm">
+            <div onclick="toggleSupplierGroup('${letter}')" class="flex items-center gap-3 p-4 cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-800/60 transition select-none">
+              <span class="w-8 h-8 rounded-lg bg-red-600 text-white font-black text-sm flex items-center justify-center shadow">${letter}</span>
+              <div class="flex-grow border-t border-zinc-200 dark:border-zinc-800"></div>
+              <span class="text-xs font-semibold text-zinc-500">${suppliersInGroup.length} supplier${suppliersInGroup.length === 1 ? '' : 's'}</span>
+              <i class="fa-solid ${iconClass} text-zinc-400 text-xs ml-2 w-4 text-center"></i>
+            </div>
+            <div class="${isCollapsed ? 'hidden' : 'grid'} grid-cols-1 md:grid-cols-2 gap-4 p-4 pt-0">
+              ${cardsHtml}
+            </div>
+          </div>
+        `;
+      }).join('');
     }
 
-    // Initialize
-    document.addEventListener('DOMContentLoaded', () => {
-      const dateInput = document.getElementById('tr-date');
-      if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
+    function renderStaff() {
+      const query = (document.getElementById('staff-search')?.value || '').toLowerCase();
+      const container = document.getElementById('staff-list-container');
 
-      loadPortalData();
-    });
+      const filtered = liveStaffData.filter(st => 
+        (st.name || '').toLowerCase().includes(query) ||
+        (st.surname || '').toLowerCase().includes(query) ||
+        (st.jobTitle || '').toLowerCase().includes(query) ||
+        (st.email || '').toLowerCase().includes(query) ||
+        (st.phone || '').toLowerCase().includes(query)
+      );
+
+      document.getElementById('staff-count').innerText = `Showing ${filtered.length} Staff Members`;
+
+      if (filtered.length === 0) {
+        container.innerHTML = `<div class="col-span-3 text-center p-8 text-zinc-500">No staff members found matching your search.</div>`;
+        return;
+      }
+
+      container.innerHTML = filtered.map(st => `
+        <div class="bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-xl p-4 shadow-sm hover:shadow-md transition">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-10 h-10 rounded-full bg-red-600 text-white flex items-center justify-center font-black text-sm">
+              ${st.name ? st.name.charAt(0) : ''}${st.surname ? st.surname.charAt(0) : ''}
+            </div>
+            <div>
+              <h3 class="text-sm font-bold text-zinc-900 dark:text-zinc-100">${st.name} ${st.surname}</h3>
+              <p class="text-xs text-red-600 dark:text-red-400 font-medium">${st.jobTitle}</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 gap-1 text-xs text-zinc-600 dark:text-zinc-300 bg-zinc-50 dark:bg-zinc-800/50 p-2.5 rounded-lg border border-zinc-200 dark:border-zinc-700/50">
+            ${st.phone ? `<div><strong>Phone:</strong> <a href="tel:${st.phone}" class="text-red-600 hover:underline">${st.phone}</a></div>` : ''}
+            ${st.email ? `<div><strong>Email:</strong> <a href="mailto:${st.email}" class="text-red-600 hover:underline">${st.email}</a></div>` : ''}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // BOM CALCULATOR LOGIC
+    function toggleBomInputs() {
+      const type = document.getElementById('bom-type').value;
+      const wrapLen = document.getElementById('wrapper-length');
+      const wrapWidth = document.getElementById('wrapper-width');
+      const wrapNotes = document.getElementById('wrapper-notes');
+      const wrapStock = document.getElementById('wrapper-stock');
+
+      if (type === 'LINEAR') {
+        wrapLen.classList.remove('hidden');
+        wrapWidth.classList.add('hidden');
+        wrapNotes.classList.add('hidden');
+        wrapStock.classList.remove('hidden');
+      } else if (type === 'PLATE') {
+        wrapLen.classList.remove('hidden'); // acts as Length
+        wrapWidth.classList.remove('hidden'); // acts as Width
+        wrapNotes.classList.add('hidden');
+        wrapStock.classList.add('hidden');
+      } else if (type === 'HARDWARE') {
+        wrapLen.classList.add('hidden');
+        wrapWidth.classList.add('hidden');
+        wrapNotes.classList.remove('hidden');
+        wrapStock.classList.add('hidden');
+      }
+    }
+
+    function addBomItem() {
+      const type = document.getElementById('bom-type').value;
+      const subject = document.getElementById('bom-subject').value.trim().toUpperCase();
+      const mark = document.getElementById('bom-mark').value.trim();
+      const qty = parseFloat(document.getElementById('bom-qty').value);
+
+      if (!subject) return alert('Please enter a Subject / Material Name.');
+      if (isNaN(qty) || qty <= 0) return alert('Please enter a valid quantity.');
+
+      let length = parseFloat(document.getElementById('bom-length').value) || 0;
+      let width = parseFloat(document.getElementById('bom-width').value) || 0;
+      let notes = document.getElementById('bom-notes').value.trim();
+      let stockLen = parseFloat(document.getElementById('bom-stock-len').value) || 6000;
+
+      bomItemsList.push({ type, subject, mark, qty, length, width, notes, stockLen });
+
+      // Reset inputs
+      document.getElementById('bom-subject').value = '';
+      document.getElementById('bom-mark').value = '';
+      document.getElementById('bom-qty').value = '';
+      document.getElementById('bom-length').value = '';
+      document.getElementById('bom-width').value = '';
+      document.getElementById('bom-notes').value = '';
+
+      renderBomTables();
+      updateDashboardStats();
+    }
+
+    function removeBomItem(index) {
+      bomItemsList.splice(index, 1);
+      renderBomTables();
+      updateDashboardStats();
+    }
+
+    function renderBomTables() {
+      const container = document.getElementById('bom-tables-container');
+      if (bomItemsList.length === 0) {
+        container.innerHTML = `<div class="text-xs text-zinc-400 italic text-center p-6">No materials added to the BOM calculator yet.</div>`;
+        return;
+      }
+
+      // Group items by type
+      const linearItems = bomItemsList.map((item, idx) => ({ ...item, originalIndex: idx })).filter(i => i.type === 'LINEAR');
+      const plateItems = bomItemsList.map((item, idx) => ({ ...item, originalIndex: idx })).filter(i => i.type === 'PLATE');
+      const hardwareItems = bomItemsList.map((item, idx) => ({ ...item, originalIndex: idx })).filter(i => i.type === 'HARDWARE');
+
+      let html = '';
+
+      // 1. LINEAR SECTION
+      if (linearItems.length > 0) {
+        const groupedLinear = {};
+        linearItems.forEach(item => {
+          if (!groupedLinear[item.subject]) {
+            groupedLinear[item.subject] = { totalLen: 0, stockLen: item.stockLen || 6000, rows: [] };
+          }
+          const totalLineLen = item.qty * item.length;
+          groupedLinear[item.subject].totalLen += totalLineLen;
+          groupedLinear[item.subject].rows.push(item);
+        });
+
+        let linearRowsHtml = '';
+        Object.keys(groupedLinear).forEach(subj => {
+          const group = groupedLinear[subj];
+          const stockNeeded = Math.ceil(group.totalLen / group.stockLen);
+
+          group.rows.forEach(r => {
+            const totalLen = r.qty * r.length;
+            linearRowsHtml += `
+              <tr class="border-b border-zinc-200 dark:border-zinc-800 text-xs">
+                <td class="p-2.5 font-bold text-red-600 dark:text-red-400">${r.subject}</td>
+                <td class="p-2.5">${r.mark || '--'}</td>
+                <td class="p-2.5">${r.qty}</td>
+                <td class="p-2.5">${r.length} mm</td>
+                <td class="p-2.5 font-semibold">${totalLen} mm</td>
+                <td class="p-2.5 text-right"><button onclick="removeBomItem(${r.originalIndex})" class="text-red-500 hover:underline">Remove</button></td>
+              </tr>
+            `;
+          });
+
+          linearRowsHtml += `
+            <tr class="bg-red-50 dark:bg-red-950/30 font-bold text-xs border-b-2 border-red-200 dark:border-red-900">
+              <td colspan="4" class="p-2.5 text-right uppercase">Total Required for ${subj}: ${group.totalLen} mm (${stockNeeded} x ${group.stockLen}mm Bars Needed)</td>
+              <td colspan="2" class="p-2.5 text-red-600 dark:text-red-400">Order Stock: ${stockNeeded} Bar(s)</td>
+            </tr>
+          `;
+        });
+
+        html += `
+          <div class="bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-lg overflow-hidden p-3">
+            <div class="bg-zinc-900 text-white text-xs font-bold px-3 py-2 rounded mb-2 uppercase">Structural & Linear Materials</div>
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-zinc-200 dark:bg-zinc-900 text-[10px] text-zinc-600 dark:text-zinc-400">
+                  <th class="p-2">Subject / Material</th>
+                  <th class="p-2">Item / Mark</th>
+                  <th class="p-2">Qty</th>
+                  <th class="p-2">Length per Piece</th>
+                  <th class="p-2">Total Length</th>
+                  <th class="p-2 text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody>${linearRowsHtml}</tbody>
+            </table>
+          </div>
+        `;
+      }
+
+      // 2. PLATE SECTION
+      if (plateItems.length > 0) {
+        let plateRowsHtml = plateItems.map(r => {
+          const scaledLen = Math.round(r.qty * r.length * 1.25);
+          return `
+            <tr class="border-b border-zinc-200 dark:border-zinc-800 text-xs">
+              <td class="p-2.5 font-bold text-red-600 dark:text-red-400">${r.subject}</td>
+              <td class="p-2.5">${r.mark || '--'}</td>
+              <td class="p-2.5">${r.qty}</td>
+              <td class="p-2.5">${r.width} mm</td>
+              <td class="p-2.5">${r.length} mm</td>
+              <td class="p-2.5 font-semibold text-zinc-800 dark:text-zinc-200">${scaledLen} x ${r.width} mm (Line + 25%)</td>
+              <td class="p-2.5 text-right"><button onclick="removeBomItem(${r.originalIndex})" class="text-red-500 hover:underline">Remove</button></td>
+            </tr>
+          `;
+        }).join('');
+
+        html += `
+          <div class="bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-lg overflow-hidden p-3">
+            <div class="bg-zinc-900 text-white text-xs font-bold px-3 py-2 rounded mb-2 uppercase">Plates & Sheets</div>
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-zinc-200 dark:bg-zinc-900 text-[10px] text-zinc-600 dark:text-zinc-400">
+                  <th class="p-2">Subject / Material</th>
+                  <th class="p-2">Item / Mark</th>
+                  <th class="p-2">Qty</th>
+                  <th class="p-2">Width mm</th>
+                  <th class="p-2">Length mm</th>
+                  <th class="p-2">Total Area Required (Line + 25%)</th>
+                  <th class="p-2 text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody>${plateRowsHtml}</tbody>
+            </table>
+          </div>
+        `;
+      }
+
+      // 3. HARDWARE SECTION
+      if (hardwareItems.length > 0) {
+        let hwRowsHtml = hardwareItems.map(r => `
+          <tr class="border-b border-zinc-200 dark:border-zinc-800 text-xs">
+            <td class="p-2.5 font-bold text-red-600 dark:text-red-400">${r.subject}</td>
+            <td class="p-2.5">${r.mark || '--'}</td>
+            <td class="p-2.5 font-bold">${r.qty}</td>
+            <td class="p-2.5">${r.notes || '--'}</td>
+            <td class="p-2.5 text-right"><button onclick="removeBomItem(${r.originalIndex})" class="text-red-500 hover:underline">Remove</button></td>
+          </tr>
+        `).join('');
+
+        html += `
+          <div class="bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-lg overflow-hidden p-3">
+            <div class="bg-zinc-900 text-white text-xs font-bold px-3 py-2 rounded mb-2 uppercase">Hardware & Loose Items</div>
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-zinc-200 dark:bg-zinc-900 text-[10px] text-zinc-600 dark:text-zinc-400">
+                  <th class="p-2">Subject / Material</th>
+                  <th class="p-2">Item / Mark</th>
+                  <th class="p-2">Qty</th>
+                  <th class="p-2">Notes / Size</th>
+                  <th class="p-2 text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody>${hwRowsHtml}</tbody>
+            </table>
+          </div>
+        `;
+      }
+
+      container.innerHTML = html;
+    }
+
+    function triggerPrintBOM() {
+      if (bomItemsList.length === 0) return alert('No BOM items to print.');
+
+      // Set body print class to target print-template-bom
+      document.body.className = document.body.className.replace(' printing-transmittal', '') + ' printing-bom';
+
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const dd = String(today.getDate()).padStart(2, '0');
+      document.getElementById('print-bom-gen-date').innerText = `Generated: ${yyyy}-${mm}-${dd}`;
+
+      document.getElementById('print-bom-client').innerText = document.getElementById('bom-meta-client').value.trim() || "N/A";
+      document.getElementById('print-bom-project').innerText = document.getElementById('bom-meta-project').value.trim() || "N/A";
+      document.getElementById('print-bom-jobid').innerText = document.getElementById('bom-meta-jobid').value.trim() || "N/A";
+      document.getElementById('print-bom-acnum').innerText = document.getElementById('bom-meta-acnum').value.trim() || "N/A";
+      document.getElementById('print-bom-buyer').innerText = document.getElementById('bom-meta-buyer').value.trim() || "N/A";
+
+      const printGroupsContainer = document.getElementById('print-bom-groups-container');
+      
+      const linearItems = bomItemsList.filter(i => i.type === 'LINEAR');
+      const plateItems = bomItemsList.filter(i => i.type === 'PLATE');
+      const hardwareItems = bomItemsList.filter(i => i.type === 'HARDWARE');
+
+      let printHtml = '';
+
+      if (linearItems.length > 0) {
+        const groupedLinear = {};
+        linearItems.forEach(item => {
+          if (!groupedLinear[item.subject]) {
+            groupedLinear[item.subject] = { totalLen: 0, stockLen: item.stockLen || 6000, rows: [] };
+          }
+          groupedLinear[item.subject].totalLen += (item.qty * item.length);
+          groupedLinear[item.subject].rows.push(item);
+        });
+
+        let rows = '';
+        Object.keys(groupedLinear).forEach(subj => {
+          const group = groupedLinear[subj];
+          const stockNeeded = Math.ceil(group.totalLen / group.stockLen);
+          group.rows.forEach(r => {
+            rows += `<tr><td>${r.subject}</td><td>${r.mark || '&nbsp;'}</td><td>${r.qty}</td><td>${r.length} mm</td><td>${r.qty * r.length} mm</td></tr>`;
+          });
+          rows += `<tr style="background-color: #fef2f2; font-weight: bold;"><td colspan="4" style="text-align: right;">TOTAL FOR ${subj} (${stockNeeded} x ${group.stockLen}mm BARS):</td><td>${group.totalLen} mm</td></tr>`;
+        });
+
+        printHtml += `
+          <div style="margin-bottom: 12px;">
+            <div style="background-color: #dc2626; color: #ffffff; font-weight: bold; font-size: 8pt; padding: 4px 6px;" class="print-header-banner">STRUCTURAL & LINEAR MATERIALS</div>
+            <table style="width: 100%; table-layout: fixed; margin-top: 0 !important;">
+              <colgroup><col style="width: 30%;"><col style="width: 20%;"><col style="width: 10%;"><col style="width: 20%;"><col style="width: 20%;"></colgroup>
+              <thead>
+                <tr class="print-table-header" style="font-size: 8pt;">
+                  <th>SUBJECT / MATERIAL</th><th>MARK</th><th>QTY</th><th>LENGTH / PC</th><th>TOTAL LENGTH</th>
+                </tr>
+              </thead>
+              <tbody>${rows}</tbody>
+            </table>
+          </div>
+        `;
+      }
+
+      if (plateItems.length > 0) {
+        let rows = plateItems.map(r => `
+          <tr>
+            <td>${r.subject}</td>
+            <td>${r.mark || '&nbsp;'}</td>
+            <td>${r.qty}</td>
+            <td>${r.width} mm</td>
+            <td>${r.length} mm</td>
+            <td style="font-weight: bold;">${Math.round(r.qty * r.length * 1.25)} x ${r.width} mm (Line + 25%)</td>
+          </tr>
+        `).join('');
+
+        printHtml += `
+          <div style="margin-bottom: 12px;">
+            <div style="background-color: #dc2626; color: #ffffff; font-weight: bold; font-size: 8pt; padding: 4px 6px;" class="print-header-banner">PLATES & SHEETS</div>
+            <table style="width: 100%; table-layout: fixed; margin-top: 0 !important;">
+              <colgroup><col style="width: 25%;"><col style="width: 15%;"><col style="width: 10%;"><col style="width: 15%;"><col style="width: 15%;"><col style="width: 20%;"></colgroup>
+              <thead>
+                <tr class="print-table-header" style="font-size: 8pt;">
+                  <th>SUBJECT / MATERIAL</th><th>MARK</th><th>QTY</th><th>WIDTH</th><th>LENGTH</th><th>TOTAL REQ (LINE + 25%)</th>
+                </tr>
+              </thead>
+              <tbody>${rows}</tbody>
+            </table>
+          </div>
+        `;
+      }
+
+      if (hardwareItems.length > 0) {
+        let rows = hardwareItems.map(r => `
+          <tr>
+            <td>${r.subject}</td>
+            <td>${r.mark || '&nbsp;'}</td>
+            <td style="font-weight: bold;">${r.qty}</td>
+            <td>${r.notes || '&nbsp;'}</td>
+          </tr>
+        `).join('');
+
+        printHtml += `
+          <div style="margin-bottom: 12px;">
+            <div style="background-color: #dc2626; color: #ffffff; font-weight: bold; font-size: 8pt; padding: 4px 6px;" class="print-header-banner">HARDWARE & LOOSE ITEMS</div>
+            <table style="width: 100%; table-layout: fixed; margin-top: 0 !important;">
+              <colgroup><col style="width: 35%;"><col style="width: 25%;"><col style="width: 15%;"><col style="width: 25%;"></colgroup>
+              <thead>
+                <tr class="print-table-header" style="font-size: 8pt;">
+                  <th>SUBJECT / MATERIAL</th><th>MARK</th><th>QTY</th><th>NOTES / SIZE</th>
+                </tr>
+              </thead>
+              <tbody>${rows}</tbody>
+            </table>
+          </div>
+        `;
+      }
+
+      printGroupsContainer.innerHTML = printHtml;
+
+      // UPDATE & TOGGLE BOM GENERAL NOTES PRINT CONTAINER
+      const notesVal = document.getElementById('bom-general-notes')?.value.trim() || '';
+      const notesContainer = document.getElementById('print-bom-notes-container');
+      if (notesVal) {
+        document.getElementById('print-bom-notes-text').innerText = notesVal;
+        if (notesContainer) notesContainer.style.display = 'block';
+      } else {
+        if (notesContainer) notesContainer.style.display = 'none';
+      }
+
+      window.print();
+    }
+
+    // BUILDER FUNCTIONS (PROJECT TRANSMITTAL)
+    function addLinkedACLine() {
+      const jobId = document.getElementById('input-job-id').value.trim();
+      const acNum = document.getElementById('input-ac-num').value.trim();
+      const description = document.getElementById('input-ac-desc').value.trim();
+      const category = document.getElementById('input-ac-category').value;
+      const subCategory = document.getElementById('input-ac-subcategory').value.trim();
+      const supplier = document.getElementById('input-ac-supplier').value;
+      const poNum = document.getElementById('input-ac-po').value.trim();
+
+      if (!jobId) return alert('Please enter a Job ID.');
+
+      if (!jobDataMap[jobId]) {
+        jobDataMap[jobId] = { acList: [], supList: [] };
+      }
+
+      if (acNum || description) {
+        jobDataMap[jobId].acList.push({ num: acNum, desc: description });
+      }
+
+      if (category || supplier || poNum) {
+        jobDataMap[jobId].supList.push({ category, subCategory, supplier, po: poNum });
+      }
+
+      document.getElementById('input-ac-num').value = '';
+      document.getElementById('input-ac-desc').value = '';
+      document.getElementById('input-ac-category').value = '';
+      document.getElementById('input-ac-subcategory').value = '';
+      document.getElementById('input-ac-supplier').value = '';
+      document.getElementById('input-ac-po').value = '';
+      
+      renderGroupedACTable();
+      updateDashboardStats();
+    }
+
+    function removeACItem(jobId, type, index) {
+      if (jobDataMap[jobId]) {
+        jobDataMap[jobId][type].splice(index, 1);
+        if (jobDataMap[jobId].acList.length === 0 && jobDataMap[jobId].supList.length === 0) {
+          delete jobDataMap[jobId];
+        }
+        renderGroupedACTable();
+        updateDashboardStats();
+      }
+    }
+
+    function renderGroupedACTable() {
+      const container = document.getElementById('grouped-ac-container');
+      const jobKeys = Object.keys(jobDataMap);
+
+      if (jobKeys.length === 0) {
+        container.innerHTML = `<span class="text-xs text-zinc-400 italic">No Job IDs or entries added yet.</span>`;
+        return;
+      }
+
+      container.innerHTML = '';
+      jobKeys.forEach(jobId => {
+        let acRows = jobDataMap[jobId].acList.map((item, idx) => `
+          <tr class="border-b border-zinc-200 dark:border-zinc-800 text-xs">
+            <td class="p-2 font-bold text-red-600 dark:text-red-400 w-[30%]">${item.num || '--'}</td>
+            <td class="p-2 w-[60%] text-zinc-700 dark:text-zinc-300">${item.desc || '--'}</td>
+            <td class="p-2 text-right w-[10%]"><button onclick="removeACItem('${jobId}', 'acList', ${idx})" class="text-red-500 hover:underline">Remove</button></td>
+          </tr>
+        `).join('');
+
+        let supRows = jobDataMap[jobId].supList.map((item, idx) => `
+          <tr class="border-b border-zinc-200 dark:border-zinc-800 text-xs">
+            <td class="p-2 font-bold w-[25%]">${item.category || '--'}</td>
+            <td class="p-2 w-[25%]">${item.subCategory || '--'}</td>
+            <td class="p-2 w-[30%]">${item.supplier || '--'}</td>
+            <td class="p-2 w-[15%] font-bold">${item.po || '--'}</td>
+            <td class="p-2 text-right w-[5%]">
+              <button onclick="removeACItem('${jobId}', 'supList', ${idx})" class="text-red-500 hover:underline">Remove</button>
+            </td>
+          </tr>
+        `).join('');
+
+        container.innerHTML += `
+          <div class="bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-lg overflow-hidden p-3 mb-4">
+            <div class="bg-zinc-900 text-white text-xs font-bold px-3 py-2 rounded mb-2">JOB ID: ${jobId}</div>
+            
+            <div class="text-[11px] font-semibold mb-1 text-zinc-600 dark:text-zinc-400">AC & Description Schedule</div>
+            <table class="w-full text-left border-collapse mb-3">
+              <thead>
+                <tr class="bg-zinc-200 dark:bg-zinc-900 text-[10px] text-zinc-600 dark:text-zinc-400">
+                  <th class="p-1.5">AC Number</th>
+                  <th class="p-1.5">Description</th>
+                  <th class="p-1.5 text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody>${acRows || '<tr><td colspan="3" class="p-2 italic text-zinc-400">No AC items added</td></tr>'}</tbody>
+            </table>
+
+            <div class="text-[11px] font-semibold mb-1 text-zinc-600 dark:text-zinc-400">Category & Supplier Schedule</div>
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-zinc-200 dark:bg-zinc-900 text-[10px] text-zinc-600 dark:text-zinc-400">
+                  <th class="p-1.5">Category</th>
+                  <th class="p-1.5">Sub-Category</th>
+                  <th class="p-1.5">Supplier</th>
+                  <th class="p-1.5">PO</th>
+                  <th class="p-1.5 text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody>${supRows || '<tr><td colspan="5" class="p-2 italic text-zinc-400">No supplier items added</td></tr>'}</tbody>
+            </table>
+          </div>
+        `;
+      });
+    }
+
+    function triggerPrintPDF() {
+      // Set body print class to target print-template (Project Transmittal)
+      document.body.className = document.body.className.replace(' printing-bom', '') + ' printing-transmittal';
+
+      document.getElementById('print-out-client').innerText = document.getElementById('meta-client').value.trim() || "N/A";
+      document.getElementById('print-out-project').innerText = document.getElementById('meta-project').value.trim() || "N/A";
+      
+      const dateGenVal = document.getElementById('meta-date-gen').value;
+      if (dateGenVal) {
+        const parts = dateGenVal.split('-');
+        document.getElementById('print-out-gen-date').innerText = `Generated: ${parts[0]}-${parts[1]}-${parts[2]}`;
+      } else {
+        document.getElementById('print-out-gen-date').innerText = "";
+      }
+
+      document.getElementById('print-out-comp-date').innerText = document.getElementById('meta-date-comp').value.trim() || "N/A";
+      document.getElementById('print-out-buyer').innerText = document.getElementById('meta-buyer').value.trim() || "N/A";
+      
+      document.getElementById('print-out-inclusions').innerText = document.getElementById('meta-inclusions').value.trim() || "None specified";
+      document.getElementById('print-out-exclusions').innerText = document.getElementById('meta-exclusions').value.trim() || "None specified";
+
+      const printGroupsContainer = document.getElementById('print-job-groups-container');
+      printGroupsContainer.innerHTML = '';
+
+      const jobKeys = Object.keys(jobDataMap);
+      if (jobKeys.length > 0) {
+        jobKeys.forEach(jobId => {
+          let acRows = jobDataMap[jobId].acList.map(item => `
+            <tr>
+              <td style="width: 30%;">${item.num || '&nbsp;'}</td>
+              <td style="width: 70%;">${item.desc || '&nbsp;'}</td>
+            </tr>
+          `).join('');
+
+          let supRows = jobDataMap[jobId].supList.map(item => `
+            <tr>
+              <td style="width: 25%;">${item.category || '&nbsp;'}</td>
+              <td style="width: 25%;">${item.subCategory || '&nbsp;'}</td>
+              <td style="width: 30%;">${item.supplier || '&nbsp;'}</td>
+              <td style="width: 20%; font-weight: bold;">${item.po || '&nbsp;'}</td>
+            </tr>
+          `).join('');
+
+          printGroupsContainer.innerHTML += `
+            <div style="margin-bottom: 12px;">
+              <div style="background-color: #dc2626; color: #ffffff; font-weight: bold; font-size: 8pt; padding: 4px 6px;" class="print-header-banner">JOB ID: ${jobId}</div>
+              
+              <table style="width: 100%; table-layout: fixed; margin-bottom: 0 !important;">
+                <colgroup>
+                  <col style="width: 30%;">
+                  <col style="width: 70%;">
+                </colgroup>
+                <thead>
+                  <tr class="print-table-header" style="font-size: 8pt;">
+                    <th style="text-align: left; font-weight: bold;">AC NUMBER</th>
+                    <th style="text-align: left; font-weight: bold;">DESCRIPTION</th>
+                  </tr>
+                </thead>
+                <tbody>${acRows || '<tr><td colspan="2">&nbsp;</td></tr>'}</tbody>
+              </table>
+
+              <!-- SEPARATION GAP -->
+              <div style="height: 10px; font-size: 0; line-height: 0;">&nbsp;</div>
+
+              <table style="width: 100%; table-layout: fixed; margin-top: 0 !important;">
+                <colgroup>
+                  <col style="width: 25%;">
+                  <col style="width: 25%;">
+                  <col style="width: 30%;">
+                  <col style="width: 20%;">
+                </colgroup>
+                <thead>
+                  <tr class="print-table-header" style="font-size: 8pt;">
+                    <th style="text-align: left; font-weight: bold;">CATEGORY</th>
+                    <th style="text-align: left; font-weight: bold;">SUB-CATEGORY</th>
+                    <th style="text-align: left; font-weight: bold;">SUPPLIER</th>
+                    <th style="text-align: left; font-weight: bold;">PURCHASE ORDER</th>
+                  </tr>
+                </thead>
+                <tbody>${supRows || '<tr><td colspan="4">&nbsp;</td></tr>'}</tbody>
+              </table>
+            </div>
+          `;
+        });
+      } else {
+        printGroupsContainer.innerHTML = `<div style="font-size: 8.5pt; color: #64748b; font-style: italic;">No Job IDs allocated.</div>`;
+      }
+
+      window.print();
+    }
+
+    function toggleDarkMode() {
+      const html = document.documentElement;
+      const circle = document.getElementById('toggle-circle');
+      
+      if (html.classList.contains('dark')) {
+        html.classList.remove('dark');
+        circle.style.transform = 'translateX(0px)';
+      } else {
+        html.classList.add('dark');
+        circle.style.transform = 'translateX(24px)';
+      }
+    }
+
+    function switchTab(tab) {
+      ['dashboard', 'suppliers', 'generator', 'bom', 'staff'].forEach(t => {
+        const viewEl = document.getElementById(`view-${t}`);
+        const tabEl = document.getElementById(`tab-${t}`);
+        if (viewEl) viewEl.classList.add('hidden');
+        if (tabEl) tabEl.className = "px-3 py-1.5 rounded-md text-zinc-400 hover:text-white";
+      });
+
+      const activeView = document.getElementById(`view-${tab}`);
+      const activeTab = document.getElementById(`tab-${tab}`);
+      if (activeView) activeView.classList.remove('hidden');
+      if (activeTab) activeTab.className = "px-3 py-1.5 rounded-md bg-red-600 text-white";
+    }
   </script>
 </body>
 </html>
