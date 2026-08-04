@@ -173,6 +173,84 @@
           </div>
         </div>
       </div>
+
+      <!-- Quick Access Tiles: Tools & Directories -->
+      <div class="space-y-3 pt-2">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-brand-red flex items-center gap-2">
+          <i class="fa-solid fa-th-large"></i> Quick Access - Tools & Directories
+        </h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+          <!-- Transmittal Tile -->
+          <div onclick="switchTab('transmittal')" class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-5 rounded-xl cursor-pointer hover:border-brand-red transition group shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="bg-red-50 dark:bg-red-950/40 w-10 h-10 rounded-lg flex items-center justify-center text-brand-red border border-red-100 dark:border-red-900/40 mb-3 group-hover:scale-105 transition">
+                <i class="fa-solid fa-file-pdf"></i>
+              </div>
+              <h4 class="font-bold text-sm text-zinc-900 dark:text-zinc-100">Project Transmittal</h4>
+              <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-1">Build and print professional transmittal sheets & job schedules.</p>
+            </div>
+            <div class="mt-4 flex items-center text-xs font-bold text-brand-red gap-1">
+              Open Tool <i class="fa-solid fa-arrow-right text-[10px] group-hover:translate-x-1 transition"></i>
+            </div>
+          </div>
+
+          <!-- BOM Tile -->
+          <div onclick="switchTab('bom')" class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-5 rounded-xl cursor-pointer hover:border-brand-red transition group shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="bg-red-50 dark:bg-red-950/40 w-10 h-10 rounded-lg flex items-center justify-center text-brand-red border border-red-100 dark:border-red-900/40 mb-3 group-hover:scale-105 transition">
+                <i class="fa-solid fa-calculator"></i>
+              </div>
+              <h4 class="font-bold text-sm text-zinc-900 dark:text-zinc-100">BOM & Estimator</h4>
+              <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-1">Calculate linear/plate weights and pricing with live metal rates.</p>
+            </div>
+            <div class="mt-4 flex items-center text-xs font-bold text-brand-red gap-1">
+              Open Tool <i class="fa-solid fa-arrow-right text-[10px] group-hover:translate-x-1 transition"></i>
+            </div>
+          </div>
+
+          <!-- RFQ Tile -->
+          <div onclick="switchTab('rfq')" class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-5 rounded-xl cursor-pointer hover:border-brand-red transition group shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="bg-red-50 dark:bg-red-950/40 w-10 h-10 rounded-lg flex items-center justify-center text-brand-red border border-red-100 dark:border-red-900/40 mb-3 group-hover:scale-105 transition">
+                <i class="fa-solid fa-paper-plane"></i>
+              </div>
+              <h4 class="font-bold text-sm text-zinc-900 dark:text-zinc-100">RFQ Generator</h4>
+              <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-1">Draft and send standardized supplier quotation requests instantly.</p>
+            </div>
+            <div class="mt-4 flex items-center text-xs font-bold text-brand-red gap-1">
+              Open Tool <i class="fa-solid fa-arrow-right text-[10px] group-hover:translate-x-1 transition"></i>
+            </div>
+          </div>
+
+          <!-- Supplier Directory Tile -->
+          <div onclick="switchTab('suppliers')" class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-5 rounded-xl cursor-pointer hover:border-brand-red transition group shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="bg-red-50 dark:bg-red-950/40 w-10 h-10 rounded-lg flex items-center justify-center text-brand-red border border-red-100 dark:border-red-900/40 mb-3 group-hover:scale-105 transition">
+                <i class="fa-solid fa-truck-ramp-box"></i>
+              </div>
+              <h4 class="font-bold text-sm text-zinc-900 dark:text-zinc-100">Supplier Directory</h4>
+              <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-1">Alphabetical collapsible directory synced from Google Sheets.</p>
+            </div>
+            <div class="mt-4 flex items-center text-xs font-bold text-brand-red gap-1">
+              Open Directory <i class="fa-solid fa-arrow-right text-[10px] group-hover:translate-x-1 transition"></i>
+            </div>
+          </div>
+
+          <!-- Staff Directory Tile -->
+          <div onclick="switchTab('staff')" class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-5 rounded-xl cursor-pointer hover:border-brand-red transition group shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="bg-red-50 dark:bg-red-950/40 w-10 h-10 rounded-lg flex items-center justify-center text-brand-red border border-red-100 dark:border-red-900/40 mb-3 group-hover:scale-105 transition">
+                <i class="fa-solid fa-id-card"></i>
+              </div>
+              <h4 class="font-bold text-sm text-zinc-900 dark:text-zinc-100">Staff Directory</h4>
+              <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-1">Internal contacts with name, surname, job title, phone & email.</p>
+            </div>
+            <div class="mt-4 flex items-center text-xs font-bold text-brand-red gap-1">
+              Open Directory <i class="fa-solid fa-arrow-right text-[10px] group-hover:translate-x-1 transition"></i>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- ================= PROJECT TRANSMITTAL BUILDER ================= -->
@@ -463,7 +541,7 @@
     <div id="view-staff" class="hidden space-y-6">
       <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 shadow-sm">
         <h2 class="text-lg font-bold flex items-center gap-2 mb-1"><i class="fa-solid fa-id-card text-brand-red"></i> Internal Staff Directory</h2>
-        <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-6">Live directory synced from Google Sheets.</p>
+        <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-6">Live directory synced from Google Sheets showing Name, Surname, Job Title, Phone, and Email.</p>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="staff-grid"></div>
       </div>
     </div>
@@ -560,7 +638,7 @@
 
       if (suppliersMaster.length === 0) {
         suppliersMaster = [
-          { name: "Apex Steel Works", rawFields: { name: "Apex Steel Works", category: "Structural", contact: "David", email: "orders@apexsteel.co.za", phone: "011 555 1234", address: "14 Steel Road,工业区", terms: "30 Days" } },
+          { name: "Apex Steel Works", rawFields: { name: "Apex Steel Works", category: "Structural", contact: "David", email: "orders@apexsteel.co.za", phone: "011 555 1234", address: "14 Steel Road", terms: "30 Days" } },
           { name: "Boltfast Fasteners", rawFields: { name: "Boltfast Fasteners", category: "Hardware", contact: "Norman", email: "quotes@boltfast.co.za", phone: "011 555 5678", address: "22 Bolt Avenue", terms: "COD" } },
           { name: "Macsteel Trading", rawFields: { name: "Macsteel Trading", category: "Plates", contact: "Sarah", email: "sales@macsteel.co.za", phone: "011 555 9988", address: "5 Mega Park", terms: "30 Days EOM" } }
         ];
@@ -578,16 +656,21 @@
         const text = await res.text();
         const raw = parseCSV(text);
         
-        staffData = raw.map(r => ({
-          name: r.name || r['staff name'] || r.employee || 'Staff Member',
-          role: r.role || r['job title'] || r.title || r.position || 'Specialist',
-          email: r.email || r['email address'] || ''
-        }));
+        staffData = raw.map(r => {
+          const fullName = r.name || r['staff name'] || r.employee || 'Staff Member';
+          const nameParts = fullName.split(' ');
+          const firstName = r['first name'] || nameParts[0] || '';
+          const surname = r.surname || r['last name'] || (nameParts.length > 1 ? nameParts.slice(1).join(' ') : '');
+          const role = r.role || r['job title'] || r.title || r.position || 'Specialist';
+          const email = r.email || r['email address'] || '';
+          const phone = r.phone || r['phone number'] || r.telephone || r.mobile || r.contact || 'N/A';
+          return { firstName, surname, role, email, phone };
+        });
       } catch (e) {
         console.warn("Could not fetch staff CSV, using backup.", e);
         staffData = [
-          { name: "Riaan", role: "Procurement Manager", email: "riaan@allcon.co.za" },
-          { name: "Norlene", role: "Senior Specialist", email: "norlene@allcon.co.za" }
+          { firstName: "Riaan", surname: "", role: "Procurement Manager", email: "riaan@allcon.co.za", phone: "011 555 0101" },
+          { firstName: "Norlene", surname: "", role: "Senior Specialist", email: "norlene@allcon.co.za", phone: "011 555 0202" }
         ];
       }
       document.getElementById('dash-staff-count').innerText = staffData.length;
@@ -956,7 +1039,6 @@
             <div id="group-${letter}" class="divide-y divide-zinc-200 dark:divide-zinc-800 supplier-group">
               ${letterGroup.map(s => {
                 const fields = s.rawFields;
-                // Get all column entries from the sheet except the supplier name itself
                 const entries = Object.entries(fields).filter(([k]) => {
                   const lk = k.toLowerCase();
                   return !lk.includes('name') && !lk.includes('supplier') && !lk.includes('company');
@@ -997,21 +1079,25 @@
     function filterSuppliers() {
       const q = document.getElementById('supplier-search').value.toLowerCase();
       renderSuppliersAlphabetical(suppliersMaster.filter(s => {
-        // Search across all fields in rawFields + name
         const matchName = (s.name || "").toLowerCase().includes(q);
         const matchFields = Object.values(s.rawFields).some(val => String(val).toLowerCase().includes(q));
         return matchName || matchFields;
       }));
     }
 
-    // Staff Directory Functions
+    // Staff Directory Functions (Showing Name, Surname, Job Title, Phone, and Email)
     function renderStaffGrid() {
       const grid = document.getElementById('staff-grid');
       grid.innerHTML = staffData.map(s => `
-        <div class="bg-zinc-50 dark:bg-zinc-950 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800">
-          <h3 class="text-sm font-bold">${s.name}</h3>
-          <p class="text-xs text-brand-red font-semibold mt-0.5">${s.role}</p>
-          <p class="text-[11px] text-zinc-500 font-mono mt-2"><i class="fa-solid fa-envelope mr-1"></i> ${s.email}</p>
+        <div class="bg-zinc-50 dark:bg-zinc-950 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 space-y-2">
+          <h3 class="text-sm font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-1.5">
+            <i class="fa-solid fa-user text-brand-red text-xs"></i> ${s.firstName} ${s.surname}
+          </h3>
+          <p class="text-xs text-brand-red font-semibold">${s.role}</p>
+          <div class="space-y-1 pt-1 border-t border-zinc-200 dark:border-zinc-800/60 text-[11px] font-mono">
+            <p class="text-zinc-600 dark:text-zinc-400"><i class="fa-solid fa-phone mr-1.5 text-zinc-400"></i> ${s.phone || 'N/A'}</p>
+            <p class="text-zinc-600 dark:text-zinc-400"><i class="fa-solid fa-envelope mr-1.5 text-zinc-400"></i> ${s.email || 'N/A'}</p>
+          </div>
         </div>
       `).join('');
     }
