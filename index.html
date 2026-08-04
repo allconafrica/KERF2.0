@@ -255,7 +255,7 @@
         <h2 class="text-lg font-bold flex items-center gap-2 mb-2">
           <i class="fa-solid fa-calculator text-brand-red"></i> BOM & Material Requirement Calculator
         </h2>
-        <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-6">Capture drawing measurements on the fly. Weights and pricing calculate automatically based on live material rates and dimensions.</p>
+        <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-6">Capture drawing measurements on the fly. Weights and pricing calculate automatically based on standard steel density formulas (S355, Mild Steel, Stainless, Aluminum, Hardox).</p>
 
         <!-- Calculator Header & Item Inputs -->
         <div class="bg-zinc-50 dark:bg-zinc-950 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 space-y-4">
@@ -286,14 +286,14 @@
               <div>
                 <label class="text-[10px] font-bold text-zinc-500 uppercase">Material Type *</label>
                 <select id="bom-material-type" onchange="onBomMaterialTypeChange(); triggerAutoCalculate();" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1">
-                  <option value="Linear">Linear (Angle/Pipe/Tube)</option>
-                  <option value="Plate">Plate</option>
+                  <option value="Linear">Linear (Angle/Pipe/Tube/Bar)</option>
+                  <option value="Plate">Plate / Flat Bar</option>
                   <option value="Hardware">Hardware / Fastener</option>
                 </select>
               </div>
               <div>
                 <label class="text-[10px] font-bold text-zinc-500 uppercase">Subject / Material Name *</label>
-                <input type="text" id="bom-desc" oninput="triggerAutoCalculate()" placeholder="E.G. 50X50X6 ANGLE IRON" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1">
+                <input type="text" id="bom-desc" oninput="triggerAutoCalculate()" placeholder="E.G. 50X50X6 EQUAL ANGLE" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1">
               </div>
               <div>
                 <label class="text-[10px] font-bold text-zinc-500 uppercase">Item / Mark</label>
@@ -301,33 +301,33 @@
               </div>
               <div>
                 <label class="text-[10px] font-bold text-zinc-500 uppercase">Quantity *</label>
-                <input type="number" id="bom-qty" oninput="triggerAutoCalculate()" placeholder="e.g. 5" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1">
+                <input type="number" id="bom-qty" oninput="triggerAutoCalculate()" placeholder="e.g. 1" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1">
               </div>
               <div>
                 <label class="text-[10px] font-bold text-zinc-500 uppercase">Length / Dim (mm)</label>
-                <input type="text" id="bom-dim" oninput="triggerAutoCalculate()" placeholder="e.g. 1050" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1">
+                <input type="text" id="bom-dim" oninput="triggerAutoCalculate()" placeholder="e.g. 6000" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1">
               </div>
               <div>
-                <label id="bom-stock-label" class="text-[10px] font-bold text-zinc-500 uppercase">Stock Bar (mm)</label>
+                <label id="bom-stock-label" class="text-[10px] font-bold text-zinc-500 uppercase">Stock Bar / Width (mm)</label>
                 <input type="text" id="bom-stockbar" oninput="triggerAutoCalculate()" value="6000" placeholder="e.g. 6000" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1">
               </div>
             </div>
 
-            <!-- Auto-Calculated Weight, Live Steel Grade Dropdown, and Auto-Calculated Price -->
+            <!-- Auto-Calculated Weight, Steel Grade Dropdown, and Auto-Calculated Price -->
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-3">
               <div>
                 <label class="text-[10px] font-bold text-zinc-500 uppercase">Est. Weight (kg) <span class="text-[9px] text-emerald-500 font-normal">(Auto-calculated)</span></label>
-                <input type="number" id="bom-weight" placeholder="e.g. 30.45" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1 bg-zinc-100 dark:bg-zinc-900 font-semibold" readonly>
+                <input type="number" id="bom-weight" placeholder="e.g. 26.82" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1 bg-zinc-100 dark:bg-zinc-900 font-semibold" readonly>
               </div>
               <div>
-                <label class="text-[10px] font-bold text-zinc-500 uppercase">Steel Grade / Rate (Live from Sheet)</label>
+                <label class="text-[10px] font-bold text-zinc-500 uppercase">Steel Grade / Rate (Live Feed)</label>
                 <select id="bom-item-grade" onchange="triggerAutoCalculate()" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1 focus:border-brand-red">
                   <option value="">-- Loading Live Rates... --</option>
                 </select>
               </div>
               <div>
                 <label class="text-[10px] font-bold text-zinc-500 uppercase">Total Price (ZAR) <span class="text-[9px] text-emerald-500 font-normal">(Auto-calculated)</span></label>
-                <input type="number" id="bom-rate" placeholder="e.g. 1065.75" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1 bg-zinc-100 dark:bg-zinc-900 font-semibold" readonly>
+                <input type="number" id="bom-rate" placeholder="e.g. 416.43" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1 bg-zinc-100 dark:bg-zinc-900 font-semibold" readonly>
               </div>
             </div>
           </div>
@@ -416,7 +416,7 @@
 
             <div>
               <label class="text-[11px] font-bold text-zinc-500 dark:text-zinc-400">Items Required (List)</label>
-              <textarea id="rfq-items" rows="5" placeholder="• 10x S355 Plates 20mm x 1200mm x 2400mm&#10;• 5x Profile Base Flanges as per DWG" onkeyup="generateRfqPreview()" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded-lg mt-1 resize-none focus:border-brand-red"></textarea>
+              <textarea id="rfq-items" rows="5" placeholder="• 1x 50x50x6 Equal Angle x 6m&#10;• 5x Profile Base Flanges as per DWG" onkeyup="generateRfqPreview()" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded-lg mt-1 resize-none focus:border-brand-red"></textarea>
             </div>
           </div>
 
@@ -600,7 +600,6 @@
         const raw = parseCSV(text);
 
         metalRatesData = raw.map(r => {
-          // Target 'final active rate', 'live rate (r\kg)', 'live rate', or fallback to general rate
           const rawRate = r['final active rate'] || r['live rate (r\\kg)'] || r['live rate'] || r['live rate (r/kg)'] || r.rate || r.price || '0';
           const cleanedRate = String(rawRate).replace(/[^0-9.]/g, '');
 
@@ -615,6 +614,7 @@
         console.warn("Could not fetch metal rates CSV, using backup.", e);
       }
 
+      // Fallback covering all requested material grades: S355 JR / J2, Mild Steel Plate, 304 Stainless, 316 Stainless, 6082-T6, Hardox 500
       if (metalRatesData.length === 0) {
         metalRatesData = [
           { material: "S355 JR / J2", rate: "15.5269335", unit: "kg" },
@@ -667,7 +667,7 @@
       }
     }
 
-    // Dynamic BOM Material Type Change & Auto Calculation Engine
+    // Dynamic BOM Material Type Change
     function onBomMaterialTypeChange() {
       const type = document.getElementById('bom-material-type').value;
       const label = document.getElementById('bom-stock-label');
@@ -686,31 +686,72 @@
       }
     }
 
+    // Density-Aware Calculation Engine (Supporting S355, Mild Steel, Stainless, Aluminum, Hardox)
     function triggerAutoCalculate() {
       const type = document.getElementById('bom-material-type').value;
       const qty = parseFloat(document.getElementById('bom-qty').value) || 0;
-      const dim = parseFloat(document.getElementById('bom-dim').value) || 0;
-      const stockOrWidth = parseFloat(document.getElementById('bom-stockbar').value) || 0;
-      const desc = document.getElementById('bom-desc').value;
+      const dim = parseFloat(document.getElementById('bom-dim').value) || 0; // Length in mm
+      const stockOrWidth = parseFloat(document.getElementById('bom-stockbar').value) || 0; // Width or Stock length
+      const desc = document.getElementById('bom-desc').value.toUpperCase();
       
       const gradeSelect = document.getElementById('bom-item-grade');
       const ratePerKg = parseFloat(gradeSelect.value) || 0;
+      
+      const gradeText = gradeSelect.selectedIndex >= 0 ? gradeSelect.options[gradeSelect.selectedIndex].text.toUpperCase() : '';
+      
+      // Determine density factor based on material type / grade (S355, Mild Steel, Hardox = 0.00785; Stainless ~0.00793; Aluminum 6082-T6 = 0.0027)
+      let densityFactor = 0.00785;
+      if (gradeText.includes('6082') || gradeText.includes('ALUMINIUM') || desc.includes('ALUMINIUM')) {
+        densityFactor = 0.0027;
+      } else if (gradeText.includes('304') || gradeText.includes('316') || gradeText.includes('STAINLESS') || desc.includes('STAINLESS')) {
+        densityFactor = 0.00793;
+      }
 
       let estimatedWeight = 0;
+      const quantity = qty > 0 ? qty : 1;
+      const lengthMeters = (dim > 0 ? dim : 6000) / 1000;
 
       if (type === 'Plate') {
-        const thicknessMatch = desc.match(/(\d+(?:\.\d+)?)\s*mm/i);
+        const thicknessMatch = desc.match(/(\d+(?:\.\d+)?)\s*MM/i);
         const thickness = thicknessMatch ? parseFloat(thicknessMatch[1]) : 10;
+        
         if (dim > 0 && stockOrWidth > 0) {
-          estimatedWeight = (dim * stockOrWidth * thickness * 0.00000785) * (qty > 0 ? qty : 1);
+          estimatedWeight = (dim * stockOrWidth * thickness * (densityFactor / 1000)) * quantity;
+        } else {
+          const width = stockOrWidth > 0 ? stockOrWidth : 1000;
+          const kgPerMeter = (width * thickness * densityFactor) / 1000;
+          estimatedWeight = kgPerMeter * lengthMeters * quantity;
         }
-      } else if (type === 'Linear') {
-        if (dim > 0) {
-          const totalLengthMeters = (dim * (qty > 0 ? qty : 1)) / 1000;
-          estimatedWeight = totalLengthMeters * 5.8;
+      } 
+      else if (type === 'Linear') {
+        let kgPerMeter = 5.8; // Default fallback
+
+        // Check for Angle (e.g. 50X50X6)
+        const angleMatch = desc.match(/(\d+)X(\d+)X(\d+(?:\.\d+)?)/);
+        if (angleMatch && (desc.includes('ANGLE') || desc.includes('EQUAL') || !desc.includes('TUBE'))) {
+          const leg1 = parseFloat(angleMatch[1]);
+          const thk = parseFloat(angleMatch[3]);
+          // Standard Structural Angle Formula: (Leg + Leg - Thickness) * Thickness * densityFactor
+          kgPerMeter = (leg1 * 2 - thk) * thk * densityFactor;
+        } 
+        // Check for Round Bar: Diameter * Diameter * factor
+        else if (desc.includes('ROUND') || desc.includes('BAR')) {
+          const diaMatch = desc.match(/(\d+(?:\.\d+)?)/);
+          const dia = diaMatch ? parseFloat(diaMatch[1]) : 20;
+          const roundFactor = densityFactor * 0.785398;
+          kgPerMeter = dia * dia * roundFactor;
         }
-      } else {
-        estimatedWeight = qty * 1.5;
+        // Check for Square Bar: Side * Side * densityFactor
+        else if (desc.includes('SQUARE') && !desc.includes('TUBE')) {
+          const sideMatch = desc.match(/(\d+(?:\.\d+)?)/);
+          const side = sideMatch ? parseFloat(sideMatch[1]) : 50;
+          kgPerMeter = side * side * densityFactor;
+        }
+
+        estimatedWeight = kgPerMeter * lengthMeters * quantity;
+      } 
+      else {
+        estimatedWeight = quantity * 1.5;
       }
 
       if (estimatedWeight > 0) {
@@ -857,7 +898,7 @@
       const supplier = suppliersMaster[supplierIndex];
       const ac = document.getElementById('rfq-ac').value || "AC2902";
       const proj = document.getElementById('rfq-project').value || "SHANTA NEW";
-      const items = document.getElementById('rfq-items').value || "• 10x S355 Plates 20mm x 1200mm x 2400mm\n• 5x Profile Base Flanges as per DWG";
+      const items = document.getElementById('rfq-items').value || "• 1x 50x50x6 Equal Angle x 6m\n• 5x Profile Base Flanges as per DWG";
       const pocName = supplier && (supplier.poc || supplier.name) ? (supplier.poc || supplier.name) : "Supplier";
 
       const subject = `${ac} - ${proj} - QUOTE`;
