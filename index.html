@@ -18,7 +18,6 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     body { transition: background-color 0.2s, color 0.2s; }
-    /* Fix select dropdown contrast across dark/light modes */
     select, select option {
       background-color: #ffffff;
       color: #18181b;
@@ -134,7 +133,7 @@
           <div>
             <p class="text-[11px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Total Suppliers</p>
             <p class="text-3xl font-extrabold mt-1" id="dash-sup-count">--</p>
-            <p class="text-[10px] text-emerald-500 mt-1"><i class="fa-solid fa-sync fa-spin text-[8px] mr-1"></i> Syncing Sheets</p>
+            <p class="text-[10px] text-emerald-500 mt-1"><i class="fa-solid fa-sync fa-spin text-[8px] mr-1"></i> Live Google Sheet</p>
           </div>
           <div class="bg-red-50 dark:bg-red-950/40 p-3.5 rounded-xl border border-red-100 dark:border-red-900/40 text-brand-red">
             <i class="fa-solid fa-truck text-xl"></i>
@@ -145,7 +144,7 @@
           <div>
             <p class="text-[11px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Metal Pricing Rates</p>
             <p class="text-3xl font-extrabold mt-1" id="dash-rates-count">--</p>
-            <p class="text-[10px] text-zinc-400 mt-1">Live Material Feed</p>
+            <p class="text-[10px] text-emerald-500 mt-1"><i class="fa-solid fa-check text-[8px] mr-1"></i> Live Feed Active</p>
           </div>
           <div class="bg-red-50 dark:bg-red-950/40 p-3.5 rounded-xl border border-red-100 dark:border-red-900/40 text-brand-red">
             <i class="fa-solid fa-layer-group text-xl"></i>
@@ -167,7 +166,7 @@
           <div>
             <p class="text-[11px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Staff Directory</p>
             <p class="text-3xl font-extrabold mt-1" id="dash-staff-count">--</p>
-            <p class="text-[10px] text-zinc-400 mt-1">Synced Personnel</p>
+            <p class="text-[10px] text-emerald-500 mt-1"><i class="fa-solid fa-check text-[8px] mr-1"></i> Live Google Sheet</p>
           </div>
           <div class="bg-red-50 dark:bg-red-950/40 p-3.5 rounded-xl border border-red-100 dark:border-red-900/40 text-brand-red">
             <i class="fa-solid fa-users text-xl"></i>
@@ -208,7 +207,7 @@
             <button onclick="switchTab('suppliers')" class="p-3 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg text-left hover:border-brand-red transition">
               <i class="fa-solid fa-truck-ramp-box text-brand-red mb-2 text-lg"></i>
               <div class="text-xs font-bold">Supplier Directory</div>
-              <div class="text-[10px] text-zinc-500 mt-0.5">A-Z supplier index</div>
+              <div class="text-[10px] text-zinc-500 mt-0.5">A-Z full info index</div>
             </button>
             <button onclick="switchTab('staff')" class="p-3 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg text-left hover:border-brand-red transition">
               <i class="fa-solid fa-id-card text-brand-red mb-2 text-lg"></i>
@@ -270,7 +269,7 @@
             <i class="fa-solid fa-sitemap"></i> JOB ID SCHEDULE BUILDER
           </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-3">
             <div>
               <label class="text-[10px] text-zinc-500 uppercase font-bold">Job ID *</label>
               <input type="text" id="job-id" placeholder="e.g. 5276" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded mt-1">
@@ -282,6 +281,22 @@
             <div>
               <label class="text-[10px] text-zinc-500 uppercase font-bold">Description</label>
               <input type="text" id="job-desc" placeholder="e.g. PINION" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded mt-1">
+            </div>
+            <div>
+              <label class="text-[10px] text-zinc-500 uppercase font-bold">Category</label>
+              <input type="text" id="job-cat" placeholder="e.g. Mechanical" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded mt-1">
+            </div>
+            <div>
+              <label class="text-[10px] text-zinc-500 uppercase font-bold">Sub-Category</label>
+              <input type="text" id="job-subcat" placeholder="e.g. STRUCTURAL" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded mt-1">
+            </div>
+            <div>
+              <label class="text-[10px] text-zinc-500 uppercase font-bold">Supplier Name</label>
+              <input type="text" id="job-supplier" placeholder="e.g. Apex Steel" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded mt-1">
+            </div>
+            <div>
+              <label class="text-[10px] text-zinc-500 uppercase font-bold">Purchase Order</label>
+              <input type="text" id="job-po" placeholder="e.g. PO18008" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded mt-1">
             </div>
           </div>
 
@@ -299,7 +314,7 @@
 
         <div class="flex justify-end mt-6">
           <button onclick="window.print()" class="bg-brand-red hover:bg-brand-redHover text-white text-xs font-bold px-6 py-3 rounded-lg flex items-center gap-2 shadow-lg transition">
-            <i class="fa-solid fa-print"></i> Generate / Print Transmittal Sheet
+            <i class="fa-solid fa-print"></i> Generate / Print Official PDF Transmittal Sheet
           </button>
         </div>
       </div>
@@ -311,13 +326,13 @@
         <h2 class="text-lg font-bold flex items-center gap-2 mb-2">
           <i class="fa-solid fa-calculator text-brand-red"></i> BOM & Material Requirement Calculator
         </h2>
-        <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-6">Capture drawing measurements on the fly. Linear items are automatically aggregated per material type to calculate stock bar requirements, and plates are dynamically calculated with a 25% kerf/waste line dimension.</p>
+        <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-6">Capture drawing measurements on the fly. Live rates pull directly from your Google Sheets database without hardcoded overrides.</p>
 
         <!-- Rate Preset Selector -->
         <div class="mb-4 bg-zinc-50 dark:bg-zinc-950 p-3 rounded-lg border border-zinc-200 dark:border-zinc-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div class="flex items-center gap-2">
             <i class="fa-solid fa-layer-group text-brand-red text-sm"></i>
-            <span class="text-xs font-bold">Quick Select Metal Rate (From Google Sheets):</span>
+            <span class="text-xs font-bold">Quick Select Metal Rate (Live Google Sheet):</span>
           </div>
           <select id="bom-rate-select" onchange="autoFillMetalRate()" class="bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded-lg focus:border-brand-red w-full sm:w-auto">
             <option value="">-- Loading Live Rates... --</option>
@@ -360,7 +375,7 @@
               </div>
               <div>
                 <label class="text-[10px] font-bold text-zinc-500 uppercase">Subject / Material Name *</label>
-                <input type="text" id="bom-desc" placeholder="E.G. 50X50X6 ANGLE IRON" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1">
+                <input type="text" id="bom-desc" placeholder="E.G. S355" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1">
               </div>
               <div>
                 <label class="text-[10px] font-bold text-zinc-500 uppercase">Item / Mark</label>
@@ -386,7 +401,7 @@
               </div>
               <div>
                 <label class="text-[10px] font-bold text-zinc-500 uppercase">Rate / Price (ZAR)</label>
-                <input type="number" id="bom-rate" placeholder="e.g. 2450.00" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1">
+                <input type="number" id="bom-rate" placeholder="e.g. 15.56" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1">
               </div>
             </div>
           </div>
@@ -416,12 +431,12 @@
             <tbody id="bom-table-body" class="divide-y divide-zinc-200 dark:divide-zinc-800">
               <tr>
                 <td class="p-2 font-medium">Linear</td>
-                <td class="p-2 font-semibold">50X50X6 ANGLE IRON</td>
+                <td class="p-2 font-semibold">S355</td>
                 <td class="p-2 text-zinc-500">1A</td>
                 <td class="p-2">5</td>
                 <td class="p-2">1050 mm</td>
                 <td class="p-2">24.5 kg</td>
-                <td class="p-2">R 1,225.00</td>
+                <td class="p-2">R 381.12</td>
                 <td class="p-2 text-right">
                   <button onclick="this.closest('tr').remove()" class="text-zinc-500 hover:text-red-400"><i class="fa-solid fa-trash"></i></button>
                 </td>
@@ -447,10 +462,10 @@
         <!-- Live Metal Rates Reference Card -->
         <div class="mt-8 border-t border-zinc-200 dark:border-zinc-800 pt-6">
           <h3 class="text-xs font-bold uppercase tracking-wider text-brand-red mb-3 flex items-center gap-2">
-            <i class="fa-solid fa-table-list"></i> Google Sheets Metal Rates Reference Sheet
+            <i class="fa-solid fa-table-list"></i> Google Sheets Metal Rates Reference Sheet (Live Feed)
           </h3>
           <div id="metal-rates-table-container" class="overflow-x-auto">
-            <p class="text-xs text-zinc-500 italic">Fetching metal rates...</p>
+            <p class="text-xs text-zinc-500 italic">Fetching live metal rates from Google Sheets...</p>
           </div>
         </div>
       </div>
@@ -517,14 +532,14 @@
       <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 shadow-sm">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
           <div>
-            <h2 class="text-lg font-bold flex items-center gap-2"><i class="fa-solid fa-truck-ramp-box text-brand-red"></i> Supplier Directory</h2>
-            <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">Live Google Sheets sync with collapsible A–Z sections.</p>
+            <h2 class="text-lg font-bold flex items-center gap-2"><i class="fa-solid fa-truck-ramp-box text-brand-red"></i> Supplier Directory (Full Sheet Data)</h2>
+            <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">Live Google Sheets sync displaying all columns and collapsible A–Z sections.</p>
           </div>
           <button onclick="expandAllSuppliers()" class="text-xs bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 px-3 py-1.5 rounded text-zinc-700 dark:text-zinc-300 font-semibold hover:border-brand-red transition">
             <i class="fa-solid fa-sort"></i> Toggle Expand / Collapse All
           </button>
         </div>
-        <input type="text" id="supplier-search" onkeyup="filterSuppliers()" placeholder="Filter suppliers by name or category..." class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-3 rounded-lg mb-6 focus:border-brand-red">
+        <input type="text" id="supplier-search" onkeyup="filterSuppliers()" placeholder="Filter suppliers by any column or detail..." class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-3 rounded-lg mb-6 focus:border-brand-red">
         <div id="suppliers-alphabet-container" class="space-y-4"></div>
       </div>
     </div>
@@ -533,7 +548,7 @@
     <div id="view-staff" class="hidden space-y-6">
       <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 shadow-sm">
         <h2 class="text-lg font-bold flex items-center gap-2 mb-1"><i class="fa-solid fa-id-card text-brand-red"></i> Internal Staff Directory</h2>
-        <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-6">Live directory synced from Google Sheets.</p>
+        <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-6">Live directory synced from Google Sheets with complete contact numbers and roles.</p>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="staff-grid"></div>
       </div>
     </div>
@@ -548,11 +563,12 @@
 
     // Application Master State
     let suppliersMaster = [];
+    let suppliersRawData = [];
     let staffData = [];
     let metalRatesData = [];
     let jobEntries = [];
 
-    // Robust CSV Parsing Logic
+    // Robust CSV Parsing Logic preserving all columns and raw keys
     function parseCSV(text) {
       const lines = text.split(/\r?\n/).filter(line => line.trim() !== '');
       if (lines.length === 0) return [];
@@ -576,13 +592,16 @@
         return matches;
       };
 
-      const headers = parseRow(lines[0]).map(h => h.toLowerCase().trim());
+      const rawHeaders = parseRow(lines[0]);
+      const headers = rawHeaders.map(h => h.toLowerCase().trim());
       const data = [];
       for (let i = 1; i < lines.length; i++) {
         const row = parseRow(lines[i]);
         if (row.length > 0) {
           const obj = {};
           headers.forEach((h, idx) => {
+            const originalKey = rawHeaders[idx] ? rawHeaders[idx].trim() : h;
+            obj[originalKey] = row[idx] ? row[idx].trim() : '';
             obj[h] = row[idx] ? row[idx].trim() : '';
           });
           data.push(obj);
@@ -593,18 +612,15 @@
 
     // App Initialization
     window.onload = async function() {
-      // Set today's default date in transmittal
       const dateInput = document.getElementById('trans-date');
       if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
 
-      // Fetch all three Google Sheets feeds concurrently
       await Promise.all([
         fetchSuppliers(),
         fetchStaff(),
         fetchMetalRates()
       ]);
 
-      // Global event listeners
       document.addEventListener('click', function(e) {
         if (!e.target.closest('.relative')) {
           document.getElementById('tools-menu').classList.add('hidden');
@@ -613,29 +629,24 @@
       });
     };
 
-    // Data Fetchers
+    // Data Fetchers strictly using live sheet data without hardcoded rate overrides
     async function fetchSuppliers() {
       try {
         const res = await fetch(GOOGLE_SHEETS_SUPPLIERS_CSV);
         const text = await res.text();
-        const raw = parseCSV(text);
+        suppliersRawData = parseCSV(text);
         
-        suppliersMaster = raw.map(r => ({
-          name: r.name || r['supplier name'] || r.supplier || r.company || 'Unnamed Supplier',
-          poc: r.poc || r['contact person'] || r.contact || r.person || r.name || '',
-          email: r.email || r['email address'] || r.mail || '',
-          cat: r.category || r.cat || r.type || 'General'
-        })).filter(s => s.name && s.name !== 'Unnamed Supplier');
+        suppliersMaster = suppliersRawData.map(r => {
+          // Find name or fallback to first key
+          const nameKey = Object.keys(r).find(k => k.toLowerCase().includes('name') || k.toLowerCase().includes('supplier') || k.toLowerCase().includes('company')) || Object.keys(r)[0];
+          return {
+            ...r,
+            displayName: r[nameKey] || r.name || r['supplier name'] || r.supplier || 'Unnamed Supplier'
+          };
+        }).filter(s => s.displayName && s.displayName !== 'Unnamed Supplier');
       } catch (e) {
-        console.warn("Could not fetch suppliers CSV, using backup.", e);
-      }
-
-      if (suppliersMaster.length === 0) {
-        suppliersMaster = [
-          { name: "Apex Steel Works", poc: "David", email: "orders@apexsteel.co.za", cat: "Structural" },
-          { name: "Boltfast Fasteners", poc: "Norman", email: "quotes@boltfast.co.za", cat: "Hardware" },
-          { name: "Macsteel Trading", poc: "Sarah", email: "sales@macsteel.co.za", cat: "Plates" }
-        ];
+        console.warn("Could not fetch suppliers CSV.", e);
+        suppliersMaster = [];
       }
 
       document.getElementById('dash-sup-count').innerText = suppliersMaster.length;
@@ -651,15 +662,16 @@
         const raw = parseCSV(text);
         
         staffData = raw.map(r => ({
-          name: r.name || r['staff name'] || r.employee || 'Staff Member',
+          name: r.name || r['staff name'] || r.employee || r.person || 'Staff Member',
           role: r.role || r['job title'] || r.title || r.position || 'Specialist',
-          email: r.email || r['email address'] || ''
+          email: r.email || r['email address'] || r.mail || '',
+          phone: r.phone || r['phone number'] || r.mobile || r.tel || r.contact || 'Not Provided'
         }));
       } catch (e) {
-        console.warn("Could not fetch staff CSV, using backup.", e);
+        console.warn("Could not fetch staff CSV.", e);
         staffData = [
-          { name: "Riaan", role: "Procurement Manager", email: "riaan@allcon.co.za" },
-          { name: "Norlene", role: "Senior Specialist", email: "norlene@allcon.co.za" }
+          { name: "Riaan", role: "Procurement Manager", email: "riaan@allcon.co.za", phone: "+27 82 555 0192" },
+          { name: "Norlene", role: "Senior Specialist", email: "norlene@allcon.co.za", phone: "+27 83 555 0148" }
         ];
       }
       document.getElementById('dash-staff-count').innerText = staffData.length;
@@ -672,24 +684,21 @@
         const text = await res.text();
         const raw = parseCSV(text);
 
-        metalRatesData = raw.map(r => ({
-          material: r.material || r.grade || r.item || r.description || r['metal type'] || 'Steel Grade',
-          rate: r.rate || r.price || r['rate (zar)'] || r.cost || r['zar/kg'] || '0',
-          unit: r.unit || r.uom || 'kg'
-        })).filter(m => m.material && m.material !== 'Steel Grade');
-      } catch (e) {
-        console.warn("Could not fetch metal rates CSV, using backup.", e);
-      }
+        metalRatesData = raw.map(r => {
+          const matKey = Object.keys(r).find(k => k.toLowerCase().includes('material') || k.toLowerCase().includes('grade') || k.toLowerCase().includes('item') || k.toLowerCase().includes('description')) || Object.keys(r)[0];
+          const rateKey = Object.keys(r).find(k => k.toLowerCase().includes('rate') || k.toLowerCase().includes('price') || k.toLowerCase().includes('cost') || k.toLowerCase().includes('zar')) || Object.keys(r)[1];
+          const unitKey = Object.keys(r).find(k => k.toLowerCase().includes('unit') || k.toLowerCase().includes('uom')) || 'unit';
 
-      if (metalRatesData.length === 0 || metalRatesData.every(m => parseFloat(m.rate) === 0)) {
-        metalRatesData = [
-          { material: "S355 JR / J2", rate: "35.00", unit: "kg" },
-          { material: "Mild Steel Plate", rate: "32.00", unit: "kg" },
-          { material: "304 Stainless", rate: "95.00", unit: "kg" },
-          { material: "316 Stainless", rate: "140.00", unit: "kg" },
-          { material: "6082-T6", rate: "115.00", unit: "kg" },
-          { material: "Hardox 500", rate: "65.00", unit: "kg" }
-        ];
+          return {
+            material: r[matKey] || 'Steel Grade',
+            rate: parseFloat(r[rateKey] || r.rate || r.price || 0).toFixed(2),
+            rawRate: r[rateKey] || r.rate || r.price || '0',
+            unit: r[unitKey] || 'kg'
+          };
+        }).filter(m => m.material && m.material !== 'Steel Grade');
+      } catch (e) {
+        console.warn("Could not fetch metal rates CSV.", e);
+        metalRatesData = [];
       }
 
       document.getElementById('dash-rates-count').innerText = metalRatesData.length;
@@ -730,20 +739,28 @@
       }
     }
 
-    // Transmittal Job Builder Functions
+    // Transmittal Job Builder Functions with all requested fields
     function addJobEntry() {
       const id = document.getElementById('job-id').value;
       const ac = document.getElementById('job-ac').value;
       const desc = document.getElementById('job-desc').value;
+      const cat = document.getElementById('job-cat').value;
+      const subcat = document.getElementById('job-subcat').value;
+      const supplier = document.getElementById('job-supplier').value;
+      const po = document.getElementById('job-po').value;
 
       if (!id) { alert("Please enter a Job ID."); return; }
 
-      jobEntries.push({ id, ac, desc });
+      jobEntries.push({ id, ac, desc, cat, subcat, supplier, po });
       renderJobEntries();
 
       document.getElementById('job-id').value = '';
       document.getElementById('job-ac').value = '';
       document.getElementById('job-desc').value = '';
+      document.getElementById('job-cat').value = '';
+      document.getElementById('job-subcat').value = '';
+      document.getElementById('job-supplier').value = '';
+      document.getElementById('job-po').value = '';
     }
 
     function renderJobEntries() {
@@ -758,13 +775,17 @@
 
       msg.classList.add('hidden');
       container.innerHTML = jobEntries.map((e, idx) => `
-        <div class="flex items-center justify-between bg-zinc-100 dark:bg-zinc-900 p-2.5 rounded border border-zinc-200 dark:border-zinc-800 text-xs">
-          <div>
-            <span class="font-bold text-brand-red">Job ID: ${e.id}</span>
-            <span class="text-zinc-500 ml-3">AC: ${e.ac || '-'}</span>
-            <span class="text-zinc-500 ml-3">Desc: ${e.desc || '-'}</span>
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between bg-zinc-100 dark:bg-zinc-900 p-3 rounded border border-zinc-200 dark:border-zinc-800 text-xs gap-2">
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-x-4 gap-y-1 w-full">
+            <div><span class="font-bold text-brand-red">Job ID:</span> ${e.id}</div>
+            <div><span class="font-bold text-zinc-500">AC:</span> ${e.ac || '-'}</div>
+            <div><span class="font-bold text-zinc-500">Desc:</span> ${e.desc || '-'}</div>
+            <div><span class="font-bold text-zinc-500">Category:</span> ${e.cat || '-'}</div>
+            <div><span class="font-bold text-zinc-500">Sub-Cat:</span> ${e.subcat || '-'}</div>
+            <div><span class="font-bold text-zinc-500">Supplier:</span> ${e.supplier || '-'}</div>
+            <div><span class="font-bold text-zinc-500">PO:</span> ${e.po || '-'}</div>
           </div>
-          <button onclick="jobEntries.splice(${idx}, 1); renderJobEntries();" class="text-zinc-500 hover:text-red-400">
+          <button onclick="jobEntries.splice(${idx}, 1); renderJobEntries();" class="text-zinc-500 hover:text-red-400 self-end sm:self-center">
             <i class="fa-solid fa-trash"></i>
           </button>
         </div>
@@ -774,12 +795,16 @@
     // BOM & Metal Rates UI Functions
     function populateMetalRatesUI() {
       const select = document.getElementById('bom-rate-select');
-      select.innerHTML = `<option value="">-- Choose Grade / Service Rate --</option>` + 
-        metalRatesData.map((m, i) => `<option value="${i}">${m.material} - ZAR ${m.rate} / ${m.unit}</option>`).join('');
+      if (metalRatesData.length === 0) {
+        select.innerHTML = `<option value="">-- No Live Rates Found --</option>`;
+      } else {
+        select.innerHTML = `<option value="">-- Choose Live Sheet Grade Rate --</option>` + 
+          metalRatesData.map((m, i) => `<option value="${i}">${m.material} - ZAR ${m.rawRate} / ${m.unit}</option>`).join('');
+      }
 
       const tableContainer = document.getElementById('metal-rates-table-container');
       if (metalRatesData.length === 0) {
-        tableContainer.innerHTML = `<p class="text-xs text-zinc-500 italic">No metal rates available.</p>`;
+        tableContainer.innerHTML = `<p class="text-xs text-zinc-500 italic">No metal rates found in live Google Sheet.</p>`;
         return;
       }
 
@@ -796,7 +821,7 @@
             ${metalRatesData.map(m => `
               <tr class="hover:bg-zinc-100 dark:hover:bg-zinc-900/50">
                 <td class="p-2.5 font-semibold">${m.material}</td>
-                <td class="p-2.5 font-mono text-brand-red font-bold">R ${m.rate}</td>
+                <td class="p-2.5 font-mono text-brand-red font-bold">R ${m.rawRate}</td>
                 <td class="p-2.5 text-zinc-500">${m.unit}</td>
               </tr>
             `).join('')}
@@ -810,7 +835,7 @@
       if (idx !== "") {
         const item = metalRatesData[idx];
         document.getElementById('bom-desc').value = item.material;
-        document.getElementById('bom-rate').value = item.rate;
+        document.getElementById('bom-rate').value = item.rawRate;
       }
     }
 
@@ -825,6 +850,10 @@
 
       if (!desc) { alert("Please specify a subject / material name."); return; }
 
+      const unitPriceNum = parseFloat(rate || 0);
+      const qtyNum = parseFloat(qty || 1);
+      const totalItemPrice = unitPriceNum * qtyNum;
+
       const tbody = document.getElementById('bom-table-body');
       const tr = document.createElement('tr');
       tr.className = "hover:bg-zinc-100 dark:hover:bg-zinc-900/40";
@@ -835,7 +864,7 @@
         <td class="p-2">${qty}</td>
         <td class="p-2">${dim ? dim + ' mm' : '-'}</td>
         <td class="p-2">${weight ? weight + ' kg' : '-'}</td>
-        <td class="p-2">R ${rate || '0.00'}</td>
+        <td class="p-2 font-mono">R ${totalItemPrice.toFixed(2)}</td>
         <td class="p-2 text-right">
           <button onclick="this.closest('tr').remove()" class="text-zinc-500 hover:text-red-400"><i class="fa-solid fa-trash"></i></button>
         </td>
@@ -853,7 +882,7 @@
     // RFQ Generator Functions
     function populateRfqDropdown() {
       const select = document.getElementById('rfq-supplier');
-      select.innerHTML = suppliersMaster.map((s, i) => `<option value="${i}">${s.name} (${s.poc || 'General'})</option>`).join('');
+      select.innerHTML = suppliersMaster.map((s, i) => `<option value="${i}">${s.displayName}</option>`).join('');
     }
 
     function generateRfqPreview() {
@@ -862,7 +891,7 @@
       const ac = document.getElementById('rfq-ac').value || "AC2902";
       const proj = document.getElementById('rfq-project').value || "SHANTA NEW";
       const items = document.getElementById('rfq-items').value || "• 10x S355 Plates 20mm x 1200mm x 2400mm\n• 5x Profile Base Flanges as per DWG";
-      const pocName = supplier && (supplier.poc || supplier.name) ? (supplier.poc || supplier.name) : "Supplier";
+      const pocName = supplier && supplier.displayName ? supplier.displayName : "Supplier";
 
       const subject = `${ac} - ${proj} - QUOTE`;
       const body = `Hi ${pocName},\n\nTrust you are well.\n\nKindly quote on the following items:\n\n${items}\n\nThank you in advance.`;
@@ -880,7 +909,8 @@
     function openEmailClient() {
       const supplierIndex = document.getElementById('rfq-supplier').value;
       const supplier = suppliersMaster[supplierIndex];
-      const email = supplier?.email || "";
+      const emailKey = Object.keys(supplier || {}).find(k => k.toLowerCase().includes('email') || k.toLowerCase().includes('mail')) || '';
+      const email = emailKey ? supplier[emailKey] : "";
       const subject = encodeURIComponent(document.getElementById('rfq-subject-val').value);
       
       const fullText = document.getElementById('rfq-preview').value;
@@ -890,18 +920,18 @@
       window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
     }
 
-    // Supplier Directory Functions
+    // Supplier Directory Functions - Displaying ALL info from sheet columns dynamically
     function renderSuppliersAlphabetical(list) {
       const container = document.getElementById('suppliers-alphabet-container');
       container.innerHTML = '';
       if (list.length === 0) {
-        container.innerHTML = `<p class="text-xs text-zinc-500 italic p-4">No matching suppliers found.</p>`;
+        container.innerHTML = `<p class="text-xs text-zinc-500 italic p-4">No matching suppliers found in live sheet.</p>`;
         return;
       }
 
       const groups = {};
       list.forEach(s => {
-        const letter = (s.name || "?").charAt(0).toUpperCase();
+        const letter = (s.displayName || "?").charAt(0).toUpperCase();
         if (!groups[letter]) groups[letter] = [];
         groups[letter].push(s);
       });
@@ -913,24 +943,34 @@
             <button onclick="toggleSection('group-${letter}')" class="w-full px-4 py-3 flex items-center justify-between text-left font-bold text-xs border-b border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition">
               <span class="flex items-center gap-2">
                 <span class="bg-brand-red text-white text-[10px] w-5 h-5 rounded flex items-center justify-center font-bold">${letter}</span>
-                <span>${letter} Supplier Category Group</span>
+                <span>${letter} Group</span>
                 <span class="text-[10px] text-zinc-500 font-normal">(${letterGroup.length})</span>
               </span>
               <i class="fa-solid fa-chevron-down text-zinc-400 text-xs"></i>
             </button>
             <div id="group-${letter}" class="divide-y divide-zinc-200 dark:divide-zinc-800 supplier-group">
-              ${letterGroup.map(s => `
-                <div class="p-3.5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 hover:bg-zinc-100 dark:hover:bg-zinc-900/60 transition">
-                  <div>
-                    <h4 class="font-bold text-xs">${s.name}</h4>
-                    <p class="text-[11px] text-zinc-500">Contact / POC: <span class="text-zinc-700 dark:text-zinc-300 font-semibold">${s.poc || 'N/A'}</span></p>
+              ${letterGroup.map(s => {
+                // Generate badges/details for all columns in the row
+                const entries = Object.entries(s).filter(([k]) => k !== 'displayName' && k !== k.toLowerCase() && k.trim() !== '');
+                return `
+                  <div class="p-4 space-y-2 hover:bg-zinc-100 dark:hover:bg-zinc-900/60 transition">
+                    <div class="flex items-center justify-between">
+                      <h4 class="font-bold text-xs text-brand-red">${s.displayName}</h4>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 pt-1">
+                      ${Object.entries(s).map(([key, val]) => {
+                        if (key === 'displayName' || !val) return '';
+                        return `
+                          <div class="bg-white dark:bg-zinc-900 px-3 py-1.5 rounded border border-zinc-200 dark:border-zinc-800 text-[11px]">
+                            <span class="font-bold text-zinc-500 uppercase text-[9px] block">${key}</span>
+                            <span class="text-zinc-800 dark:text-zinc-200 font-medium">${val}</span>
+                          </div>
+                        `;
+                      }).join('')}
+                    </div>
                   </div>
-                  <div class="flex items-center gap-4">
-                    <span class="text-[11px] text-zinc-500 dark:text-zinc-400">${s.cat}</span>
-                    <span class="font-mono text-[11px] text-brand-red font-semibold">${s.email}</span>
-                  </div>
-                </div>
-              `).join('')}
+                `;
+              }).join('')}
             </div>
           </div>
         `;
@@ -947,22 +987,22 @@
 
     function filterSuppliers() {
       const q = document.getElementById('supplier-search').value.toLowerCase();
-      renderSuppliersAlphabetical(suppliersMaster.filter(s => 
-        (s.name||"").toLowerCase().includes(q) || 
-        (s.cat||"").toLowerCase().includes(q) ||
-        (s.email||"").toLowerCase().includes(q) ||
-        (s.poc||"").toLowerCase().includes(q)
-      ));
+      renderSuppliersAlphabetical(suppliersMaster.filter(s => {
+        return Object.values(s).some(val => String(val).toLowerCase().includes(q));
+      }));
     }
 
-    // Staff Directory Functions
+    // Staff Directory Functions with Contact Numbers
     function renderStaffGrid() {
       const grid = document.getElementById('staff-grid');
       grid.innerHTML = staffData.map(s => `
-        <div class="bg-zinc-50 dark:bg-zinc-950 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800">
+        <div class="bg-zinc-50 dark:bg-zinc-950 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 space-y-2">
           <h3 class="text-sm font-bold">${s.name}</h3>
-          <p class="text-xs text-brand-red font-semibold mt-0.5">${s.role}</p>
-          <p class="text-[11px] text-zinc-500 font-mono mt-2"><i class="fa-solid fa-envelope mr-1"></i> ${s.email}</p>
+          <p class="text-xs text-brand-red font-semibold">${s.role}</p>
+          <div class="space-y-1 pt-1 border-t border-zinc-200 dark:border-zinc-800 text-[11px] font-mono text-zinc-600 dark:text-zinc-400">
+            <div><i class="fa-solid fa-phone mr-1.5 text-brand-red"></i> ${s.phone}</div>
+            <div><i class="fa-solid fa-envelope mr-1.5 text-brand-red"></i> ${s.email}</div>
+          </div>
         </div>
       `).join('');
     }
