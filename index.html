@@ -430,11 +430,11 @@
               </div>
             </div>
 
-            <!-- Auto-Calculated Weight, Steel Grade Dropdown, and Auto-Calculated Price -->
+            <!-- Auto-Calculated Weight Placeholder, Steel Grade Dropdown, and Auto-Calculated Price Placeholder -->
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-3">
               <div>
-                <label class="text-[10px] font-bold text-zinc-500 uppercase">Est. Weight (kg) <span class="text-[9px] text-emerald-500 font-normal">(Auto-calculated)</span></label>
-                <input type="number" id="bom-weight" placeholder="e.g. 26.82" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1 bg-zinc-100 dark:bg-zinc-900 font-semibold" readonly>
+                <label class="text-[10px] font-bold text-zinc-500 uppercase">Est. Weight (kg) <span class="text-[9px] text-emerald-500 font-normal">(Auto-calculated / Override)</span></label>
+                <input type="number" id="bom-weight" placeholder="e.g. 26.82" oninput="onWeightOverride()" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1 font-semibold">
               </div>
               <div>
                 <label class="text-[10px] font-bold text-zinc-500 uppercase">Steel Grade / Rate (Live Feed)</label>
@@ -443,8 +443,8 @@
                 </select>
               </div>
               <div>
-                <label class="text-[10px] font-bold text-zinc-500 uppercase">Total Price (ZAR) <span class="text-[9px] text-emerald-500 font-normal">(Auto-calculated)</span></label>
-                <input type="number" id="bom-rate" placeholder="e.g. 416.43" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1 bg-zinc-100 dark:bg-zinc-900 font-semibold" readonly>
+                <label class="text-[10px] font-bold text-zinc-500 uppercase">Total Price (ZAR) <span class="text-[9px] text-emerald-500 font-normal">(Auto-calculated / Override)</span></label>
+                <input type="number" id="bom-rate" placeholder="e.g. 416.43" oninput="onPriceOverride()" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1 font-semibold">
               </div>
             </div>
           </div>
@@ -593,11 +593,13 @@
     const GOOGLE_SHEETS_STAFF_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSNynT5Snb9PgJp6ti3QpuHUr9fX8bGKEG10H8kjkbCna_ZfkEC7aM06QrwkjHwxR1n6uu3ZgvvaKu6/pub?gid=1666500445&single=true&output=csv";
     const GOOGLE_SHEETS_METAL_RATES_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSNynT5Snb9PgJp6ti3QpuHUr9fX8bGKEG10H8kjkbCna_ZfkEC7aM06QrwkjHwxR1n6uu3ZgvvaKu6/pub?gid=1040371405&single=true&output=csv";
 
-    // Application Master State
+    // Application MasterState
     let suppliersMaster = [];
     let staffData = [];
     let metalRatesData = [];
     let jobEntries = [];
+    let userWeightOverridden = false;
+    let userPriceOverridden = false;
 
     // Robust CSV Parsing Logic
     function parseCSV(text) {
@@ -809,6 +811,20 @@
       }
     }
 
+    function onWeightOverride() {
+      userWeightOverridden = true;
+      const weightVal = parseFloat(document.getElementById('bom-weight').value) || 0;
+      const gradeSelect = document.getElementById('bom-item-grade');
+      const ratePerKg = parseFloat(gradeSelect.value) || 0;
+      if (weightVal > 0 && ratePerKg > 0 && !userPriceOverridden) {
+        document.getElementById('bom-rate').placeholder = (weightVal * ratePerKg).toFixed(2);
+      }
+    }
+
+    function onPriceOverride() {
+      userPriceOverridden = true;
+    }
+
     // Density-Aware Calculation Engine (Supporting S355, Mild Steel, Stainless, Aluminum, Hardox)
     function triggerAutoCalculate() {
       const type = document.getElementById('bom-material-type').value;
@@ -873,16 +889,27 @@
       }
 
       if (estimatedWeight > 0) {
-        document.getElementById('bom-weight').value = estimatedWeight.toFixed(2);
+        document.getElementById('bom-weight').placeholder = estimatedWeight.toFixed(2);
+        if (!userWeightOverridden) {
+          document.getElementById('bom-weight').value = '';
+        }
+
+        const activeWeightForCalc = userWeightOverridden && document.getElementById('bom-weight').value !== '' 
+          ? parseFloat(document.getElementById('bom-weight').value) 
+          : estimatedWeight;
+
         if (ratePerKg > 0) {
-          const totalPrice = estimatedWeight * ratePerKg;
-          document.getElementById('bom-rate').value = totalPrice.toFixed(2);
+          const totalPrice = activeWeightForCalc * ratePerKg;
+          document.getElementById('bom-rate').placeholder = totalPrice.toFixed(2);
+          if (!userPriceOverridden) {
+            document.getElementById('bom-rate').value = '';
+          }
         } else {
-          document.getElementById('bom-rate').value = '';
+          document.getElementById('bom-rate').placeholder = 'e.g. 416.43';
         }
       } else {
-        document.getElementById('bom-weight').value = '';
-        document.getElementById('bom-rate').value = '';
+        document.getElementById('bom-weight').placeholder = 'e.g. 26.82';
+        document.getElementById('bom-rate').placeholder = 'e.g. 416.43';
       }
     }
 
@@ -992,8 +1019,12 @@
       const dim = document.getElementById('bom-dim').value;
       const stockOrWidth = document.getElementById('bom-stockbar').value;
       const stockLabelText = document.getElementById('bom-stock-label').innerText;
-      const weight = document.getElementById('bom-weight').value;
-      const totalPrice = document.getElementById('bom-rate').value;
+      
+      const weightInput = document.getElementById('bom-weight');
+      const weight = weightInput.value || weightInput.placeholder;
+      
+      const rateInput = document.getElementById('bom-rate');
+      const totalPrice = rateInput.value || rateInput.placeholder;
 
       if (!desc) { alert("Please specify a subject / material name."); return; }
 
@@ -1021,7 +1052,10 @@
       document.getElementById('bom-dim').value = '';
       document.getElementById('bom-weight').value = '';
       document.getElementById('bom-rate').value = '';
+      userWeightOverridden = false;
+      userPriceOverridden = false;
       document.getElementById('bom-item-grade').selectedIndex = 0;
+      triggerAutoCalculate();
     }
 
     // RFQ Generator Functions
