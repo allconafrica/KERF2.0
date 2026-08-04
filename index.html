@@ -28,51 +28,66 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     body { background-color: #0f0f10; color: #f4f4f5; font-family: system-ui, -apple-system, sans-serif; }
+    .dropdown:hover .dropdown-menu { display: block; }
   </style>
 </head>
 <body class="min-h-screen flex flex-col">
 
   <!-- TOP HEADER / NAVIGATION -->
-  <header class="border-b border-brand-border bg-[#121214] px-6 py-4 flex flex-wrap items-center justify-between gap-4">
+  <header class="border-b border-brand-border bg-[#121214] px-6 py-3 flex items-center justify-between gap-4 relative z-50">
     <!-- Logo & Title -->
-    <div class="flex items-center space-x-3">
+    <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('dashboard')">
       <div class="bg-brand-red text-white font-black px-3 py-1 rounded tracking-tighter text-lg border border-red-500">
         ALLCON
       </div>
       <span class="text-xl font-bold tracking-wider text-white">KERF PORTAL</span>
     </div>
 
-    <!-- Grouped Header Navigation -->
-    <nav class="flex items-center space-x-1 bg-black/40 p-1.5 rounded-lg border border-brand-border">
-      <!-- Main -->
+    <!-- Header Navigation with Dropdowns -->
+    <nav class="flex items-center space-x-2 bg-black/40 p-1.5 rounded-lg border border-brand-border">
+      
+      <!-- Dashboard Button -->
       <button onclick="switchTab('dashboard')" id="nav-dashboard" class="px-3 py-1.5 rounded text-xs font-semibold bg-brand-red text-white transition">
-        Dashboard
+        <i class="fa-solid fa-chart-line mr-1"></i> Dashboard
       </button>
 
       <div class="h-4 w-px bg-zinc-700 mx-1"></div>
 
-      <!-- Group 1: Tools (Top Priority) -->
-      <span class="text-[10px] uppercase tracking-wider text-zinc-500 px-1 font-bold">Tools</span>
-      <button onclick="switchTab('transmittal')" id="nav-transmittal" class="px-3 py-1.5 rounded text-xs font-semibold text-zinc-400 hover:text-white transition">
-        Project Transmittal
-      </button>
-      <button onclick="switchTab('bom')" id="nav-bom" class="px-3 py-1.5 rounded text-xs font-semibold text-zinc-400 hover:text-white transition">
-        BOM & Estimator
-      </button>
-      <button onclick="switchTab('rfq')" id="nav-rfq" class="px-3 py-1.5 rounded text-xs font-semibold text-zinc-400 hover:text-white transition">
-        RFQ Generator
-      </button>
+      <!-- Tools Dropdown Menu -->
+      <div class="relative dropdown">
+        <button id="nav-tools-btn" class="px-3 py-1.5 rounded text-xs font-semibold text-zinc-400 hover:text-white flex items-center gap-1.5 transition">
+          <i class="fa-solid fa-wrench text-brand-red"></i> Tools <i class="fa-solid fa-chevron-down text-[10px] opacity-60"></i>
+        </button>
+        <div class="dropdown-menu hidden absolute left-0 mt-1 w-52 bg-zinc-900 border border-brand-border rounded-lg shadow-2xl py-1">
+          <a onclick="switchTab('transmittal')" class="block px-4 py-2.5 text-xs text-zinc-300 hover:bg-brand-red hover:text-white cursor-pointer transition flex items-center gap-2">
+            <i class="fa-solid fa-file-pdf w-4"></i> Project Transmittal
+          </a>
+          <a onclick="switchTab('bom')" class="block px-4 py-2.5 text-xs text-zinc-300 hover:bg-brand-red hover:text-white cursor-pointer transition flex items-center gap-2">
+            <i class="fa-solid fa-calculator w-4"></i> BOM & Estimator
+          </a>
+          <a onclick="switchTab('rfq')" class="block px-4 py-2.5 text-xs text-zinc-300 hover:bg-brand-red hover:text-white cursor-pointer transition flex items-center gap-2">
+            <i class="fa-solid fa-paper-plane w-4"></i> RFQ Generator
+          </a>
+        </div>
+      </div>
 
       <div class="h-4 w-px bg-zinc-700 mx-1"></div>
 
-      <!-- Group 2: Directories -->
-      <span class="text-[10px] uppercase tracking-wider text-zinc-500 px-1 font-bold">Directories</span>
-      <button onclick="switchTab('suppliers')" id="nav-suppliers" class="px-3 py-1.5 rounded text-xs font-semibold text-zinc-400 hover:text-white transition">
-        Suppliers
-      </button>
-      <button onclick="switchTab('staff')" id="nav-staff" class="px-3 py-1.5 rounded text-xs font-semibold text-zinc-400 hover:text-white transition">
-        Staff Directory
-      </button>
+      <!-- Directories Dropdown Menu -->
+      <div class="relative dropdown">
+        <button id="nav-directories-btn" class="px-3 py-1.5 rounded text-xs font-semibold text-zinc-400 hover:text-white flex items-center gap-1.5 transition">
+          <i class="fa-solid fa-folder-open text-brand-red"></i> Directories <i class="fa-solid fa-chevron-down text-[10px] opacity-60"></i>
+        </button>
+        <div class="dropdown-menu hidden absolute left-0 mt-1 w-52 bg-zinc-900 border border-brand-border rounded-lg shadow-2xl py-1">
+          <a onclick="switchTab('suppliers')" class="block px-4 py-2.5 text-xs text-zinc-300 hover:bg-brand-red hover:text-white cursor-pointer transition flex items-center gap-2">
+            <i class="fa-solid fa-truck-ramp-box w-4"></i> Supplier Directory
+          </a>
+          <a onclick="switchTab('staff')" class="block px-4 py-2.5 text-xs text-zinc-300 hover:bg-brand-red hover:text-white cursor-pointer transition flex items-center gap-2">
+            <i class="fa-solid fa-id-card w-4"></i> Staff Directory
+          </a>
+        </div>
+      </div>
+
     </nav>
   </header>
 
@@ -92,7 +107,7 @@
           <p class="text-xs text-zinc-400 mt-1">Centralized platform for live supplier records, project transmittals, material BOM requirements, and internal staff directories.</p>
         </div>
         <div class="flex space-x-3">
-          <button onclick="switchTab('transmittal')" class="bg-brand-red hover:bg-brand-redHover text-white text-xs font-semibold px-4 py-2 rounded.lg flex items-center gap-2 transition">
+          <button onclick="switchTab('transmittal')" class="bg-brand-red hover:bg-brand-redHover text-white text-xs font-semibold px-4 py-2 rounded-lg flex items-center gap-2 transition">
             <i class="fa-solid fa-plus"></i> New Transmittal
           </button>
           <button onclick="switchTab('bom')" class="bg-zinc-800 hover:bg-zinc-700 text-white text-xs font-semibold px-4 py-2 rounded-lg border border-zinc-600 flex items-center gap-2 transition">
@@ -139,7 +154,7 @@
         <div class="bg-brand-cardBg border border-brand-border p-5 rounded-xl flex items-center justify-between">
           <div>
             <p class="text-[11px] font-bold uppercase tracking-wider text-zinc-400">Staff Directory</p>
-            <p id="kpi-staff" class="text-3xl font-extrabold text-white mt-1">1</p>
+            <p id="kpi-staff" class="text-3xl font-extrabold text-white mt-1">5</p>
             <p class="text-[10px] text-zinc-500 mt-1">Internal Personnel</p>
           </div>
           <div class="bg-red-950/40 p-3.5 rounded-xl border border-red-900/40 text-brand-red">
@@ -150,7 +165,7 @@
 
       <!-- GROUPED NAVIGATION CARDS -->
       
-      <!-- Group 1: Navigation Tools (Top Priority) -->
+      <!-- Group 1: Navigation Tools -->
       <div>
         <h2 class="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-3 flex items-center gap-2">
           <i class="fa-solid fa-wrench text-brand-red"></i> Fabrication & Engineering Tools
@@ -190,7 +205,7 @@
         </div>
       </div>
 
-      <!-- Group 2: Directories & Records (Bottom Priority) -->
+      <!-- Group 2: Directories & Records -->
       <div>
         <h2 class="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-3 flex items-center gap-2">
           <i class="fa-solid fa-folder-open text-brand-red"></i> Directories & Records
@@ -220,6 +235,101 @@
         </div>
       </div>
 
+    </div>
+
+    <!-- ================= PROJECT TRANSMITTAL VIEW (FIXED) ================= -->
+    <div id="view-transmittal" class="hidden space-y-6">
+      <div class="bg-brand-cardBg border border-brand-border rounded-xl p-6">
+        <h2 class="text-lg font-bold text-white flex items-center gap-2">
+          <i class="fa-solid fa-file-pdf text-brand-red"></i> Transmittal Schedule Builder
+        </h2>
+        <p class="text-xs text-zinc-400 mt-1">Construct official project transmittal schedules linked with Job IDs and AC numbers.</p>
+
+        <!-- Transmittal Header Controls -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mt-6 p-4 bg-zinc-900/60 rounded-lg border border-zinc-800">
+          <div>
+            <label class="text-[10px] text-zinc-400 uppercase font-bold">Transmittal No.</label>
+            <input type="text" id="trans-no" value="TRN-5276-001" class="w-full bg-zinc-800 text-xs text-white p-2 rounded border border-zinc-700 mt-1">
+          </div>
+          <div>
+            <label class="text-[10px] text-zinc-400 uppercase font-bold">Job ID / AC No. *</label>
+            <input type="text" id="trans-job" placeholder="e.g. 5276 / AC2902" class="w-full bg-zinc-800 text-xs text-white p-2 rounded border border-zinc-700 mt-1">
+          </div>
+          <div>
+            <label class="text-[10px] text-zinc-400 uppercase font-bold">Recipient / Client</label>
+            <input type="text" id="trans-client" placeholder="e.g. NCP International" class="w-full bg-zinc-800 text-xs text-white p-2 rounded border border-zinc-700 mt-1">
+          </div>
+          <div>
+            <label class="text-[10px] text-zinc-400 uppercase font-bold">Issue Purpose</label>
+            <select id="trans-purpose" class="w-full bg-zinc-800 text-xs text-white p-2 rounded border border-zinc-700 mt-1">
+              <option>For Approval</option>
+              <option>For Construction</option>
+              <option>For Fabrication</option>
+              <option>For Information Only</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Document Add Item Form -->
+        <div class="mt-6 p-4 bg-zinc-900/60 rounded-lg border border-zinc-800">
+          <span class="text-xs font-bold text-brand-red uppercase tracking-wider flex items-center gap-1 mb-3">
+            <i class="fa-solid fa-plus-circle"></i> Add Document / Drawing Record
+          </span>
+          <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+            <div class="sm:col-span-2">
+              <label class="text-[10px] text-zinc-400 uppercase font-bold">Document Title / Drawing Name</label>
+              <input type="text" id="doc-title" placeholder="e.g. Structural Frame Assembly - Sheet 1" class="w-full bg-zinc-800 text-xs text-white p-2 rounded border border-zinc-700 mt-1">
+            </div>
+            <div>
+              <label class="text-[10px] text-zinc-400 uppercase font-bold">Revision</label>
+              <input type="text" id="doc-rev" placeholder="e.g. Rev A" class="w-full bg-zinc-800 text-xs text-white p-2 rounded border border-zinc-700 mt-1">
+            </div>
+            <div>
+              <label class="text-[10px] text-zinc-400 uppercase font-bold">Format</label>
+              <select id="doc-format" class="w-full bg-zinc-800 text-xs text-white p-2 rounded border border-zinc-700 mt-1">
+                <option>PDF</option>
+                <option>DWG / DXF</option>
+                <option>Hard Copy</option>
+                <option>STEP Model</option>
+              </select>
+            </div>
+          </div>
+          <button onclick="addTransmittalDoc()" class="mt-4 bg-brand-red hover:bg-brand-redHover text-white text-xs font-semibold px-4 py-2 rounded flex items-center gap-2 transition">
+            <i class="fa-solid fa-plus"></i> Add to Transmittal List
+          </button>
+        </div>
+
+        <!-- Document Schedule Table -->
+        <div class="mt-6">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr class="bg-zinc-900 text-zinc-400 border-b border-zinc-800 uppercase text-[10px]">
+                  <th class="p-3">#</th>
+                  <th class="p-3">Document Title / Drawing Description</th>
+                  <th class="p-3">Revision</th>
+                  <th class="p-3">Format</th>
+                  <th class="p-3 text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody id="transmittal-table-body" class="divide-y divide-zinc-800 text-zinc-300">
+                <tr>
+                  <td colspan="5" class="p-6 text-center text-zinc-500 italic">No document schedules added to this transmittal yet.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Print Action Footer -->
+        <div class="mt-4 p-4 bg-zinc-900/80 rounded-lg flex justify-between items-center border border-zinc-800">
+          <p class="text-xs text-zinc-400"><i class="fa-solid fa-info-circle text-brand-red mr-1"></i> Ready for export to official ALLCON transmittal format.</p>
+          <button onclick="window.print()" class="bg-brand-red hover:bg-brand-redHover text-white text-xs font-semibold px-4 py-2 rounded flex items-center gap-2 transition">
+            <i class="fa-solid fa-file-pdf"></i> Generate Transmittal Document
+          </button>
+        </div>
+
+      </div>
     </div>
 
     <!-- ================= BOM & ESTIMATOR VIEW ================= -->
@@ -364,9 +474,9 @@
             <div>
               <label class="text-[10px] text-zinc-400 uppercase font-bold">Select Supplier</label>
               <select id="rfq-supplier-select" class="w-full bg-zinc-800 text-xs text-white p-2 rounded border border-zinc-700 mt-1">
-                <option value="sales@structuralsteel.co.za">Structural Steel Co. (sales@structuralsteel.co.za)</option>
-                <option value="orders@fastenerworld.co.za">Fastener World (orders@fastenerworld.co.za)</option>
-                <option value="quotes@platecenter.co.za">Plate Center Africa (quotes@platecenter.co.za)</option>
+                <option value="sales@macsteel.co.za">Macsteel Trading (sales@macsteel.co.za)</option>
+                <option value="quotes@boltfast.co.za">Boltfast Fasteners (quotes@boltfast.co.za)</option>
+                <option value="orders@lasertech.co.za">Laser Tech Cutting (orders@lasertech.co.za)</option>
               </select>
             </div>
 
@@ -407,50 +517,61 @@
       </div>
     </div>
 
-    <!-- ================= PROJECT TRANSMITTAL VIEW ================= -->
-    <div id="view-transmittal" class="hidden space-y-6">
-      <div class="bg-brand-cardBg border border-brand-border rounded-xl p-6">
-        <h2 class="text-lg font-bold text-white flex items-center gap-2">
-          <i class="fa-solid fa-file-pdf text-brand-red"></i> Transmittal Schedule Builder
-        </h2>
-        <p class="text-xs text-zinc-400 mt-1">Construct official project transmittal sheets linked with Job IDs and AC numbers.</p>
-        <div class="mt-6 p-8 border border-dashed border-zinc-800 rounded-lg text-center text-zinc-500 text-xs">
-          Transmittal document module ready for project selection.
-        </div>
-      </div>
-    </div>
-
-    <!-- ================= SUPPLIERS VIEW ================= -->
+    <!-- ================= SUPPLIER DIRECTORY VIEW (POPULATED) ================= -->
     <div id="view-suppliers" class="hidden space-y-6">
       <div class="bg-brand-cardBg border border-brand-border rounded-xl p-6">
-        <h2 class="text-lg font-bold text-white flex items-center gap-2">
-          <i class="fa-solid fa-truck-ramp-box text-brand-red"></i> Supplier Directory
-        </h2>
-        <p class="text-xs text-zinc-400 mt-1">Directory containing 109 active suppliers and approved statuses.</p>
-        <div class="mt-4">
-          <input type="text" placeholder="Search supplier name, category, or service..." class="w-full bg-zinc-900 text-xs text-white p-3 rounded-lg border border-zinc-800">
+        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+          <div>
+            <h2 class="text-lg font-bold text-white flex items-center gap-2">
+              <i class="fa-solid fa-truck-ramp-box text-brand-red"></i> Supplier Directory
+            </h2>
+            <p class="text-xs text-zinc-400 mt-1">Directory containing 109 active supplier records and approved statuses.</p>
+          </div>
+          <span class="bg-emerald-950/60 border border-emerald-800/60 text-emerald-400 text-xs px-3 py-1 rounded-full w-max">
+            <i class="fa-solid fa-check-circle"></i> 106 Approved Vendors
+          </span>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="mt-6 flex gap-3">
+          <div class="relative flex-1">
+            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-zinc-500 text-xs"></i>
+            <input type="text" id="supplier-search" onkeyup="filterSuppliers()" placeholder="Search supplier name, product, or category..." class="w-full bg-zinc-900 text-xs text-white pl-9 pr-3 py-3 rounded-lg border border-zinc-800 focus:outline-none focus:border-brand-red">
+          </div>
+        </div>
+
+        <!-- Live Supplier Data Table -->
+        <div class="mt-6 overflow-x-auto">
+          <table class="w-full text-left text-xs border-collapse">
+            <thead>
+              <tr class="bg-zinc-900 text-zinc-400 border-b border-zinc-800 uppercase text-[10px]">
+                <th class="p-3">Supplier Name</th>
+                <th class="p-3">Category / Material</th>
+                <th class="p-3">Contact Email</th>
+                <th class="p-3">Phone</th>
+                <th class="p-3">Terms</th>
+                <th class="p-3 text-right">Status</th>
+              </tr>
+            </thead>
+            <tbody id="supplier-table-body" class="divide-y divide-zinc-800 text-zinc-300">
+              <!-- Populated via Javascript -->
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
 
-    <!-- ================= STAFF VIEW ================= -->
+    <!-- ================= STAFF DIRECTORY VIEW (EXPANDED) ================= -->
     <div id="view-staff" class="hidden space-y-6">
       <div class="bg-brand-cardBg border border-brand-border rounded-xl p-6">
         <h2 class="text-lg font-bold text-white flex items-center gap-2">
           <i class="fa-solid fa-id-card text-brand-red"></i> Internal Staff Directory
         </h2>
-        <p class="text-xs text-zinc-400 mt-1">Contact records for key personnel.</p>
-        <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="bg-zinc-900/60 p-4 rounded-lg border border-zinc-800 flex items-center justify-between">
-            <div>
-              <h3 class="text-sm font-bold text-white">Riaan</h3>
-              <p class="text-xs text-brand-red">Procurement Manager</p>
-              <p class="text-[11px] text-zinc-400 mt-2"><i class="fa-solid fa-phone"></i> Direct Telephone Line</p>
-            </div>
-            <div class="bg-red-950/40 p-3 rounded-full text-brand-red border border-red-900/40">
-              <i class="fa-solid fa-user-tie"></i>
-            </div>
-          </div>
+        <p class="text-xs text-zinc-400 mt-1">Direct contact directory for internal ALLCON personnel.</p>
+        
+        <!-- Expanded Staff Grid -->
+        <div class="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="staff-grid">
+          <!-- Populated via Javascript -->
         </div>
       </div>
     </div>
@@ -459,9 +580,35 @@
 
   <!-- JAVASCRIPT LOGIC -->
   <script>
-    // State management
+    // State Data
     let jobDataMap = {};
     let bomItemsList = [];
+    let transmittalDocs = [];
+
+    // Sample Supplier Data
+    const suppliersData = [
+      { name: "Macsteel Trading", category: "Structural Steel & Plates", email: "sales@macsteel.co.za", phone: "+27 11 871 0000", terms: "30 Days", status: "Approved" },
+      { name: "Boltfast Fasteners", category: "Hardware & HT Bolts", email: "quotes@boltfast.co.za", phone: "+27 11 824 1500", terms: "30 Days", status: "Approved" },
+      { name: "Laser Tech Cutting", category: "CNC Profile & Laser Cutting", email: "orders@lasertech.co.za", phone: "+27 16 986 2200", terms: "COD / 7 Days", status: "Approved" },
+      { name: "GalvCo Galvanizing", category: "Hot Dip Galvanizing Services", email: "info@galvco.co.za", phone: "+27 16 931 1144", terms: "30 Days", status: "Approved" },
+      { name: "African Seamless Tubes", category: "Pipes & Hollow Sections", email: "sales@africanseamless.co.za", phone: "+27 11 827 4433", terms: "30 Days", status: "Approved" },
+      { name: "Vanderbijl Hydraulics", category: "Hydraulics & Fitting Hardware", email: "quotes@vjh.co.za", phone: "+27 16 933 5511", terms: "30 Days", status: "Pending" }
+    ];
+
+    // Staff Directory Data
+    const staffData = [
+      { name: "Riaan", role: "Procurement Manager", dept: "Procurement", email: "riaan@allcon.co.za", phone: "+27 16 900 1001", icon: "fa-user-tie" },
+      { name: "Norlene", role: "Senior Procurement Specialist", dept: "Training & Manual Processing", email: "norlene@allcon.co.za", phone: "+27 16 900 1002", icon: "fa-user-gear" },
+      { name: "Sales Director", role: "Executive Sales", dept: "Commercial & Business Dev", email: "sales.director@allcon.co.za", phone: "+27 16 900 1000", icon: "fa-user-chart" },
+      { name: "Workshop Foreman", role: "Fabrication Manager", dept: "Workshop & QA", email: "workshop@allcon.co.za", phone: "+27 16 900 1005", icon: "fa-helmet-safety" },
+      { name: "Drawing Office", role: "Senior Draughtsperson", dept: "Engineering", email: "drawings@allcon.co.za", phone: "+27 16 900 1010", icon: "fa-compass-drafting" }
+    ];
+
+    // Initialization
+    window.onload = function() {
+      renderSuppliersTable(suppliersData);
+      renderStaffGrid();
+    };
 
     // Navigation Tab Switching
     function switchTab(tabId) {
@@ -469,26 +616,60 @@
       
       views.forEach(v => {
         const el = document.getElementById(`view-${v}`);
-        const nav = document.getElementById(`nav-${v}`);
         if (el) el.classList.add('hidden');
-        if (nav) {
-          nav.classList.remove('bg-brand-red', 'text-white');
-          nav.classList.add('text-zinc-400');
-        }
       });
 
       const activeView = document.getElementById(`view-${tabId}`);
-      const activeNav = document.getElementById(`nav-${tabId}`);
       if (activeView) activeView.classList.remove('hidden');
-      if (activeNav) {
-        activeNav.classList.remove('text-zinc-400');
-        activeNav.classList.add('bg-brand-red', 'text-white');
-      }
 
       if (tabId === 'rfq') generateRFQText();
     }
 
-    // Add BOM Item & Re-calculate
+    // Transmittal Schedule Functions
+    function addTransmittalDoc() {
+      const title = document.getElementById('doc-title').value;
+      const rev = document.getElementById('doc-rev').value || 'Rev 0';
+      const format = document.getElementById('doc-format').value;
+      const job = document.getElementById('trans-job').value;
+
+      if (!title) {
+        alert('Please enter a Document Title or Drawing Description.');
+        return;
+      }
+
+      if (job && !jobDataMap[job]) {
+        jobDataMap[job] = { active: true };
+        updateKPICounters();
+      }
+
+      transmittalDocs.push({ title, rev, format });
+      renderTransmittalTable();
+
+      document.getElementById('doc-title').value = '';
+      document.getElementById('doc-rev').value = '';
+    }
+
+    function renderTransmittalTable() {
+      const tbody = document.getElementById('transmittal-table-body');
+      if (transmittalDocs.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-zinc-500 italic">No document schedules added to this transmittal yet.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = transmittalDocs.map((doc, idx) => `
+        <tr class="hover:bg-zinc-800/40">
+          <td class="p-3 text-zinc-500 font-bold">${idx + 1}</td>
+          <td class="p-3 font-semibold text-white">${doc.title}</td>
+          <td class="p-3"><span class="bg-zinc-800 border border-zinc-700 px-2 py-0.5 rounded text-[10px]">${doc.rev}</span></td>
+          <td class="p-3 text-zinc-400">${doc.format}</td>
+          <td class="p-3 text-right">
+            <button onclick="transmittalDocs.splice(${idx}, 1); renderTransmittalTable();" class="text-zinc-500 hover:text-red-400"><i class="fa-solid fa-trash"></i></button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    // BOM & Estimator Logic
     function addBomItem() {
       const type = document.getElementById('item-type').value;
       const name = document.getElementById('item-name').value;
@@ -504,29 +685,17 @@
         return;
       }
 
-      // Mass & Cost Calculations
-      let totalMass = 0;
-      if (type === 'Linear') {
-        totalMass = (length / 1000) * unitWeight * qty;
-      } else {
-        totalMass = unitWeight * qty; // standard weight application
-      }
+      let totalMass = (type === 'Linear') ? (length / 1000) * unitWeight * qty : unitWeight * qty;
+      let totalCost = totalMass * unitRate;
 
-      const totalCost = totalMass * unitRate;
-
-      // Register Job ID into state if provided
       if (jobId && !jobDataMap[jobId]) {
         jobDataMap[jobId] = { active: true };
       }
 
-      bomItemsList.push({
-        type, name, mark, qty, length, unitWeight, totalMass, totalCost
-      });
-
+      bomItemsList.push({ type, name, mark, qty, length, unitWeight, totalMass, totalCost });
       renderBOMTable();
       updateKPICounters();
 
-      // Reset form
       document.getElementById('item-name').value = '';
       document.getElementById('item-mark').value = '';
       document.getElementById('item-qty').value = '';
@@ -535,7 +704,6 @@
       document.getElementById('item-rate').value = '';
     }
 
-    // Render BOM Table & Totals
     function renderBOMTable() {
       const tbody = document.getElementById('bom-table-body');
       if (bomItemsList.length === 0) {
@@ -546,14 +714,11 @@
         return;
       }
 
-      let rows = '';
-      let sumMass = 0;
-      let sumCost = 0;
-
-      bomItemsList.forEach((item, index) => {
+      let sumMass = 0, sumCost = 0;
+      tbody.innerHTML = bomItemsList.map((item, idx) => {
         sumMass += item.totalMass;
         sumCost += item.totalCost;
-        rows += `
+        return `
           <tr class="hover:bg-zinc-800/40">
             <td class="p-3"><span class="bg-zinc-800 px-2 py-0.5 rounded text-[10px] border border-zinc-700">${item.type}</span></td>
             <td class="p-3 font-semibold text-white">${item.name}</td>
@@ -563,36 +728,26 @@
             <td class="p-3">${item.totalMass.toFixed(2)} kg</td>
             <td class="p-3 text-emerald-400">R ${item.totalCost.toFixed(2)}</td>
             <td class="p-3 text-right">
-              <button onclick="removeBomItem(${index})" class="text-zinc-500 hover:text-red-400"><i class="fa-solid fa-trash"></i></button>
+              <button onclick="bomItemsList.splice(${idx}, 1); renderBOMTable(); updateKPICounters();" class="text-zinc-500 hover:text-red-400"><i class="fa-solid fa-trash"></i></button>
             </td>
           </tr>
         `;
-      });
+      }).join('');
 
-      tbody.innerHTML = rows;
       document.getElementById('summary-items').textContent = bomItemsList.length;
       document.getElementById('summary-weight').textContent = `${sumMass.toFixed(2)} kg`;
       document.getElementById('summary-cost').textContent = `R ${sumCost.toFixed(2)}`;
     }
 
-    function removeBomItem(index) {
-      bomItemsList.splice(index, 1);
-      renderBOMTable();
-      updateKPICounters();
-    }
-
-    // Update Dashboard KPIs dynamically
     function updateKPICounters() {
       document.getElementById('kpi-jobs').textContent = Object.keys(jobDataMap).length;
       document.getElementById('kpi-bom').textContent = bomItemsList.length;
     }
 
-    // Transfer BOM items directly into RFQ email template
     function transferBOMToRFQ() {
       switchTab('rfq');
     }
 
-    // Generate RFQ Email text
     function generateRFQText() {
       const includeBOM = document.getElementById('rfq-include-bom').checked;
       const ref = document.getElementById('rfq-subject-ref').value;
@@ -605,14 +760,11 @@
         bomFormatted = '\n\n[No items currently attached in BOM Calculator]';
       }
 
-      const bodyText = `Good day Sales Team,\n\nPlease provide your best price and lead time for the following procurement request:\n\nReference: ${ref}${bomFormatted}\n\nPlease include delivery timelines to our ALLCON fabrication facility in your reply.\n\nKind regards,\nProcurement Department\nALLCON Fabrication & Engineering (Pty) Ltd.`;
-
-      document.getElementById('rfq-preview-body').value = bodyText;
+      document.getElementById('rfq-preview-body').value = `Good day Sales Team,\n\nPlease provide your best price and lead time for the following procurement request:\n\nReference: ${ref}${bomFormatted}\n\nPlease include delivery timelines to our ALLCON fabrication facility in your reply.\n\nKind regards,\nProcurement Department\nALLCON Fabrication & Engineering (Pty) Ltd.`;
     }
 
     function copyRFQToClipboard() {
-      const text = document.getElementById('rfq-preview-body').value;
-      navigator.clipboard.writeText(text);
+      navigator.clipboard.writeText(document.getElementById('rfq-preview-body').value);
       alert('RFQ email text copied to clipboard!');
     }
 
@@ -621,6 +773,56 @@
       const subject = encodeURIComponent(document.getElementById('rfq-subject-ref').value);
       const body = encodeURIComponent(document.getElementById('rfq-preview-body').value);
       window.location.href = `mailto:${recipient}?subject=${subject}&body=${body}`;
+    }
+
+    // Supplier Directory Render & Filter
+    function renderSuppliersTable(list) {
+      const tbody = document.getElementById('supplier-table-body');
+      tbody.innerHTML = list.map(s => `
+        <tr class="hover:bg-zinc-800/40">
+          <td class="p-3 font-semibold text-white">${s.name}</td>
+          <td class="p-3 text-zinc-400">${s.category}</td>
+          <td class="p-3 text-zinc-300 font-mono text-[11px]">${s.email}</td>
+          <td class="p-3 text-zinc-400">${s.phone}</td>
+          <td class="p-3"><span class="bg-zinc-800 px-2 py-0.5 rounded text-[10px] border border-zinc-700">${s.terms}</span></td>
+          <td class="p-3 text-right">
+            <span class="${s.status === 'Approved' ? 'bg-emerald-950/60 text-emerald-400 border-emerald-800' : 'bg-amber-950/60 text-amber-400 border-amber-800'} text-[10px] px-2 py-0.5 rounded border">
+              ${s.status}
+            </span>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function filterSuppliers() {
+      const query = document.getElementById('supplier-search').value.toLowerCase();
+      const filtered = suppliersData.filter(s => 
+        s.name.toLowerCase().includes(query) || 
+        s.category.toLowerCase().includes(query) ||
+        s.email.toLowerCase().includes(query)
+      );
+      renderSuppliersTable(filtered);
+    }
+
+    // Staff Directory Render
+    function renderStaffGrid() {
+      const grid = document.getElementById('staff-grid');
+      grid.innerHTML = staffData.map(s => `
+        <div class="bg-zinc-900/60 p-4 rounded-lg border border-zinc-800 flex items-start justify-between">
+          <div>
+            <h3 class="text-sm font-bold text-white">${s.name}</h3>
+            <p class="text-xs text-brand-red font-medium">${s.role}</p>
+            <p class="text-[11px] text-zinc-500 mt-0.5">${s.dept}</p>
+            <div class="mt-3 space-y-1 text-[11px] text-zinc-400">
+              <p><i class="fa-solid fa-envelope text-zinc-600 mr-1.5"></i> ${s.email}</p>
+              <p><i class="fa-solid fa-phone text-zinc-600 mr-1.5"></i> ${s.phone}</p>
+            </div>
+          </div>
+          <div class="bg-red-950/40 p-3 rounded-full text-brand-red border border-red-900/40">
+            <i class="fa-solid ${s.icon} text-lg"></i>
+          </div>
+        </div>
+      `).join('');
     }
   </script>
 </body>
