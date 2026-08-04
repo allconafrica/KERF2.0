@@ -568,7 +568,6 @@
       document.getElementById('dash-sup-count').innerText = suppliersMaster.length;
       renderSuppliersAlphabetical(suppliersMaster);
       populateRfqDropdown();
-      populateJobSupplierDropdown();
       generateRfqPreview();
     }
 
@@ -600,28 +599,38 @@
         const text = await res.text();
         const raw = parseCSV(text);
 
-        metalRatesData = raw.map(r => ({
-          material: r.material || r.grade || r.item || r.description || r['metal type'] || 'Steel Grade',
-          rate: r.rate || r.price || r['rate (zar)'] || r.cost || r['zar/kg'] || '0',
-          unit: r.unit || r.uom || 'kg'
-        })).filter(m => m.material && m.material !== 'Steel Grade');
+        metalRatesData = raw.map(r => {
+          // Target 'final active rate', 'live rate (r\kg)', 'live rate', or fallback to general rate
+          const rawRate = r['final active rate'] || r['live rate (r\\kg)'] || r['live rate'] || r['live rate (r/kg)'] || r.rate || r.price || '0';
+          const cleanedRate = String(rawRate).replace(/[^0-9.]/g, '');
+
+          return {
+            material: r.grade || r.material || r.item || r.description || 'Steel Grade',
+            rate: cleanedRate,
+            unit: r.unit || r.uom || 'kg'
+          };
+        }).filter(m => m.material && m.material.toLowerCase() !== 'grade' && parseFloat(m.rate) > 0);
+
       } catch (e) {
         console.warn("Could not fetch metal rates CSV, using backup.", e);
       }
 
-      if (metalRatesData.length === 0 || metalRatesData.every(m => parseFloat(m.rate) === 0)) {
+      if (metalRatesData.length === 0) {
         metalRatesData = [
-          { material: "S355 JR / J2", rate: "35.00", unit: "kg" },
-          { material: "Mild Steel Plate", rate: "32.00", unit: "kg" },
-          { material: "304 Stainless", rate: "95.00", unit: "kg" },
-          { material: "316 Stainless", rate: "140.00", unit: "kg" },
-          { material: "6082-T6", rate: "115.00", unit: "kg" },
-          { material: "Hardox 500", rate: "65.00", unit: "kg" }
+          { material: "S355 JR / J2", rate: "15.5269335", unit: "kg" },
+          { material: "Mild Steel Plate", rate: "14.4561105", unit: "kg" },
+          { material: "304 Stainless", rate: "33.195513", unit: "kg" },
+          { material: "316 Stainless", rate: "44.974566", unit: "kg" },
+          { material: "6082-T6", rate: "35.337159", unit: "kg" },
+          { material: "Hardox 500", rate: "28.3768095", unit: "kg" }
         ];
       }
 
       document.getElementById('dash-rates-count').innerText = metalRatesData.length;
       populateMetalRatesUI();
+      if (typeof triggerAutoCalculate === 'function') {
+        triggerAutoCalculate();
+      }
     }
 
     // UI Navigation & Dropdowns
@@ -719,50 +728,19 @@
     }
 
     // Transmittal Job Builder Functions
-    function populateJobSupplierDropdown() {
-      const select = document.getElementById('job-supplier');
-      if (!select) return;
-
-      const groups = {};
-      suppliersMaster.forEach(s => {
-        const letter = (s.name || "?").charAt(0).toUpperCase();
-        if (!groups[letter]) groups[letter] = [];
-        groups[letter].push(s);
-      });
-
-      let html = `<option value="">-- Select Supplier --</option>`;
-      Object.keys(groups).sort().forEach(letter => {
-        const groupList = groups[letter];
-        html += `<optgroup label="${letter} - (${groupList.length})">`;
-        groupList.forEach(s => {
-          html += `<option value="${s.name}">${s.name}</option>`;
-        });
-        html += `</optgroup>`;
-      });
-      select.innerHTML = html;
-    }
-
     function addJobEntry() {
       const id = document.getElementById('job-id').value;
       const ac = document.getElementById('job-ac').value;
       const desc = document.getElementById('job-desc').value;
-      const category = document.getElementById('job-category').value;
-      const subcat = document.getElementById('job-subcat').value;
-      const supplier = document.getElementById('job-supplier').value;
-      const po = document.getElementById('job-po').value;
 
       if (!id) { alert("Please enter a Job ID."); return; }
 
-      jobEntries.push({ id, ac, desc, category, subcat, supplier, po });
+      jobEntries.push({ id, ac, desc });
       renderJobEntries();
 
       document.getElementById('job-id').value = '';
       document.getElementById('job-ac').value = '';
       document.getElementById('job-desc').value = '';
-      document.getElementById('job-category').value = '';
-      document.getElementById('job-subcat').value = '';
-      document.getElementById('job-supplier').value = '';
-      document.getElementById('job-po').value = '';
     }
 
     function renderJobEntries() {
@@ -778,11 +756,10 @@
       msg.classList.add('hidden');
       container.innerHTML = jobEntries.map((e, idx) => `
         <div class="flex items-center justify-between bg-zinc-100 dark:bg-zinc-900 p-2.5 rounded border border-zinc-200 dark:border-zinc-800 text-xs">
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 w-full pr-4">
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 w-full pr-4">
             <div><span class="font-bold text-brand-red">ID:</span> ${e.id}</div>
             <div><span class="font-bold text-zinc-500">AC:</span> ${e.ac || '-'}</div>
             <div><span class="font-bold text-zinc-500">Desc:</span> ${e.desc || '-'}</div>
-            <div><span class="font-bold text-zinc-500">Cat:</span> ${e.category || '-'}</div>
           </div>
           <button onclick="jobEntries.splice(${idx}, 1); renderJobEntries();" class="text-zinc-500 hover:text-red-400 shrink-0">
             <i class="fa-solid fa-trash"></i>
@@ -794,10 +771,14 @@
     // BOM & Metal Rates UI Functions
     function populateMetalRatesUI() {
       const select = document.getElementById('bom-item-grade');
-      select.innerHTML = `<option value="">-- Select Steel Grade / Rate --</option>` + 
-        metalRatesData.map((m) => `<option value="${m.rate}">${m.material} (R ${m.rate} / ${m.unit})</option>`).join('');
+      if (select) {
+        select.innerHTML = `<option value="">-- Select Steel Grade / Rate --</option>` + 
+          metalRatesData.map((m) => `<option value="${m.rate}">${m.material} (R ${parseFloat(m.rate).toFixed(2)} / ${m.unit})</option>`).join('');
+      }
 
       const tableContainer = document.getElementById('metal-rates-table-container');
+      if (!tableContainer) return;
+
       if (metalRatesData.length === 0) {
         tableContainer.innerHTML = `<p class="text-xs text-zinc-500 italic">No metal rates available.</p>`;
         return;
@@ -816,7 +797,7 @@
             ${metalRatesData.map(m => `
               <tr class="hover:bg-zinc-100 dark:hover:bg-zinc-900/50">
                 <td class="p-2.5 font-semibold">${m.material}</td>
-                <td class="p-2.5 font-mono text-brand-red font-bold">R ${m.rate}</td>
+                <td class="p-2.5 font-mono text-brand-red font-bold">R ${parseFloat(m.rate).toFixed(4)}</td>
                 <td class="p-2.5 text-zinc-500">${m.unit}</td>
               </tr>
             `).join('')}
