@@ -57,7 +57,7 @@
 
     <div class="flex items-center space-x-4">
       <nav class="flex items-center space-x-2 bg-zinc-100 dark:bg-black/40 p-1.5 rounded-lg border border-zinc-200 dark:border-zinc-800">
-        <button onclick="switchTab('dashboard')" class="px-3 py-1.5 rounded text-xs font-semibold bg-brand-red text-white transition">
+        <button onclick="switchTab('dashboard')" class="px-3 py-1.5 rounded text-xs font-semibold text-zinc-700 dark:text-zinc-300 hover:text-brand-red transition">
           <i class="fa-solid fa-chart-line mr-1"></i> Dashboard
         </button>
         <div class="h-4 w-px bg-zinc-300 dark:bg-zinc-700 mx-1"></div>
@@ -286,13 +286,25 @@
           </div>
         </div>
 
+        <!-- Inclusions & Exclusions -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+          <div>
+            <label class="text-[11px] font-bold text-zinc-500 dark:text-zinc-400">Inclusions</label>
+            <textarea id="trans-inclusions" rows="3" placeholder="e.g. MATERIAL S355, FABRICATION, MACHINING..." class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded-lg mt-1 focus:outline-none focus:border-brand-red resize-none"></textarea>
+          </div>
+          <div>
+            <label class="text-[11px] font-bold text-zinc-500 dark:text-zinc-400">Exclusions</label>
+            <textarea id="trans-exclusions" rows="3" placeholder="e.g. SAND BLAST & PAINT, MPI, WELDING..." class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded-lg mt-1 focus:outline-none focus:border-brand-red resize-none"></textarea>
+          </div>
+        </div>
+
         <!-- JOB SCHEDULE BUILDER -->
         <div class="mt-8 p-5 bg-zinc-50 dark:bg-zinc-950 rounded-xl border border-zinc-200 dark:border-zinc-800">
           <div class="text-xs font-bold text-brand-red uppercase tracking-wider flex items-center gap-2 mb-4">
             <i class="fa-solid fa-sitemap"></i> JOB ID SCHEDULE BUILDER
           </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
               <label class="text-[10px] text-zinc-500 uppercase font-bold">Job ID *</label>
               <input type="text" id="job-id" placeholder="e.g. 5276" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded mt-1 focus:outline-none focus:border-brand-red">
@@ -301,9 +313,36 @@
               <label class="text-[10px] text-zinc-500 uppercase font-bold">AC Number</label>
               <input type="text" id="job-ac" placeholder="e.g. AC2902" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded mt-1 focus:outline-none focus:border-brand-red">
             </div>
-            <div class="sm:col-span-2">
+            <div>
               <label class="text-[10px] text-zinc-500 uppercase font-bold">Description</label>
               <input type="text" id="job-desc" placeholder="e.g. PINION" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded mt-1 focus:outline-none focus:border-brand-red">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 mt-3">
+            <div>
+              <label class="text-[10px] text-zinc-500 uppercase font-bold">Category</label>
+              <select id="job-category" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded mt-1 focus:outline-none focus:border-brand-red">
+                <option value="">-- Select Category --</option>
+                <option value="Structural">Structural</option>
+                <option value="Plate Work">Plate Work</option>
+                <option value="Machining">Machining</option>
+                <option value="Hardware">Hardware</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-[10px] text-zinc-500 uppercase font-bold">Sub-Category</label>
+              <input type="text" id="job-subcategory" placeholder="e.g. STRUCTURAL" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded mt-1 focus:outline-none focus:border-brand-red">
+            </div>
+            <div>
+              <label class="text-[10px] text-zinc-500 uppercase font-bold">Supplier Name</label>
+              <select id="job-supplier" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded mt-1 focus:outline-none focus:border-brand-red">
+                <option value="">-- Select Supplier --</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-[10px] text-zinc-500 uppercase font-bold">Purchase Order</label>
+              <input type="text" id="job-po" placeholder="PO18008" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded mt-1 focus:outline-none focus:border-brand-red">
             </div>
           </div>
 
@@ -321,7 +360,7 @@
 
         <div class="flex justify-end mt-6">
           <button onclick="window.print()" class="bg-brand-red hover:bg-brand-redHover text-white text-xs font-bold px-6 py-3 rounded-lg flex items-center gap-2 shadow-lg transition">
-            <i class="fa-solid fa-print"></i> Generate / Print Transmittal Sheet
+            <i class="fa-solid fa-print"></i> Generate / Print Official PDF Transmittal Sheet
           </button>
         </div>
       </div>
@@ -647,6 +686,7 @@
       document.getElementById('dash-sup-count').innerText = suppliersMaster.length;
       renderSuppliersAlphabetical(suppliersMaster);
       populateRfqDropdown();
+      populateTransmittalSupplierDropdown();
       generateRfqPreview();
     }
 
@@ -847,19 +887,34 @@
     }
 
     // Transmittal Job Builder Functions
+    function populateTransmittalSupplierDropdown() {
+      const select = document.getElementById('job-supplier');
+      if (!select) return;
+      select.innerHTML = `<option value="">-- Select Supplier --</option>` + 
+        suppliersMaster.map(s => `<option value="${s.name}">${s.name}</option>`).join('');
+    }
+
     function addJobEntry() {
       const id = document.getElementById('job-id').value;
       const ac = document.getElementById('job-ac').value;
       const desc = document.getElementById('job-desc').value;
+      const category = document.getElementById('job-category').value;
+      const subcategory = document.getElementById('job-subcategory').value;
+      const supplier = document.getElementById('job-supplier').value;
+      const po = document.getElementById('job-po').value;
 
       if (!id) { alert("Please enter a Job ID."); return; }
 
-      jobEntries.push({ id, ac, desc });
+      jobEntries.push({ id, ac, desc, category, subcategory, supplier, po });
       renderJobEntries();
 
       document.getElementById('job-id').value = '';
       document.getElementById('job-ac').value = '';
       document.getElementById('job-desc').value = '';
+      document.getElementById('job-category').value = '';
+      document.getElementById('job-subcategory').value = '';
+      document.getElementById('job-supplier').value = '';
+      document.getElementById('job-po').value = '';
     }
 
     function renderJobEntries() {
@@ -875,10 +930,14 @@
       msg.classList.add('hidden');
       container.innerHTML = jobEntries.map((e, idx) => `
         <div class="flex items-center justify-between bg-zinc-100 dark:bg-zinc-900 p-2.5 rounded border border-zinc-200 dark:border-zinc-800 text-xs">
-          <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 w-full pr-4">
+          <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2 w-full pr-4">
             <div><span class="font-bold text-brand-red">ID:</span> ${e.id}</div>
             <div><span class="font-bold text-zinc-500">AC:</span> ${e.ac || '-'}</div>
             <div><span class="font-bold text-zinc-500">Desc:</span> ${e.desc || '-'}</div>
+            <div><span class="font-bold text-zinc-500">Cat:</span> ${e.category || '-'}</div>
+            <div><span class="font-bold text-zinc-500">Sub:</span> ${e.subcategory || '-'}</div>
+            <div><span class="font-bold text-zinc-500">Supp:</span> ${e.supplier || '-'}</div>
+            <div><span class="font-bold text-zinc-500">PO:</span> ${e.po || '-'}</div>
           </div>
           <button onclick="jobEntries.splice(${idx}, 1); renderJobEntries();" class="text-zinc-500 hover:text-red-400 shrink-0">
             <i class="fa-solid fa-trash"></i>
