@@ -173,50 +173,6 @@
           </div>
         </div>
       </div>
-
-      <!-- Quick Access Tools and Directories Section -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 shadow-sm">
-          <h3 class="text-sm font-bold uppercase tracking-wider text-brand-red mb-3 flex items-center gap-2">
-            <i class="fa-solid fa-wrench"></i> Portal Tools
-          </h3>
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <button onclick="switchTab('transmittal')" class="p-3 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg text-left hover:border-brand-red transition">
-              <i class="fa-solid fa-file-pdf text-brand-red mb-2 text-lg"></i>
-              <div class="text-xs font-bold">Transmittal</div>
-              <div class="text-[10px] text-zinc-500 mt-0.5">Project records</div>
-            </button>
-            <button onclick="switchTab('bom')" class="p-3 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg text-left hover:border-brand-red transition">
-              <i class="fa-solid fa-calculator text-brand-red mb-2 text-lg"></i>
-              <div class="text-xs font-bold">BOM Estimator</div>
-              <div class="text-[10px] text-zinc-500 mt-0.5">Linear & plates</div>
-            </button>
-            <button onclick="switchTab('rfq')" class="p-3 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg text-left hover:border-brand-red transition">
-              <i class="fa-solid fa-paper-plane text-brand-red mb-2 text-lg"></i>
-              <div class="text-xs font-bold">RFQ Generator</div>
-              <div class="text-[10px] text-zinc-500 mt-0.5">Quote requests</div>
-            </button>
-          </div>
-        </div>
-
-        <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 shadow-sm">
-          <h3 class="text-sm font-bold uppercase tracking-wider text-brand-red mb-3 flex items-center gap-2">
-            <i class="fa-solid fa-folder-open"></i> Directories
-          </h3>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <button onclick="switchTab('suppliers')" class="p-3 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg text-left hover:border-brand-red transition">
-              <i class="fa-solid fa-truck-ramp-box text-brand-red mb-2 text-lg"></i>
-              <div class="text-xs font-bold">Supplier Directory</div>
-              <div class="text-[10px] text-zinc-500 mt-0.5">A-Z supplier index</div>
-            </button>
-            <button onclick="switchTab('staff')" class="p-3 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg text-left hover:border-brand-red transition">
-              <i class="fa-solid fa-id-card text-brand-red mb-2 text-lg"></i>
-              <div class="text-xs font-bold">Staff Directory</div>
-              <div class="text-[10px] text-zinc-500 mt-0.5">Internal personnel</div>
-            </button>
-          </div>
-        </div>
-      </div>
     </div>
 
     <!-- ================= PROJECT TRANSMITTAL BUILDER ================= -->
@@ -252,17 +208,6 @@
           </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-          <div>
-            <label class="text-[11px] font-bold text-zinc-500 dark:text-zinc-400">Inclusions</label>
-            <textarea id="trans-inclusions" rows="3" placeholder="e.g. MATERIAL S355, FABRICATION, MACHINING..." class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded-lg mt-1 focus:outline-none focus:border-brand-red resize-none"></textarea>
-          </div>
-          <div>
-            <label class="text-[11px] font-bold text-zinc-500 dark:text-zinc-400">Exclusions</label>
-            <textarea id="trans-exclusions" rows="3" placeholder="e.g. SAND BLAST & PAINT, MPI, WELDING..." class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded-lg mt-1 focus:outline-none focus:border-brand-red resize-none"></textarea>
-          </div>
-        </div>
-
         <!-- JOB SCHEDULE BUILDER -->
         <div class="mt-8 p-5 bg-zinc-50 dark:bg-zinc-950 rounded-xl border border-zinc-200 dark:border-zinc-800">
           <div class="text-xs font-bold text-brand-red uppercase tracking-wider flex items-center gap-2 mb-4">
@@ -281,34 +226,6 @@
             <div class="sm:col-span-2">
               <label class="text-[10px] text-zinc-500 uppercase font-bold">Description</label>
               <input type="text" id="job-desc" placeholder="e.g. PINION" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded mt-1 focus:outline-none focus:border-brand-red">
-            </div>
-          </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 mt-3">
-            <div>
-              <label class="text-[10px] text-zinc-500 uppercase font-bold">Category</label>
-              <select id="job-category" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded mt-1 focus:outline-none focus:border-brand-red">
-                <option value="">-- Select Category --</option>
-                <option value="MATERIAL">MATERIAL</option>
-                <option value="MACHINING">MACHINING</option>
-                <option value="FABRICATION">FABRICATION</option>
-                <option value="COATING">COATING</option>
-                <option value="TRANSPORT">TRANSPORT</option>
-              </select>
-            </div>
-            <div>
-              <label class="text-[10px] text-zinc-500 uppercase font-bold">Sub-Category</label>
-              <input type="text" id="job-subcat" placeholder="e.g. STRUCTURAL" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded mt-1 focus:outline-none focus:border-brand-red">
-            </div>
-            <div>
-              <label class="text-[10px] text-zinc-500 uppercase font-bold">Supplier Name</label>
-              <select id="job-supplier" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded mt-1 focus:outline-none focus:border-brand-red">
-                <option value="">-- Select Supplier --</option>
-              </select>
-            </div>
-            <div>
-              <label class="text-[10px] text-zinc-500 uppercase font-bold">Purchase Order</label>
-              <input type="text" id="job-po" placeholder="PO18008" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded mt-1 focus:outline-none focus:border-brand-red">
             </div>
           </div>
 
@@ -339,17 +256,6 @@
           <i class="fa-solid fa-calculator text-brand-red"></i> BOM & Material Requirement Calculator
         </h2>
         <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-6">Capture drawing measurements on the fly. Weights and pricing calculate automatically based on live material rates and dimensions.</p>
-
-        <!-- Rate Preset Selector -->
-        <div class="mb-4 bg-zinc-50 dark:bg-zinc-950 p-3 rounded-lg border border-zinc-200 dark:border-zinc-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-          <div class="flex items-center gap-2">
-            <i class="fa-solid fa-layer-group text-brand-red text-sm"></i>
-            <span class="text-xs font-bold">Quick Select Metal Rate (From Google Sheets):</span>
-          </div>
-          <select id="bom-rate-select" onchange="autoFillMetalRate()" class="bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded-lg focus:border-brand-red w-full sm:w-auto">
-            <option value="">-- Loading Live Rates... --</option>
-          </select>
-        </div>
 
         <!-- Calculator Header & Item Inputs -->
         <div class="bg-zinc-50 dark:bg-zinc-950 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 space-y-4">
@@ -406,14 +312,22 @@
                 <input type="text" id="bom-stockbar" oninput="triggerAutoCalculate()" value="6000" placeholder="e.g. 6000" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1">
               </div>
             </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
+
+            <!-- Auto-Calculated Weight, Live Steel Grade Dropdown, and Auto-Calculated Price -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-3">
               <div>
                 <label class="text-[10px] font-bold text-zinc-500 uppercase">Est. Weight (kg) <span class="text-[9px] text-emerald-500 font-normal">(Auto-calculated)</span></label>
-                <input type="number" id="bom-weight" placeholder="e.g. 113.0" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1 bg-zinc-100 dark:bg-zinc-900 font-semibold">
+                <input type="number" id="bom-weight" placeholder="e.g. 30.45" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1 bg-zinc-100 dark:bg-zinc-900 font-semibold" readonly>
               </div>
               <div>
-                <label class="text-[10px] font-bold text-zinc-500 uppercase">Rate / Price (ZAR) <span class="text-[9px] text-emerald-500 font-normal">(Auto-calculated)</span></label>
-                <input type="number" id="bom-rate" oninput="triggerAutoCalculate()" placeholder="e.g. 2450.00" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1 bg-zinc-100 dark:bg-zinc-900 font-semibold">
+                <label class="text-[10px] font-bold text-zinc-500 uppercase">Steel Grade / Rate (Live from Sheet)</label>
+                <select id="bom-item-grade" onchange="triggerAutoCalculate()" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1 focus:border-brand-red">
+                  <option value="">-- Loading Live Rates... --</option>
+                </select>
+              </div>
+              <div>
+                <label class="text-[10px] font-bold text-zinc-500 uppercase">Total Price (ZAR) <span class="text-[9px] text-emerald-500 font-normal">(Auto-calculated)</span></label>
+                <input type="number" id="bom-rate" placeholder="e.g. 1065.75" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1 bg-zinc-100 dark:bg-zinc-900 font-semibold" readonly>
               </div>
             </div>
           </div>
@@ -442,19 +356,6 @@
               </tr>
             </thead>
             <tbody id="bom-table-body" class="divide-y divide-zinc-200 dark:divide-zinc-800">
-              <tr>
-                <td class="p-2 font-medium">Linear</td>
-                <td class="p-2 font-semibold">50X50X6 ANGLE IRON</td>
-                <td class="p-2 text-zinc-500">1A</td>
-                <td class="p-2">5</td>
-                <td class="p-2">1050 mm</td>
-                <td class="p-2">6000 mm (Stock)</td>
-                <td class="p-2">24.5 kg</td>
-                <td class="p-2 font-bold text-brand-red">R 1,225.00</td>
-                <td class="p-2 text-right">
-                  <button onclick="this.closest('tr').remove()" class="text-zinc-500 hover:text-red-400"><i class="fa-solid fa-trash"></i></button>
-                </td>
-              </tr>
             </tbody>
           </table>
         </div>
@@ -782,24 +683,22 @@
       const dim = parseFloat(document.getElementById('bom-dim').value) || 0;
       const stockOrWidth = parseFloat(document.getElementById('bom-stockbar').value) || 0;
       const desc = document.getElementById('bom-desc').value;
-      const ratePerKg = parseFloat(document.getElementById('bom-rate').value) || 0;
+      
+      const gradeSelect = document.getElementById('bom-item-grade');
+      const ratePerKg = parseFloat(gradeSelect.value) || 0;
 
       let estimatedWeight = 0;
 
       if (type === 'Plate') {
-        // Extract thickness from description (e.g. "10mm", "20mm") or default to 10mm
         const thicknessMatch = desc.match(/(\d+(?:\.\d+)?)\s*mm/i);
         const thickness = thicknessMatch ? parseFloat(thicknessMatch[1]) : 10;
-        
-        // Weight formula for steel plate: Length(mm) * Width(mm) * Thickness(mm) * 0.00000785 * Qty
         if (dim > 0 && stockOrWidth > 0) {
           estimatedWeight = (dim * stockOrWidth * thickness * 0.00000785) * (qty > 0 ? qty : 1);
         }
       } else if (type === 'Linear') {
-        // Linear weight estimate based on length (mm) and quantity
         if (dim > 0) {
           const totalLengthMeters = (dim * (qty > 0 ? qty : 1)) / 1000;
-          estimatedWeight = totalLengthMeters * 5.8; // standard profile average kg/m assumption
+          estimatedWeight = totalLengthMeters * 5.8;
         }
       } else {
         estimatedWeight = qty * 1.5;
@@ -810,7 +709,12 @@
         if (ratePerKg > 0) {
           const totalPrice = estimatedWeight * ratePerKg;
           document.getElementById('bom-rate').value = totalPrice.toFixed(2);
+        } else {
+          document.getElementById('bom-rate').value = '';
         }
+      } else {
+        document.getElementById('bom-weight').value = '';
+        document.getElementById('bom-rate').value = '';
       }
     }
 
@@ -889,9 +793,9 @@
 
     // BOM & Metal Rates UI Functions
     function populateMetalRatesUI() {
-      const select = document.getElementById('bom-rate-select');
-      select.innerHTML = `<option value="">-- Choose Grade / Service Rate --</option>` + 
-        metalRatesData.map((m, i) => `<option value="${i}">${m.material} - ZAR ${m.rate} / ${m.unit}</option>`).join('');
+      const select = document.getElementById('bom-item-grade');
+      select.innerHTML = `<option value="">-- Select Steel Grade / Rate --</option>` + 
+        metalRatesData.map((m) => `<option value="${m.rate}">${m.material} (R ${m.rate} / ${m.unit})</option>`).join('');
 
       const tableContainer = document.getElementById('metal-rates-table-container');
       if (metalRatesData.length === 0) {
@@ -919,16 +823,6 @@
           </tbody>
         </table>
       `;
-    }
-
-    function autoFillMetalRate() {
-      const idx = document.getElementById('bom-rate-select').value;
-      if (idx !== "") {
-        const item = metalRatesData[idx];
-        document.getElementById('bom-desc').value = item.material;
-        document.getElementById('bom-rate').value = item.rate;
-        triggerAutoCalculate();
-      }
     }
 
     function addBomRow() {
@@ -968,6 +862,7 @@
       document.getElementById('bom-dim').value = '';
       document.getElementById('bom-weight').value = '';
       document.getElementById('bom-rate').value = '';
+      document.getElementById('bom-item-grade').selectedIndex = 0;
     }
 
     // RFQ Generator Functions
