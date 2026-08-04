@@ -448,13 +448,13 @@
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
           <div>
             <h2 class="text-lg font-bold flex items-center gap-2"><i class="fa-solid fa-truck-ramp-box text-brand-red"></i> Supplier Directory</h2>
-            <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">Live Google Sheets sync with collapsible A–Z sections.</p>
+            <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">Live Google Sheets sync displaying all columns (emails, numbers, addresses, payment terms) with collapsible A–Z sections.</p>
           </div>
           <button onclick="expandAllSuppliers()" class="text-xs bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 px-3 py-1.5 rounded text-zinc-700 dark:text-zinc-300 font-semibold hover:border-brand-red transition">
             <i class="fa-solid fa-sort"></i> Toggle Expand / Collapse All
           </button>
         </div>
-        <input type="text" id="supplier-search" onkeyup="filterSuppliers()" placeholder="Filter suppliers by name or category..." class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-3 rounded-lg mb-6 focus:border-brand-red">
+        <input type="text" id="supplier-search" onkeyup="filterSuppliers()" placeholder="Filter suppliers by any field (name, email, phone, terms, address)..." class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-3 rounded-lg mb-6 focus:border-brand-red">
         <div id="suppliers-alphabet-container" class="space-y-4"></div>
       </div>
     </div>
@@ -547,21 +547,22 @@
         const text = await res.text();
         const raw = parseCSV(text);
         
-        suppliersMaster = raw.map(r => ({
-          name: r.name || r['supplier name'] || r.supplier || r.company || 'Unnamed Supplier',
-          poc: r.poc || r['contact person'] || r.contact || r.person || r.name || '',
-          email: r.email || r['email address'] || r.mail || '',
-          cat: r.category || r.cat || r.type || 'General'
-        })).filter(s => s.name && s.name !== 'Unnamed Supplier');
+        suppliersMaster = raw.map(r => {
+          const nameKey = Object.keys(r).find(k => k.includes('name') || k.includes('supplier') || k.includes('company')) || Object.keys(r)[0];
+          return {
+            name: r[nameKey] || 'Unnamed Supplier',
+            rawFields: r
+          };
+        }).filter(s => s.name && s.name !== 'Unnamed Supplier');
       } catch (e) {
         console.warn("Could not fetch suppliers CSV, using backup.", e);
       }
 
       if (suppliersMaster.length === 0) {
         suppliersMaster = [
-          { name: "Apex Steel Works", poc: "David", email: "orders@apexsteel.co.za", cat: "Structural" },
-          { name: "Boltfast Fasteners", poc: "Norman", email: "quotes@boltfast.co.za", cat: "Hardware" },
-          { name: "Macsteel Trading", poc: "Sarah", email: "sales@macsteel.co.za", cat: "Plates" }
+          { name: "Apex Steel Works", rawFields: { name: "Apex Steel Works", category: "Structural", contact: "David", email: "orders@apexsteel.co.za", phone: "011 555 1234", address: "14 Steel Road,工业区", terms: "30 Days" } },
+          { name: "Boltfast Fasteners", rawFields: { name: "Boltfast Fasteners", category: "Hardware", contact: "Norman", email: "quotes@boltfast.co.za", phone: "011 555 5678", address: "22 Bolt Avenue", terms: "COD" } },
+          { name: "Macsteel Trading", rawFields: { name: "Macsteel Trading", category: "Plates", contact: "Sarah", email: "sales@macsteel.co.za", phone: "011 555 9988", address: "5 Mega Park", terms: "30 Days EOM" } }
         ];
       }
 
@@ -614,7 +615,6 @@
         console.warn("Could not fetch metal rates CSV, using backup.", e);
       }
 
-      // Fallback covering all requested material grades: S355 JR / J2, Mild Steel Plate, 304 Stainless, 316 Stainless, 6082-T6, Hardox 500
       if (metalRatesData.length === 0) {
         metalRatesData = [
           { material: "S355 JR / J2", rate: "15.5269335", unit: "kg" },
@@ -699,7 +699,6 @@
       
       const gradeText = gradeSelect.selectedIndex >= 0 ? gradeSelect.options[gradeSelect.selectedIndex].text.toUpperCase() : '';
       
-      // Determine density factor based on material type / grade (S355, Mild Steel, Hardox = 0.00785; Stainless ~0.00793; Aluminum 6082-T6 = 0.0027)
       let densityFactor = 0.00785;
       if (gradeText.includes('6082') || gradeText.includes('ALUMINIUM') || desc.includes('ALUMINIUM')) {
         densityFactor = 0.0027;
@@ -726,22 +725,18 @@
       else if (type === 'Linear') {
         let kgPerMeter = 5.8; // Default fallback
 
-        // Check for Angle (e.g. 50X50X6)
         const angleMatch = desc.match(/(\d+)X(\d+)X(\d+(?:\.\d+)?)/);
         if (angleMatch && (desc.includes('ANGLE') || desc.includes('EQUAL') || !desc.includes('TUBE'))) {
           const leg1 = parseFloat(angleMatch[1]);
           const thk = parseFloat(angleMatch[3]);
-          // Standard Structural Angle Formula: (Leg + Leg - Thickness) * Thickness * densityFactor
           kgPerMeter = (leg1 * 2 - thk) * thk * densityFactor;
         } 
-        // Check for Round Bar: Diameter * Diameter * factor
         else if (desc.includes('ROUND') || desc.includes('BAR')) {
           const diaMatch = desc.match(/(\d+(?:\.\d+)?)/);
           const dia = diaMatch ? parseFloat(diaMatch[1]) : 20;
           const roundFactor = densityFactor * 0.785398;
           kgPerMeter = dia * dia * roundFactor;
         }
-        // Check for Square Bar: Side * Side * densityFactor
         else if (desc.includes('SQUARE') && !desc.includes('TUBE')) {
           const sideMatch = desc.match(/(\d+(?:\.\d+)?)/);
           const side = sideMatch ? parseFloat(sideMatch[1]) : 50;
@@ -890,7 +885,10 @@
     // RFQ Generator Functions
     function populateRfqDropdown() {
       const select = document.getElementById('rfq-supplier');
-      select.innerHTML = suppliersMaster.map((s, i) => `<option value="${i}">${s.name} (${s.poc || 'General'})</option>`).join('');
+      select.innerHTML = suppliersMaster.map((s, i) => {
+        const email = s.rawFields['email'] || s.rawFields['email address'] || '';
+        return `<option value="${i}">${s.name} ${email ? '(' + email + ')' : ''}</option>`;
+      }).join('');
     }
 
     function generateRfqPreview() {
@@ -899,7 +897,7 @@
       const ac = document.getElementById('rfq-ac').value || "AC2902";
       const proj = document.getElementById('rfq-project').value || "SHANTA NEW";
       const items = document.getElementById('rfq-items').value || "• 1x 50x50x6 Equal Angle x 6m\n• 5x Profile Base Flanges as per DWG";
-      const pocName = supplier && (supplier.poc || supplier.name) ? (supplier.poc || supplier.name) : "Supplier";
+      const pocName = supplier && supplier.rawFields ? (supplier.rawFields['poc'] || supplier.rawFields['contact person'] || supplier.rawFields['contact'] || supplier.name) : "Supplier";
 
       const subject = `${ac} - ${proj} - QUOTE`;
       const body = `Hi ${pocName},\n\nTrust you are well.\n\nKindly quote on the following items:\n\n${items}\n\nThank you in advance.`;
@@ -917,7 +915,7 @@
     function openEmailClient() {
       const supplierIndex = document.getElementById('rfq-supplier').value;
       const supplier = suppliersMaster[supplierIndex];
-      const email = supplier?.email || "";
+      const email = supplier?.rawFields['email'] || supplier?.rawFields['email address'] || supplier?.rawFields['mail'] || "";
       const subject = encodeURIComponent(document.getElementById('rfq-subject-val').value);
       
       const fullText = document.getElementById('rfq-preview').value;
@@ -927,7 +925,7 @@
       window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
     }
 
-    // Supplier Directory Functions
+    // Supplier Directory Functions (Displays ALL sheet columns dynamically for each supplier)
     function renderSuppliersAlphabetical(list) {
       const container = document.getElementById('suppliers-alphabet-container');
       container.innerHTML = '';
@@ -956,18 +954,32 @@
               <i class="fa-solid fa-chevron-down text-zinc-400 text-xs"></i>
             </button>
             <div id="group-${letter}" class="divide-y divide-zinc-200 dark:divide-zinc-800 supplier-group">
-              ${letterGroup.map(s => `
-                <div class="p-3.5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 hover:bg-zinc-100 dark:hover:bg-zinc-900/60 transition">
-                  <div>
-                    <h4 class="font-bold text-xs">${s.name}</h4>
-                    <p class="text-[11px] text-zinc-500">Contact / POC: <span class="text-zinc-700 dark:text-zinc-300 font-semibold">${s.poc || 'N/A'}</span></p>
+              ${letterGroup.map(s => {
+                const fields = s.rawFields;
+                // Get all column entries from the sheet except the supplier name itself
+                const entries = Object.entries(fields).filter(([k]) => {
+                  const lk = k.toLowerCase();
+                  return !lk.includes('name') && !lk.includes('supplier') && !lk.includes('company');
+                });
+
+                return `
+                  <div class="p-4 space-y-3 hover:bg-zinc-100 dark:hover:bg-zinc-900/60 transition">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-zinc-200 dark:border-zinc-800/60 pb-2">
+                      <h4 class="font-bold text-sm text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
+                        <i class="fa-solid fa-building text-brand-red text-xs"></i> ${s.name}
+                      </h4>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+                      ${entries.map(([k, v]) => `
+                        <div class="bg-white dark:bg-zinc-900 p-2.5 rounded-lg border border-zinc-200 dark:border-zinc-800 text-[11px]">
+                          <span class="font-bold uppercase text-zinc-400 block text-[9px] tracking-wider mb-0.5">${k.replace(/[_]/g, ' ')}</span>
+                          <span class="text-zinc-800 dark:text-zinc-200 font-medium break-words">${v || '<span class="text-zinc-400 italic">N/A</span>'}</span>
+                        </div>
+                      `).join('')}
+                    </div>
                   </div>
-                  <div class="flex items-center gap-4">
-                    <span class="text-[11px] text-zinc-500 dark:text-zinc-400">${s.cat}</span>
-                    <span class="font-mono text-[11px] text-brand-red font-semibold">${s.email}</span>
-                  </div>
-                </div>
-              `).join('')}
+                `;
+              }).join('')}
             </div>
           </div>
         `;
@@ -984,12 +996,12 @@
 
     function filterSuppliers() {
       const q = document.getElementById('supplier-search').value.toLowerCase();
-      renderSuppliersAlphabetical(suppliersMaster.filter(s => 
-        (s.name||"").toLowerCase().includes(q) || 
-        (s.cat||"").toLowerCase().includes(q) ||
-        (s.email||"").toLowerCase().includes(q) ||
-        (s.poc||"").toLowerCase().includes(q)
-      ));
+      renderSuppliersAlphabetical(suppliersMaster.filter(s => {
+        // Search across all fields in rawFields + name
+        const matchName = (s.name || "").toLowerCase().includes(q);
+        const matchFields = Object.values(s.rawFields).some(val => String(val).toLowerCase().includes(q));
+        return matchName || matchFields;
+      }));
     }
 
     // Staff Directory Functions
