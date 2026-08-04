@@ -18,12 +18,39 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     body { transition: background-color 0.2s, color 0.2s; }
+    /* Fix select dropdown contrast across dark/light modes */
+    select, select option {
+      background-color: #ffffff;
+      color: #18181b;
+    }
+    .dark select, .dark select option {
+      background-color: #09090b;
+      color: #f4f4f5;
+    }
+    input, textarea, select {
+      color-scheme: light dark;
+    }
+    @media print {
+      body {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+      }
+      .no-print, header, button, nav {
+        display: none !important;
+      }
+      .card, input, select, textarea {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+        border-color: #cbd5e1 !important;
+        box-shadow: none !important;
+      }
+    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
 
   <!-- TOP HEADER / NAVIGATION -->
-  <header class="border-b border-zinc-200 dark:border-zinc-900 bg-white dark:bg-zinc-900 px-6 py-3 flex items-center justify-between gap-4 relative z-50">
+  <header class="no-print border-b border-zinc-200 dark:border-zinc-900 bg-white dark:bg-zinc-900 px-6 py-3 flex items-center justify-between gap-4 relative z-50">
     <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('dashboard')">
       <div class="bg-brand-red text-white font-black px-3 py-1 rounded tracking-tighter text-lg shadow-sm">ALLCON</div>
       <span class="text-xl font-bold tracking-wider">KERF PORTAL</span>
@@ -103,7 +130,7 @@
 
       <!-- KPI Summary Cards -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-5 rounded-xl flex items-center justify-between shadow-sm">
+        <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-5 rounded-xl flex items-center justify-between shadow-sm cursor-pointer hover:border-brand-red transition" onclick="switchTab('suppliers')">
           <div>
             <p class="text-[11px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Total Suppliers</p>
             <p class="text-3xl font-extrabold mt-1" id="dash-sup-count">--</p>
@@ -114,7 +141,7 @@
           </div>
         </div>
 
-        <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-5 rounded-xl flex items-center justify-between shadow-sm">
+        <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-5 rounded-xl flex items-center justify-between shadow-sm cursor-pointer hover:border-brand-red transition" onclick="switchTab('bom')">
           <div>
             <p class="text-[11px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Metal Pricing Rates</p>
             <p class="text-3xl font-extrabold mt-1" id="dash-rates-count">--</p>
@@ -125,7 +152,7 @@
           </div>
         </div>
 
-        <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-5 rounded-xl flex items-center justify-between shadow-sm">
+        <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-5 rounded-xl flex items-center justify-between shadow-sm cursor-pointer hover:border-brand-red transition" onclick="switchTab('bom')">
           <div>
             <p class="text-[11px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">BOM Estimates</p>
             <p class="text-3xl font-extrabold mt-1">Active</p>
@@ -136,7 +163,7 @@
           </div>
         </div>
 
-        <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-5 rounded-xl flex items-center justify-between shadow-sm">
+        <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-5 rounded-xl flex items-center justify-between shadow-sm cursor-pointer hover:border-brand-red transition" onclick="switchTab('staff')">
           <div>
             <p class="text-[11px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Staff Directory</p>
             <p class="text-3xl font-extrabold mt-1" id="dash-staff-count">--</p>
@@ -144,6 +171,50 @@
           </div>
           <div class="bg-red-50 dark:bg-red-950/40 p-3.5 rounded-xl border border-red-100 dark:border-red-900/40 text-brand-red">
             <i class="fa-solid fa-users text-xl"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Access Tools and Directories Section -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 shadow-sm">
+          <h3 class="text-sm font-bold uppercase tracking-wider text-brand-red mb-3 flex items-center gap-2">
+            <i class="fa-solid fa-wrench"></i> Portal Tools
+          </h3>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <button onclick="switchTab('transmittal')" class="p-3 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg text-left hover:border-brand-red transition">
+              <i class="fa-solid fa-file-pdf text-brand-red mb-2 text-lg"></i>
+              <div class="text-xs font-bold">Transmittal</div>
+              <div class="text-[10px] text-zinc-500 mt-0.5">Project records</div>
+            </button>
+            <button onclick="switchTab('bom')" class="p-3 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg text-left hover:border-brand-red transition">
+              <i class="fa-solid fa-calculator text-brand-red mb-2 text-lg"></i>
+              <div class="text-xs font-bold">BOM Estimator</div>
+              <div class="text-[10px] text-zinc-500 mt-0.5">Linear & plates</div>
+            </button>
+            <button onclick="switchTab('rfq')" class="p-3 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg text-left hover:border-brand-red transition">
+              <i class="fa-solid fa-paper-plane text-brand-red mb-2 text-lg"></i>
+              <div class="text-xs font-bold">RFQ Generator</div>
+              <div class="text-[10px] text-zinc-500 mt-0.5">Quote requests</div>
+            </button>
+          </div>
+        </div>
+
+        <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 shadow-sm">
+          <h3 class="text-sm font-bold uppercase tracking-wider text-brand-red mb-3 flex items-center gap-2">
+            <i class="fa-solid fa-folder-open"></i> Directories
+          </h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <button onclick="switchTab('suppliers')" class="p-3 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg text-left hover:border-brand-red transition">
+              <i class="fa-solid fa-truck-ramp-box text-brand-red mb-2 text-lg"></i>
+              <div class="text-xs font-bold">Supplier Directory</div>
+              <div class="text-[10px] text-zinc-500 mt-0.5">A-Z supplier index</div>
+            </button>
+            <button onclick="switchTab('staff')" class="p-3 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg text-left hover:border-brand-red transition">
+              <i class="fa-solid fa-id-card text-brand-red mb-2 text-lg"></i>
+              <div class="text-xs font-bold">Staff Directory</div>
+              <div class="text-[10px] text-zinc-500 mt-0.5">Internal personnel</div>
+            </button>
           </div>
         </div>
       </div>
@@ -238,9 +309,9 @@
     <div id="view-bom" class="hidden space-y-6">
       <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 shadow-sm">
         <h2 class="text-lg font-bold flex items-center gap-2 mb-2">
-          <i class="fa-solid fa-calculator text-brand-red"></i> BOM & Material Estimator
+          <i class="fa-solid fa-calculator text-brand-red"></i> BOM & Material Requirement Calculator
         </h2>
-        <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-6">Calculate steel plate weights, linear profiles, and hardware costs synced with live Google Sheets metal rates.</p>
+        <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-6">Capture drawing measurements on the fly. Linear items are automatically aggregated per material type to calculate stock bar requirements, and plates are dynamically calculated with a 25% kerf/waste line dimension.</p>
 
         <!-- Rate Preset Selector -->
         <div class="mb-4 bg-zinc-50 dark:bg-zinc-950 p-3 rounded-lg border border-zinc-200 dark:border-zinc-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
@@ -253,33 +324,77 @@
           </select>
         </div>
 
-        <!-- Calculator Inputs -->
-        <div class="bg-zinc-50 dark:bg-zinc-950 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
-          <div>
-            <label class="text-[10px] font-bold text-zinc-500 uppercase">Item Description</label>
-            <input type="text" id="bom-desc" placeholder="e.g. S355 Base Plate" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1">
+        <!-- Calculator Header & Item Inputs -->
+        <div class="bg-zinc-50 dark:bg-zinc-950 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 space-y-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            <div>
+              <label class="text-[10px] font-bold text-zinc-500 uppercase">Client Name</label>
+              <input type="text" id="bom-client" placeholder="e.g. NCP International" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1">
+            </div>
+            <div>
+              <label class="text-[10px] font-bold text-zinc-500 uppercase">Project Name</label>
+              <input type="text" id="bom-proj" placeholder="e.g. SHANTA NEW - CHOCKEY BLOCKS" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1">
+            </div>
+            <div>
+              <label class="text-[10px] font-bold text-zinc-500 uppercase">Job ID *</label>
+              <input type="text" id="bom-jobid" placeholder="e.g. 5276" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1">
+            </div>
+            <div>
+              <label class="text-[10px] font-bold text-zinc-500 uppercase">AC Number *</label>
+              <input type="text" id="bom-ac" placeholder="e.g. AC2902" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1">
+            </div>
           </div>
-          <div>
-            <label class="text-[10px] font-bold text-zinc-500 uppercase">Dimensions (LxW x Thk mm)</label>
-            <input type="text" id="bom-dim" placeholder="e.g. 1200 x 600 x 20" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1">
-          </div>
-          <div>
-            <label class="text-[10px] font-bold text-zinc-500 uppercase">Qty</label>
-            <input type="number" id="bom-qty" placeholder="1" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1">
-          </div>
-          <div>
-            <label class="text-[10px] font-bold text-zinc-500 uppercase">Est. Weight (kg)</label>
-            <input type="number" id="bom-weight" placeholder="e.g. 113.0" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1">
-          </div>
-          <div>
-            <label class="text-[10px] font-bold text-zinc-500 uppercase">Rate / Price (ZAR)</label>
-            <input type="number" id="bom-rate" placeholder="e.g. 2450.00" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1">
+
+          <div class="border-t border-zinc-200 dark:border-zinc-800 pt-4">
+            <div class="text-xs font-bold text-brand-red uppercase mb-3 flex items-center gap-1.5">
+              <i class="fa-solid fa-plus-circle"></i> Add Material Item
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3">
+              <div>
+                <label class="text-[10px] font-bold text-zinc-500 uppercase">Material Type *</label>
+                <select id="bom-material-type" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1">
+                  <option value="Linear">Linear (Angle/Pipe/Tube)</option>
+                  <option value="Plate">Plate</option>
+                  <option value="Hardware">Hardware / Fastener</option>
+                </select>
+              </div>
+              <div>
+                <label class="text-[10px] font-bold text-zinc-500 uppercase">Subject / Material Name *</label>
+                <input type="text" id="bom-desc" placeholder="E.G. 50X50X6 ANGLE IRON" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1">
+              </div>
+              <div>
+                <label class="text-[10px] font-bold text-zinc-500 uppercase">Item / Mark</label>
+                <input type="text" id="bom-mark" placeholder="e.g. 1A or Gusset" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1">
+              </div>
+              <div>
+                <label class="text-[10px] font-bold text-zinc-500 uppercase">Quantity *</label>
+                <input type="number" id="bom-qty" placeholder="e.g. 5" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1">
+              </div>
+              <div>
+                <label class="text-[10px] font-bold text-zinc-500 uppercase">Length / Dim (mm)</label>
+                <input type="text" id="bom-dim" placeholder="e.g. 1050" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1">
+              </div>
+              <div>
+                <label class="text-[10px] font-bold text-zinc-500 uppercase">Stock Bar (mm)</label>
+                <input type="number" id="bom-stockbar" value="6000" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1">
+              </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
+              <div>
+                <label class="text-[10px] font-bold text-zinc-500 uppercase">Est. Weight (kg)</label>
+                <input type="number" id="bom-weight" placeholder="e.g. 113.0" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1">
+              </div>
+              <div>
+                <label class="text-[10px] font-bold text-zinc-500 uppercase">Rate / Price (ZAR)</label>
+                <input type="number" id="bom-rate" placeholder="e.g. 2450.00" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1">
+              </div>
+            </div>
           </div>
         </div>
 
         <div class="flex justify-end mt-3">
-          <button onclick="addBomRow()" class="bg-brand-red hover:bg-brand-redHover text-white text-xs font-semibold px-4 py-2 rounded-lg flex items-center gap-2">
-            <i class="fa-solid fa-plus"></i> Add Item to Schedule
+          <button onclick="addBomRow()" class="bg-brand-red hover:bg-brand-redHover text-white text-xs font-semibold px-4 py-2.5 rounded-lg flex items-center gap-2 transition">
+            <i class="fa-solid fa-plus"></i> Add to BOM
           </button>
         </div>
 
@@ -288,9 +403,11 @@
           <table class="w-full text-left text-xs">
             <thead>
               <tr class="border-b border-zinc-200 dark:border-zinc-800 text-zinc-500 uppercase text-[10px]">
-                <th class="p-2">Description</th>
-                <th class="p-2">Dimensions</th>
+                <th class="p-2">Material Type</th>
+                <th class="p-2">Subject / Description</th>
+                <th class="p-2">Mark</th>
                 <th class="p-2">Qty</th>
+                <th class="p-2">Length / Dim</th>
                 <th class="p-2">Weight (kg)</th>
                 <th class="p-2">Unit Price</th>
                 <th class="p-2 text-right">Action</th>
@@ -298,17 +415,33 @@
             </thead>
             <tbody id="bom-table-body" class="divide-y divide-zinc-200 dark:divide-zinc-800">
               <tr>
-                <td class="p-2 font-semibold">16mm S355 Structural Plate</td>
-                <td class="p-2 text-zinc-500">2500 x 1250 x 16</td>
-                <td class="p-2">2</td>
-                <td class="p-2">785.0 kg</td>
-                <td class="p-2">R 18,450.00</td>
+                <td class="p-2 font-medium">Linear</td>
+                <td class="p-2 font-semibold">50X50X6 ANGLE IRON</td>
+                <td class="p-2 text-zinc-500">1A</td>
+                <td class="p-2">5</td>
+                <td class="p-2">1050 mm</td>
+                <td class="p-2">24.5 kg</td>
+                <td class="p-2">R 1,225.00</td>
                 <td class="p-2 text-right">
                   <button onclick="this.closest('tr').remove()" class="text-zinc-500 hover:text-red-400"><i class="fa-solid fa-trash"></i></button>
                 </td>
               </tr>
             </tbody>
           </table>
+        </div>
+
+        <!-- General Notes & Special Instructions -->
+        <div class="mt-6 bg-zinc-50 dark:bg-zinc-950 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800">
+          <label class="text-xs font-bold text-brand-red uppercase block mb-2 flex items-center gap-1.5">
+            <i class="fa-solid fa-clipboard-list"></i> GENERAL NOTES & SPECIAL INSTRUCTIONS
+          </label>
+          <textarea id="bom-notes" rows="3" placeholder="Enter any general project notes, material specifications, surface finishes, or delivery instructions..." class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded-lg focus:outline-none focus:border-brand-red resize-none"></textarea>
+        </div>
+
+        <div class="flex justify-end mt-6">
+          <button onclick="window.print()" class="bg-brand-red hover:bg-brand-redHover text-white text-xs font-bold px-6 py-3 rounded-lg flex items-center gap-2 shadow-lg transition">
+            <i class="fa-solid fa-print"></i> Print / Export BOM Sheet
+          </button>
         </div>
 
         <!-- Live Metal Rates Reference Card -->
@@ -492,15 +625,19 @@
           poc: r.poc || r['contact person'] || r.contact || r.person || r.name || '',
           email: r.email || r['email address'] || r.mail || '',
           cat: r.category || r.cat || r.type || 'General'
-        }));
+        })).filter(s => s.name && s.name !== 'Unnamed Supplier');
       } catch (e) {
         console.warn("Could not fetch suppliers CSV, using backup.", e);
+      }
+
+      if (suppliersMaster.length === 0) {
         suppliersMaster = [
           { name: "Apex Steel Works", poc: "David", email: "orders@apexsteel.co.za", cat: "Structural" },
           { name: "Boltfast Fasteners", poc: "Norman", email: "quotes@boltfast.co.za", cat: "Hardware" },
           { name: "Macsteel Trading", poc: "Sarah", email: "sales@macsteel.co.za", cat: "Plates" }
         ];
       }
+
       document.getElementById('dash-sup-count').innerText = suppliersMaster.length;
       renderSuppliersAlphabetical(suppliersMaster);
       populateRfqDropdown();
@@ -539,15 +676,22 @@
           material: r.material || r.grade || r.item || r.description || r['metal type'] || 'Steel Grade',
           rate: r.rate || r.price || r['rate (zar)'] || r.cost || r['zar/kg'] || '0',
           unit: r.unit || r.uom || 'kg'
-        }));
+        })).filter(m => m.material && m.material !== 'Steel Grade');
       } catch (e) {
         console.warn("Could not fetch metal rates CSV, using backup.", e);
+      }
+
+      if (metalRatesData.length === 0 || metalRatesData.every(m => parseFloat(m.rate) === 0)) {
         metalRatesData = [
-          { material: "S355 Structural Plate", rate: "24.50", unit: "kg" },
-          { material: "Mild Steel Plate", rate: "21.00", unit: "kg" },
-          { material: "Hot Dip Galvanizing", rate: "9.80", unit: "kg" }
+          { material: "S355 JR / J2", rate: "35.00", unit: "kg" },
+          { material: "Mild Steel Plate", rate: "32.00", unit: "kg" },
+          { material: "304 Stainless", rate: "95.00", unit: "kg" },
+          { material: "316 Stainless", rate: "140.00", unit: "kg" },
+          { material: "6082-T6", rate: "115.00", unit: "kg" },
+          { material: "Hardox 500", rate: "65.00", unit: "kg" }
         ];
       }
+
       document.getElementById('dash-rates-count').innerText = metalRatesData.length;
       populateMetalRatesUI();
     }
@@ -567,6 +711,7 @@
         document.getElementById(`view-${v}`).classList.add('hidden');
       });
       document.getElementById(`view-${tabId}`).classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function toggleTheme() {
@@ -670,21 +815,25 @@
     }
 
     function addBomRow() {
+      const type = document.getElementById('bom-material-type').value;
       const desc = document.getElementById('bom-desc').value;
-      const dim = document.getElementById('bom-dim').value;
+      const mark = document.getElementById('bom-mark').value;
       const qty = document.getElementById('bom-qty').value || "1";
+      const dim = document.getElementById('bom-dim').value;
       const weight = document.getElementById('bom-weight').value;
       const rate = document.getElementById('bom-rate').value;
 
-      if (!desc) { alert("Please specify an item description."); return; }
+      if (!desc) { alert("Please specify a subject / material name."); return; }
 
       const tbody = document.getElementById('bom-table-body');
       const tr = document.createElement('tr');
       tr.className = "hover:bg-zinc-100 dark:hover:bg-zinc-900/40";
       tr.innerHTML = `
+        <td class="p-2 font-medium">${type}</td>
         <td class="p-2 font-semibold">${desc}</td>
-        <td class="p-2 text-zinc-500">${dim || '-'}</td>
+        <td class="p-2 text-zinc-500">${mark || '-'}</td>
         <td class="p-2">${qty}</td>
+        <td class="p-2">${dim ? dim + ' mm' : '-'}</td>
         <td class="p-2">${weight ? weight + ' kg' : '-'}</td>
         <td class="p-2">R ${rate || '0.00'}</td>
         <td class="p-2 text-right">
@@ -694,8 +843,9 @@
       tbody.appendChild(tr);
 
       document.getElementById('bom-desc').value = '';
-      document.getElementById('bom-dim').value = '';
+      document.getElementById('bom-mark').value = '';
       document.getElementById('bom-qty').value = '';
+      document.getElementById('bom-dim').value = '';
       document.getElementById('bom-weight').value = '';
       document.getElementById('bom-rate').value = '';
     }
@@ -703,16 +853,16 @@
     // RFQ Generator Functions
     function populateRfqDropdown() {
       const select = document.getElementById('rfq-supplier');
-      select.innerHTML = suppliersMaster.map((s, i) => `<option value="${i}">${s.name}</option>`).join('');
+      select.innerHTML = suppliersMaster.map((s, i) => `<option value="${i}">${s.name} (${s.poc || 'General'})</option>`).join('');
     }
 
     function generateRfqPreview() {
       const supplierIndex = document.getElementById('rfq-supplier').value;
       const supplier = suppliersMaster[supplierIndex];
-      const ac = document.getElementById('rfq-ac').value || "(AC NUMBER)";
-      const proj = document.getElementById('rfq-project').value || "(PROJECT NAME)";
-      const items = document.getElementById('rfq-items').value || "• (QTY)x ITEM REQUIRED FROM TRANSMITTAL";
-      const pocName = supplier && supplier.poc ? supplier.poc : "(NAME)";
+      const ac = document.getElementById('rfq-ac').value || "AC2902";
+      const proj = document.getElementById('rfq-project').value || "SHANTA NEW";
+      const items = document.getElementById('rfq-items').value || "• 10x S355 Plates 20mm x 1200mm x 2400mm\n• 5x Profile Base Flanges as per DWG";
+      const pocName = supplier && (supplier.poc || supplier.name) ? (supplier.poc || supplier.name) : "Supplier";
 
       const subject = `${ac} - ${proj} - QUOTE`;
       const body = `Hi ${pocName},\n\nTrust you are well.\n\nKindly quote on the following items:\n\n${items}\n\nThank you in advance.`;
@@ -729,7 +879,8 @@
 
     function openEmailClient() {
       const supplierIndex = document.getElementById('rfq-supplier').value;
-      const email = suppliersMaster[supplierIndex]?.email || "";
+      const supplier = suppliersMaster[supplierIndex];
+      const email = supplier?.email || "";
       const subject = encodeURIComponent(document.getElementById('rfq-subject-val').value);
       
       const fullText = document.getElementById('rfq-preview').value;
@@ -799,7 +950,8 @@
       renderSuppliersAlphabetical(suppliersMaster.filter(s => 
         (s.name||"").toLowerCase().includes(q) || 
         (s.cat||"").toLowerCase().includes(q) ||
-        (s.email||"").toLowerCase().includes(q)
+        (s.email||"").toLowerCase().includes(q) ||
+        (s.poc||"").toLowerCase().includes(q)
       ));
     }
 
