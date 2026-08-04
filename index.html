@@ -3,25 +3,44 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KERF 2.0 Portal</title>
+  <title>ALLCON KERF PORTAL</title>
   
   <style>
     /* ========================================== */
-    /* CSS VARIABLES & THEMING                    */
+    /* ALLCON BRAND THEMING & CSS VARIABLES       */
     /* ========================================== */
     :root {
-      --primary-color: #0284c7;
-      --primary-hover: #0369a1;
-      --bg-main: #f8fafc;
+      --bg-body: #0d0e12;
+      --bg-card: #181920;
+      --bg-subpanel: #22242e;
+      --bg-input: #323543;
+      --border-color: #2a2c38;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-label: #cbd5e1;
+      --accent-red: #e52e2e;
+      --accent-red-hover: #cc2525;
+      --header-bg: #111217;
+      --nav-btn-bg: #22242e;
+      --nav-btn-text: #cbd5e1;
+      --table-header-bg: #252733;
+    }
+
+    body.light-mode {
+      --bg-body: #f1f5f9;
       --bg-card: #ffffff;
-      --bg-card-subtle: #f1f5f9;
-      --text-color: #0f172a;
+      --bg-subpanel: #f8fafc;
+      --bg-input: #ffffff;
+      --border-color: #cbd5e1;
+      --text-main: #0f172a;
       --text-muted: #64748b;
-      --border-color: #e2e8f0;
-      --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
-      --shadow-md: 0 4px 12px rgba(0,0,0,0.05);
-      --shadow-lg: 0 12px 24px -6px rgba(0,0,0,0.12);
-      --radius: 10px;
+      --text-label: #334155;
+      --accent-red: #d90429;
+      --accent-red-hover: #ef233c;
+      --header-bg: #ffffff;
+      --nav-btn-bg: #e2e8f0;
+      --nav-btn-text: #1e293b;
+      --table-header-bg: #f1f5f9;
     }
 
     * {
@@ -32,177 +51,228 @@
     }
 
     body {
-      background-color: var(--bg-main);
-      color: var(--text-color);
+      background-color: var(--bg-body);
+      color: var(--text-main);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      transition: background-color 0.25s ease, color 0.25s ease;
     }
 
-    /* ========================================== */
-    /* NAVBAR / HEADER                            */
-    /* ========================================== */
+    /* HEADER & BRANDING */
     header {
-      background: var(--bg-card);
-      border-bottom: 1px solid var(--border-color);
-      padding: 0.875rem 1.5rem;
+      background: var(--header-bg);
       position: sticky;
       top: 0;
       z-index: 100;
-      box-shadow: var(--shadow-sm);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     }
 
     .nav-container {
-      max-width: 1280px;
+      max-width: 1400px;
       margin: 0 auto;
+      padding: 0.75rem 1.5rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 1rem;
+      flex-wrap: wrap;
     }
 
-    .brand-logo {
+    .brand-block {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
-      font-weight: 800;
-      font-size: 1.25rem;
-      color: var(--primary-color);
+      gap: 1rem;
       cursor: pointer;
-      text-decoration: none;
     }
 
-    .nav-buttons {
+    .allcon-badge {
+      background: #ffffff;
+      border: 2px solid var(--accent-red);
+      padding: 2px 8px;
+      border-radius: 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      line-height: 1;
+    }
+
+    .allcon-badge .logo-title {
+      color: var(--accent-red);
+      font-weight: 900;
+      font-size: 1.1rem;
+      letter-spacing: 0.05em;
+    }
+
+    .allcon-badge .logo-sub {
+      color: #000000;
+      font-size: 0.45rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-portal-text {
+      font-size: 1.25rem;
+      font-weight: 900;
+      color: #ffffff;
+      letter-spacing: 0.05em;
+    }
+
+    body.light-mode .brand-portal-text {
+      color: var(--text-main);
+    }
+
+    .header-right {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 1.25rem;
+    }
+
+    /* LIGHT / DARK TOGGLE SWITCH */
+    .theme-toggle-wrapper {
+      display: flex;
+      align-items: center;
+      background: var(--bg-subpanel);
+      padding: 4px 10px;
+      border-radius: 20px;
+      border: 1px solid var(--border-color);
+      gap: 8px;
+    }
+
+    .toggle-text {
+      font-size: 0.7rem;
+      font-weight: 800;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+    }
+
+    .toggle-text.active {
+      color: var(--accent-red);
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 36px;
+      height: 20px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: var(--accent-red);
+      transition: .2s;
+      border-radius: 20px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 14px;
+      width: 14px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .2s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(16px);
+    }
+
+    /* NAVIGATION BUTTON PILLS */
+    .nav-pills {
+      display: flex;
+      gap: 0.375rem;
       flex-wrap: wrap;
     }
 
     .nav-btn {
-      background: transparent;
-      border: 1px solid transparent;
-      color: var(--text-color);
+      background: var(--nav-btn-bg);
+      border: none;
+      color: var(--nav-btn-text);
       padding: 0.5rem 0.875rem;
       border-radius: 6px;
-      font-size: 0.875rem;
-      font-weight: 600;
+      font-size: 0.8125rem;
+      font-weight: 700;
       cursor: pointer;
-      transition: all 0.2s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.375rem;
+      transition: all 0.15s ease;
     }
 
     .nav-btn:hover {
-      background: var(--bg-card-subtle);
-      border-color: var(--border-color);
+      background: var(--border-color);
     }
 
     .nav-btn.active {
-      background: var(--primary-color);
+      background: var(--accent-red);
       color: #ffffff;
     }
 
-    /* ========================================== */
-    /* LAYOUT CONTAINERS                          */
-    /* ========================================== */
+    .red-divider-bar {
+      height: 3px;
+      background: var(--accent-red);
+      width: 100%;
+    }
+
+    /* LAYOUT CONTAINERS */
     main {
-      max-width: 1280px;
+      max-width: 1400px;
       width: 100%;
       margin: 0 auto;
-      padding: 2rem 1rem;
+      padding: 1.5rem 1rem;
       flex-grow: 1;
     }
 
     .view-section {
-      display: none; /* Controlled via JS */
-      animation: fadeIn 0.25s ease-in-out;
+      display: none;
+      animation: fadeIn 0.2s ease-in-out;
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(4px); }
-      to { opacity: 1; transform: translateY(0); }
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
 
-    /* ========================================== */
-    /* DASHBOARD GRID TILES                       */
-    /* ========================================== */
-    .dashboard-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem;
-      margin-top: 1.5rem;
-    }
-
-    .dashboard-tile {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius);
-      padding: 1.5rem;
-      cursor: pointer;
-      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-      display: flex;
-      flex-direction: column;
-      box-shadow: var(--shadow-sm);
-    }
-
-    .dashboard-tile:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-lg);
-      border-color: var(--primary-color);
-    }
-
-    .tile-icon-wrapper {
-      width: 52px;
-      height: 52px;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 1.25rem;
-    }
-
-    .dashboard-tile h3 {
-      font-size: 1.125rem;
-      font-weight: 700;
-      color: var(--text-color);
-      margin-bottom: 0.5rem;
-    }
-
-    .dashboard-tile p {
-      font-size: 0.875rem;
-      color: var(--text-muted);
-      line-height: 1.5;
-      margin-bottom: 1.5rem;
-      flex-grow: 1;
-    }
-
-    .tile-link {
-      font-size: 0.875rem;
-      font-weight: 600;
-      color: var(--primary-color);
-      display: inline-flex;
-      align-items: center;
-      gap: 0.25rem;
-    }
-
-    /* ========================================== */
-    /* UI CARDS & TABLES                          */
-    /* ========================================== */
     .card-panel {
       background: var(--bg-card);
       border: 1px solid var(--border-color);
-      border-radius: var(--radius);
-      padding: 1.75rem;
-      box-shadow: var(--shadow-sm);
+      border-radius: 10px;
+      padding: 1.5rem;
       margin-bottom: 1.5rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
     }
 
+    .sub-panel {
+      background: var(--bg-subpanel);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1.25rem;
+      margin-top: 1.25rem;
+    }
+
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--accent-red);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1.25rem;
+    }
+
+    /* FORMS & INPUTS */
     .form-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1.25rem;
+      gap: 1rem;
     }
 
     .form-group {
@@ -214,9 +284,7 @@
     .form-group label {
       font-size: 0.75rem;
       font-weight: 700;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      letter-spacing: 0.025em;
+      color: var(--text-label);
     }
 
     .form-control {
@@ -224,36 +292,39 @@
       padding: 0.625rem 0.75rem;
       border-radius: 6px;
       border: 1px solid var(--border-color);
-      background: var(--bg-card);
-      color: var(--text-color);
+      background: var(--bg-input);
+      color: var(--text-main);
       font-size: 0.875rem;
       outline: none;
-      transition: border-color 0.15s ease;
     }
 
     .form-control:focus {
-      border-color: var(--primary-color);
+      border-color: var(--accent-red);
     }
 
     .btn {
       padding: 0.625rem 1.25rem;
       border-radius: 6px;
       font-size: 0.875rem;
-      font-weight: 600;
+      font-weight: 700;
       cursor: pointer;
       border: none;
       display: inline-flex;
       align-items: center;
-      justify-content: center;
       gap: 0.5rem;
-      transition: background-color 0.2s ease;
+      transition: background 0.15s ease;
     }
 
-    .btn-primary { background: var(--primary-color); color: #ffffff; }
-    .btn-primary:hover { background: var(--primary-hover); }
-    .btn-secondary { background: var(--bg-card-subtle); color: var(--text-color); border: 1px solid var(--border-color); }
-    .btn-secondary:hover { background: #e2e8f0; }
+    .btn-red {
+      background: var(--accent-red);
+      color: #ffffff;
+    }
 
+    .btn-red:hover {
+      background: var(--accent-red-hover);
+    }
+
+    /* TABLES */
     table {
       width: 100%;
       border-collapse: collapse;
@@ -268,200 +339,197 @@
     }
 
     th {
-      background: var(--bg-card-subtle);
-      font-weight: 700;
+      background: var(--table-header-bg);
+      font-weight: 800;
       color: var(--text-muted);
       text-transform: uppercase;
       font-size: 0.75rem;
+      letter-spacing: 0.05em;
     }
 
-    /* Status Pill */
+    /* LIVE SYNC PILL */
     .sync-status {
       display: inline-flex;
       align-items: center;
-      gap: 0.375rem;
+      gap: 6px;
       font-size: 0.75rem;
-      font-weight: 600;
-      padding: 0.25rem 0.625rem;
-      border-radius: 9999px;
-      background: rgba(16, 185, 129, 0.1);
-      color: #059669;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 20px;
+      background: rgba(16, 185, 129, 0.15);
+      color: #10b981;
     }
 
     .sync-dot {
-      width: 6px;
-      height: 6px;
+      width: 7px;
+      height: 7px;
       border-radius: 50%;
       background: #10b981;
     }
   </style>
 </head>
-<body>
+<body class="dark-mode">
 
-  <!-- ========================================== -->
-  <!-- NAVIGATION HEADER                          -->
-  <!-- ========================================== -->
+  <!-- NAVIGATION HEADER -->
   <header>
     <div class="nav-container">
-      <div class="brand-logo" onclick="navigateToView('view-landing')">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-        <span>KERF 2.0</span>
+      <div class="brand-block" onclick="navigateToView('view-suppliers')">
+        <div class="allcon-badge">
+          <span class="logo-title">ALLCON</span>
+          <span class="logo-sub">FABRICATION & ENGINEERING (PTY) LTD.</span>
+        </div>
+        <span class="brand-portal-text">KERF PORTAL</span>
       </div>
 
-      <nav class="nav-buttons">
-        <button class="nav-btn active" id="btn-nav-landing" onclick="navigateToView('view-landing')">🏠 Home</button>
-        <button class="nav-btn" id="btn-nav-suppliers" onclick="navigateToView('view-suppliers')">🏢 Suppliers</button>
-        <button class="nav-btn" id="btn-nav-transmittal" onclick="navigateToView('view-transmittal')">📄 Transmittal</button>
-        <button class="nav-btn" id="btn-nav-bom" onclick="navigateToView('view-bom')">🧮 BOM Engine</button>
-        <button class="nav-btn" id="btn-nav-estimator" onclick="navigateToView('view-estimator')">⚖️ Estimator</button>
-        <button class="nav-btn" id="btn-nav-rfq" onclick="navigateToView('view-rfq')">✉️ Quick RFQ</button>
-        <button class="nav-btn" id="btn-nav-staff" onclick="navigateToView('view-staff')">👥 Staff</button>
-      </nav>
+      <div class="header-right">
+        <!-- LIGHT / DARK MODE TOGGLE SWITCH -->
+        <div class="theme-toggle-wrapper">
+          <span class="toggle-text" id="lbl-light">LIGHT</span>
+          <label class="switch">
+            <input type="checkbox" id="theme-toggle" onchange="toggleTheme()" checked>
+            <span class="slider"></span>
+          </label>
+          <span class="toggle-text active" id="lbl-dark">DARK</span>
+        </div>
 
-      <div id="sync-indicator" class="sync-status">
-        <span class="sync-dot"></span>
-        <span id="sync-text">Live Sync</span>
+        <!-- NAV BUTTONS -->
+        <nav class="nav-pills">
+          <button class="nav-btn active" id="btn-suppliers" onclick="navigateToView('view-suppliers')">Suppliers</button>
+          <button class="nav-btn" id="btn-transmittal" onclick="navigateToView('view-transmittal')">Project Transmittal</button>
+          <button class="nav-btn" id="btn-bom" onclick="navigateToView('view-bom')">BOM Calculator</button>
+          <button class="nav-btn" id="btn-estimator" onclick="navigateToView('view-estimator')">Estimator</button>
+          <button class="nav-btn" id="btn-rfq" onclick="navigateToView('view-rfq')">Quick RFQ</button>
+          <button class="nav-btn" id="btn-staff" onclick="navigateToView('view-staff')">Staff</button>
+        </nav>
+
+        <div class="sync-status">
+          <span class="sync-dot"></span>
+          <span id="sync-text">Live Sync</span>
+        </div>
       </div>
     </div>
+    <div class="red-divider-bar"></div>
   </header>
 
-  <!-- ========================================== -->
-  <!-- MAIN CONTENT VIEWS                         -->
-  <!-- ========================================== -->
+  <!-- MAIN CONTENT VIEWS -->
   <main>
 
-    <!-- 1. LANDING DASHBOARD -->
-    <section id="view-landing" class="view-section">
-      <div style="text-align: center; margin-bottom: 2.5rem; margin-top: 1rem;">
-        <h1 style="font-size: 2.25rem; font-weight: 800; margin-bottom: 0.5rem; letter-spacing: -0.02em;">KERF Operations Portal</h1>
-        <p style="font-size: 1rem; color: var(--text-muted); max-width: 600px; margin: 0 auto;">
-          Centralized workspace for procurement, live steel weight estimations, project transmittals, and BOM calculations.
-        </p>
-      </div>
-
-      <div class="dashboard-grid">
-        <!-- TILE 1: SUPPLIERS DIRECTORY -->
-        <div onclick="navigateToView('view-suppliers')" class="dashboard-tile">
-          <div class="tile-icon-wrapper" style="background: rgba(14, 165, 233, 0.1); color: #0ea5e9;">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/></svg>
-          </div>
-          <h3>Suppliers Directory</h3>
-          <p>Search vendor contacts, material categories, and manage supplier lists synced with Google Sheets.</p>
-          <span class="tile-link">Open Directory &rarr;</span>
-        </div>
-
-        <!-- TILE 2: PROJECT TRANSMITTAL -->
-        <div onclick="navigateToView('view-transmittal')" class="dashboard-tile">
-          <div class="tile-icon-wrapper" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b;">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><path d="M12 18v-6"/><path d="m9 15 3 3 3-3"/></svg>
-          </div>
-          <h3>Project Transmittal</h3>
-          <p>Create, print, and track project transmittals and official document distribution records.</p>
-          <span class="tile-link">Create Transmittal &rarr;</span>
-        </div>
-
-        <!-- TILE 3: BOM CALCULATOR -->
-        <div onclick="navigateToView('view-bom')" class="dashboard-tile">
-          <div class="tile-icon-wrapper" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="20" x="4" y="2" rx="2"/><line x1="8" x2="16" y1="6" y2="6"/><line x1="16" x2="16" y1="14" y2="18"/><path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M12 18h.01"/><path d="M8 18h.01"/></svg>
-          </div>
-          <h3>BOM Calculator</h3>
-          <p>Build material breakdown schedules, add job notes, and calculate total job requirements.</p>
-          <span class="tile-link">Open BOM Engine &rarr;</span>
-        </div>
-
-        <!-- TILE 4: ESTIMATOR & WEIGHT ENGINE -->
-        <div onclick="navigateToView('view-estimator')" class="dashboard-tile">
-          <div class="tile-icon-wrapper" style="background: rgba(139, 92, 246, 0.1); color: #8b5cf6;">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>
-          </div>
-          <h3>Estimator & Weight Engine</h3>
-          <p>Estimate metal weights (kg), surface area (m²), and total cost based on sheet market rates.</p>
-          <span class="tile-link">Launch Estimator &rarr;</span>
-        </div>
-
-        <!-- TILE 5: QUICK RFQ GENERATOR -->
-        <div onclick="navigateToView('view-rfq')" class="dashboard-tile">
-          <div class="tile-icon-wrapper" style="background: rgba(220, 38, 38, 0.1); color: #dc2626;">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-          </div>
-          <h3>Quick RFQ Generator</h3>
-          <p>Generate privacy-safe Outlook email drafts to multiple vendors with pre-filled BOM line items.</p>
-          <span class="tile-link">Create RFQs &rarr;</span>
-        </div>
-
-        <!-- TILE 6: STAFF DIRECTORY -->
-        <div onclick="navigateToView('view-staff')" class="dashboard-tile">
-          <div class="tile-icon-wrapper" style="background: rgba(107, 114, 128, 0.1); color: #4b5563;">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-          </div>
-          <h3>Staff Directory</h3>
-          <p>View company staff members, roles, contact details, and internal departments.</p>
-          <span class="tile-link">View Staff &rarr;</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- 2. SUPPLIERS VIEW -->
-    <section id="view-suppliers" class="view-section">
+    <!-- 1. SUPPLIERS VIEW -->
+    <section id="view-suppliers" class="view-section" style="display: block;">
       <div class="card-panel">
-        <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem;">
-          <h2>Suppliers Directory</h2>
-          <input type="text" id="supplier-search" class="form-control" placeholder="🔍 Search supplier, category, or contact..." oninput="renderSuppliers()" style="max-width: 320px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem;">
+          <h2 class="section-title">🏢 Suppliers Directory</h2>
+          <input type="text" id="supplier-search" class="form-control" placeholder="🔍 Search supplier, category, or contact..." oninput="renderSuppliers()" style="max-width: 300px;">
         </div>
         <div style="overflow-x: auto;">
           <table id="tbl-suppliers">
             <thead>
               <tr>
-                <th>Company Name</th>
-                <th>Category</th>
-                <th>Contact Person</th>
-                <th>Email</th>
-                <th>Phone</th>
+                <th>Status</th>
+                <th>Supplier Name</th>
+                <th>Category / Services</th>
+                <th>POC Name</th>
+                <th>POC Email</th>
+                <th>POC Phone</th>
               </tr>
             </thead>
-            <tbody><!-- Dynamic content --></tbody>
+            <tbody><!-- Dynamic Content --></tbody>
           </table>
         </div>
       </div>
     </section>
 
-    <!-- 3. PROJECT TRANSMITTAL VIEW -->
+    <!-- 2. PROJECT TRANSMITTAL VIEW -->
     <section id="view-transmittal" class="view-section">
       <div class="card-panel">
-        <h2>Create Project Transmittal</h2>
-        <p style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 1.5rem;">Generate an official transmittal slip for document distribution.</p>
-        <div class="form-grid">
-          <div class="form-group">
-            <label>Transmittal No.</label>
-            <input type="text" id="tr-no" class="form-control" value="TRN-2026-001">
+        <h2 class="section-title">📄 Project Transmittal Builder</h2>
+        
+        <div class="sub-panel" style="margin-top: 0;">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Client Name</label>
+              <input type="text" id="tr-client" class="form-control" placeholder="e.g. NCP International">
+            </div>
+            <div class="form-group">
+              <label>Project Name</label>
+              <input type="text" id="tr-project" class="form-control" placeholder="e.g. SHANTA NEW - CHOCKEY BLOCKS">
+            </div>
+            <div class="form-group">
+              <label>Date Info Sheet Generated</label>
+              <input type="date" id="tr-date" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>Target Completion Date</label>
+              <input type="text" id="tr-target-date" class="form-control" placeholder="e.g. 11 SEPT 2026">
+            </div>
+            <div class="form-group" style="grid-column: span 2;">
+              <label>Technical Buyer</label>
+              <input type="text" id="tr-buyer" class="form-control" placeholder="Enter Buyer Name">
+            </div>
           </div>
-          <div class="form-group">
-            <label>Project Name / Job No.</label>
-            <input type="text" id="tr-project" class="form-control" placeholder="e.g. KERF Chute Fabrication">
-          </div>
-          <div class="form-group">
-            <label>Recipient / Client</label>
-            <input type="text" id="tr-recipient" class="form-control" placeholder="Recipient Name">
-          </div>
-          <div class="form-group">
-            <label>Date</label>
-            <input type="date" id="tr-date" class="form-control">
+
+          <div class="form-grid" style="margin-top: 1rem;">
+            <div class="form-group">
+              <label>Inclusions</label>
+              <textarea id="tr-inclusions" class="form-control" rows="3" placeholder="e.g. MATERIAL S355, FABRICATION, MACHINING..."></textarea>
+            </div>
+            <div class="form-group">
+              <label>Exclusions</label>
+              <textarea id="tr-exclusions" class="form-control" rows="3" placeholder="e.g. SAND BLAST & PAINT, MPI, WELDING..."></textarea>
+            </div>
           </div>
         </div>
-        <button class="btn btn-primary" onclick="window.print()" style="margin-top: 1.5rem;">🖨️ Print Transmittal Document</button>
+
+        <div class="sub-panel">
+          <h3 style="font-size: 0.875rem; font-weight: 800; color: var(--accent-red); margin-bottom: 1rem; text-transform: uppercase;">
+            🔻 JOB ID SCHEDULE BUILDER
+          </h3>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Job ID *</label>
+              <input type="text" class="form-control" placeholder="e.g. 5276">
+            </div>
+            <div class="form-group">
+              <label>AC Number</label>
+              <input type="text" class="form-control" placeholder="e.g. AC2902">
+            </div>
+            <div class="form-group">
+              <label>Description</label>
+              <input type="text" class="form-control" placeholder="e.g. PINION">
+            </div>
+            <div class="form-group">
+              <label>Category</label>
+              <select class="form-control">
+                <option>-- Select Category --</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Sub-Category</label>
+              <input type="text" class="form-control" placeholder="e.g. STRUCTURAL">
+            </div>
+            <div class="form-group">
+              <label>Supplier Name</label>
+              <select id="tr-supplier-select" class="form-control">
+                <option>-- Select Supplier --</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Purchase Order</label>
+              <input type="text" class="form-control" placeholder="PO18008">
+            </div>
+          </div>
+        </div>
+
+        <button class="btn btn-red" onclick="window.print()" style="margin-top: 1.25rem;">🖨️ Print Transmittal Document</button>
       </div>
     </section>
 
-    <!-- 4. BOM CALCULATOR VIEW -->
+    <!-- 3. BOM CALCULATOR VIEW -->
     <section id="view-bom" class="view-section">
       <div class="card-panel">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-          <h2>Bill of Materials (BOM) Calculator</h2>
-          <button class="btn btn-secondary" onclick="exportBomCsv()">📥 Export CSV</button>
-        </div>
+        <h2 class="section-title">🧮 Bill of Materials (BOM) Calculator</h2>
         <div style="overflow-x: auto;">
-          <table id="tbl-bom">
+          <table>
             <thead>
               <tr>
                 <th>Item #</th>
@@ -472,14 +540,14 @@
                 <th>Total Weight (kg)</th>
               </tr>
             </thead>
-            <tbody id="bom-rows">
+            <tbody>
               <tr>
                 <td>1</td>
-                <td><input type="text" class="form-control" value="Base Plate 12mm"></td>
+                <td><input type="text" class="form-control" value="Chute Base Plate 12mm"></td>
                 <td><input type="text" class="form-control" value="S355 JR"></td>
                 <td><input type="number" class="form-control" value="4"></td>
                 <td><input type="number" class="form-control" value="45.2"></td>
-                <td style="font-weight: 700;">180.80 kg</td>
+                <td style="font-weight: 800; color: var(--accent-red);">180.80 kg</td>
               </tr>
             </tbody>
           </table>
@@ -487,101 +555,99 @@
       </div>
     </section>
 
-    <!-- 5. ESTIMATOR & WEIGHT ENGINE VIEW -->
+    <!-- 4. ESTIMATOR & MATERIAL WEIGHT ENGINE -->
     <section id="view-estimator" class="view-section">
       <div class="card-panel">
-        <h2 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem;">Estimator & Material Weight Engine</h2>
-        <p style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 1.5rem;">
-          Select a material grade from your live Google Sheet rates to calculate plate/section mass, surface area, and estimated cost.
+        <h2 class="section-title">⚖️ Estimator & Weight Engine</h2>
+        <p style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 1.25rem;">
+          Select material grade synced from Google Sheets to calculate weight, surface area, and live ZAR cost.
         </p>
 
-        <div class="form-grid" style="margin-bottom: 1.5rem;">
-          <div class="form-group" style="grid-column: span 2;">
-            <label>Material Grade</label>
-            <select id="est-material-select" class="form-control" onchange="updateEstimatorRate()">
-              <option value="">-- Select Material Grade --</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label>Thickness / T (mm)</label>
-            <input type="number" id="est-thickness" class="form-control" value="10" oninput="calculateEstimatorTotals()">
-          </div>
-
-          <div class="form-group">
-            <label>Width / W (mm)</label>
-            <input type="number" id="est-width" class="form-control" value="1200" oninput="calculateEstimatorTotals()">
-          </div>
-
-          <div class="form-group">
-            <label>Length / L (mm)</label>
-            <input type="number" id="est-length" class="form-control" value="2400" oninput="calculateEstimatorTotals()">
-          </div>
-
-          <div class="form-group">
-            <label>Quantity (Offs)</label>
-            <input type="number" id="est-qty" class="form-control" value="1" oninput="calculateEstimatorTotals()">
-          </div>
-
-          <div class="form-group">
-            <label>Rate (R/kg)</label>
-            <input type="number" id="est-rate" class="form-control" value="0.00" step="0.01" oninput="calculateEstimatorTotals()">
+        <div class="sub-panel">
+          <div class="form-grid">
+            <div class="form-group" style="grid-column: span 2;">
+              <label>Material Grade</label>
+              <select id="est-material-select" class="form-control" onchange="updateEstimatorRate()">
+                <option value="">-- Select Material Grade --</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Thickness / T (mm)</label>
+              <input type="number" id="est-thickness" class="form-control" value="10" oninput="calculateEstimatorTotals()">
+            </div>
+            <div class="form-group">
+              <label>Width / W (mm)</label>
+              <input type="number" id="est-width" class="form-control" value="1200" oninput="calculateEstimatorTotals()">
+            </div>
+            <div class="form-group">
+              <label>Length / L (mm)</label>
+              <input type="number" id="est-length" class="form-control" value="2400" oninput="calculateEstimatorTotals()">
+            </div>
+            <div class="form-group">
+              <label>Quantity (Offs)</label>
+              <input type="number" id="est-qty" class="form-control" value="1" oninput="calculateEstimatorTotals()">
+            </div>
+            <div class="form-group">
+              <label>Active Rate (R/kg)</label>
+              <input type="number" id="est-rate" class="form-control" value="0.00" step="0.01" oninput="calculateEstimatorTotals()">
+            </div>
           </div>
         </div>
 
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; background: var(--bg-card-subtle); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--border-color);">
-          <div>
-            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Total Mass</div>
-            <div id="res-total-mass" style="font-size: 1.5rem; font-weight: 800; color: var(--text-color);">0.00 kg</div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1.25rem;">
+          <div class="sub-panel">
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700;">TOTAL MASS</div>
+            <div id="res-total-mass" style="font-size: 1.5rem; font-weight: 900; color: var(--text-main); margin-top: 4px;">0.00 kg</div>
           </div>
-          <div>
-            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Total Surface Area</div>
-            <div id="res-total-area" style="font-size: 1.5rem; font-weight: 800; color: var(--primary-color);">0.00 m²</div>
+          <div class="sub-panel">
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700;">SURFACE AREA</div>
+            <div id="res-total-area" style="font-size: 1.5rem; font-weight: 900; color: #0284c7; margin-top: 4px;">0.00 m²</div>
           </div>
-          <div>
-            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Est. Material Cost</div>
-            <div id="res-total-cost" style="font-size: 1.5rem; font-weight: 800; color: #16a34a;">R 0.00</div>
+          <div class="sub-panel">
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700;">EST. MATERIAL COST</div>
+            <div id="res-total-cost" style="font-size: 1.5rem; font-weight: 900; color: #16a34a; margin-top: 4px;">R 0.00</div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 6. QUICK RFQ GENERATOR VIEW -->
+    <!-- 5. QUICK RFQ GENERATOR -->
     <section id="view-rfq" class="view-section">
       <div class="card-panel">
-        <h2>Quick RFQ Generator</h2>
-        <p style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 1.5rem;">Draft vendor RFQ emails directly to your desktop email client (e.g., Outlook).</p>
-        <div class="form-grid">
-          <div class="form-group">
-            <label>Select Supplier</label>
-            <select id="rfq-supplier-select" class="form-control">
-              <option value="">-- Choose Vendor --</option>
-            </select>
+        <h2 class="section-title">✉️ Quick RFQ Generator</h2>
+        <div class="sub-panel">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Select Vendor</label>
+              <select id="rfq-supplier-select" class="form-control">
+                <option value="">-- Choose Vendor --</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>RFQ Subject</label>
+              <input type="text" id="rfq-subject" class="form-control" value="RFQ - Material Quote Request">
+            </div>
           </div>
-          <div class="form-group">
-            <label>RFQ Subject</label>
-            <input type="text" id="rfq-subject" class="form-control" value="RFQ - Material Price & Availability Request">
+          <div class="form-group" style="margin-top: 1rem;">
+            <label>Required Material Specs</label>
+            <textarea id="rfq-body" class="form-control" rows="4" placeholder="e.g. 2 off - 12mm x 1200mm x 2400mm Hardox 500 Plates"></textarea>
           </div>
         </div>
-        <div class="form-group" style="margin-top: 1rem;">
-          <label>Required Line Items / Specs</label>
-          <textarea id="rfq-body-text" class="form-control" rows="4" placeholder="e.g. 4 off - 10mm x 1200mm x 2400mm Hardox 500 Plates"></textarea>
-        </div>
-        <button class="btn btn-primary" onclick="generateOutlookEmail()" style="margin-top: 1.25rem;">✉️ Launch Email Client</button>
+        <button class="btn btn-red" onclick="generateOutlookEmail()" style="margin-top: 1.25rem;">✉️ Draft Vendor Email</button>
       </div>
     </section>
 
-    <!-- 7. STAFF DIRECTORY VIEW -->
+    <!-- 6. STAFF DIRECTORY VIEW -->
     <section id="view-staff" class="view-section">
       <div class="card-panel">
-        <h2>Staff Directory</h2>
-        <div style="overflow-x: auto; margin-top: 1rem;">
+        <h2 class="section-title">👥 Staff Directory</h2>
+        <div style="overflow-x: auto;">
           <table id="tbl-staff">
             <thead>
               <tr>
-                <th>Name</th>
-                <th>Role / Title</th>
-                <th>Department</th>
+                <th>Full Name</th>
+                <th>Job Title</th>
+                <th>Phone</th>
                 <th>Email</th>
               </tr>
             </thead>
@@ -593,11 +659,8 @@
 
   </main>
 
-  <!-- ========================================== -->
-  <!-- JAVASCRIPT LOGIC & APP CONTROLLER          -->
-  <!-- ========================================== -->
+  <!-- JAVASCRIPT CONTROLLER -->
   <script>
-    // Live Apps Script Endpoint URL
     const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyFlNrtS9tmzjM1dLGwGklTwivXYUqJ-JlVrcOP99JhEKu3xXNxdRAG1L0ak-Kj5tx9/exec';
 
     // Global State
@@ -606,86 +669,177 @@
     window.metalRatesData = [];
     let currentSelectedDensity = 7.85;
 
-    // View Switcher Function
-    function navigateToView(targetViewId) {
-      document.querySelectorAll('.view-section').forEach(v => v.style.display = 'none');
-      document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+    // Helper to fetch matching properties safely from objects
+    function getProp(obj, possibleKeys, fallback = '') {
+      if (!obj) return fallback;
+      const keys = Object.keys(obj);
 
-      const activeView = document.getElementById(targetViewId);
-      if (activeView) {
-        activeView.style.display = 'block';
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+      for (let p of possibleKeys) {
+        if (obj[p] !== undefined && obj[p] !== null && String(obj[p]).trim() !== '') {
+          return String(obj[p]).trim();
+        }
       }
 
-      // Highlight corresponding Nav button
-      const activeNavBtn = document.getElementById('btn-nav-' + targetViewId.replace('view-', ''));
-      if (activeNavBtn) activeNavBtn.classList.add('active');
+      for (let p of possibleKeys) {
+        const cleanP = p.toLowerCase().replace(/[^a-z0-9]/g, '');
+        const match = keys.find(k => k.toLowerCase().replace(/[^a-z0-9]/g, '') === cleanP);
+        if (match && obj[match] !== undefined && obj[match] !== null && String(obj[match]).trim() !== '') {
+          return String(obj[match]).trim();
+        }
+      }
+
+      return fallback;
     }
 
-    // Load Data from Google Sheets
+    // Theme Toggle Function
+    function toggleTheme() {
+      const toggle = document.getElementById('theme-toggle');
+      const isDark = toggle.checked;
+
+      if (isDark) {
+        document.body.classList.remove('light-mode');
+        document.body.classList.add('dark-mode');
+        document.getElementById('lbl-dark').classList.add('active');
+        document.getElementById('lbl-light').classList.remove('active');
+      } else {
+        document.body.classList.remove('dark-mode');
+        document.body.classList.add('light-mode');
+        document.getElementById('lbl-light').classList.add('active');
+        document.getElementById('lbl-dark').classList.remove('active');
+      }
+    }
+
+    // Navigation Switcher
+    function navigateToView(viewId) {
+      document.querySelectorAll('.view-section').forEach(sec => sec.style.display = 'none');
+      document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+
+      const target = document.getElementById(viewId);
+      if (target) target.style.display = 'block';
+
+      const navBtn = document.getElementById('btn-' + viewId.replace('view-', ''));
+      if (navBtn) navBtn.classList.add('active');
+    }
+
+    // Fetch Data from Google Apps Script Web App
     async function loadPortalData() {
       const syncText = document.getElementById('sync-text');
       try {
         syncText.textContent = "Syncing...";
-        const response = await fetch(APPS_SCRIPT_URL);
-        if (!response.ok) throw new Error("Network response was not ok");
+        const res = await fetch(APPS_SCRIPT_URL);
+        if (!res.ok) throw new Error("HTTP Error");
 
-        const data = await response.json();
-        
+        const data = await res.json();
         window.suppliersData = data.suppliers || [];
         window.staffData = data.staff || [];
         window.metalRatesData = data.metalRates || [];
 
         syncText.textContent = "Live Sync";
 
-        // Render sections
         renderSuppliers();
         renderStaff();
         populateEstimatorDropdown();
-        populateRfqSupplierDropdowns();
+        populateSupplierDropdowns();
 
       } catch (err) {
-        console.error("Failed to fetch live sheet data:", err);
-        syncText.textContent = "Offline Mode";
+        console.error("Failed to load Google Sheets payload:", err);
+        syncText.textContent = "Offline";
       }
     }
 
-    // Render Suppliers Table
+    // Render Suppliers Table (Strict Mapping to Sheet Header Images)
     function renderSuppliers() {
       const tbody = document.querySelector('#tbl-suppliers tbody');
       if (!tbody) return;
-      const search = (document.getElementById('supplier-search')?.value || '').toLowerCase();
 
+      const search = (document.getElementById('supplier-search')?.value || '').toLowerCase();
+      
       const filtered = window.suppliersData.filter(s => {
-        const name = (s['Company Name'] || s['Supplier'] || '').toLowerCase();
-        const cat = (s['Category'] || '').toLowerCase();
-        return name.includes(search) || cat.includes(search);
+        const name = getProp(s, ['SUPPLIER NAME', 'Supplier Name', 'Company Name'], '').toLowerCase();
+        const cat = getProp(s, ['CATEGORY', 'Category', 'SERVICES OFFERED', 'Services Offered'], '').toLowerCase();
+        const contact = getProp(s, ['POC NAME', 'Poc Name', 'Contact Person'], '').toLowerCase();
+        return name.includes(search) || cat.includes(search) || contact.includes(search);
       });
 
-      tbody.innerHTML = filtered.map(s => `
-        <tr>
-          <td style="font-weight: 600;">${s['Company Name'] || s['Supplier'] || 'N/A'}</td>
-          <td>${s['Category'] || 'General'}</td>
-          <td>${s['Contact Person'] || s['Contact'] || '-'}</td>
-          <td>${s['Email'] ? `<a href="mailto:${s['Email']}">${s['Email']}</a>` : '-'}</td>
-          <td>${s['Phone'] || s['Telephone'] || '-'}</td>
-        </tr>
-      `).join('') || '<tr><td colspan="5" style="text-align:center;">No suppliers found.</td></tr>';
+      tbody.innerHTML = filtered.map(s => {
+        const status = getProp(s, ['STATUS', 'Status'], 'GENERAL');
+        const company = getProp(s, ['SUPPLIER NAME', 'Supplier Name', 'Company Name'], 'N/A');
+        
+        // Use CATEGORY first, if empty fall back to SERVICES OFFERED
+        let category = getProp(s, ['CATEGORY', 'Category'], '');
+        if (!category) {
+          category = getProp(s, ['SERVICES OFFERED', 'Services Offered'], 'General');
+        }
+
+        const pocName = getProp(s, ['POC NAME', 'Poc Name', 'Contact Person'], '-');
+        const pocEmail = getProp(s, ['POC EMAIL', 'Poc Email', 'Email'], '');
+        const pocPhone = getProp(s, ['POC PHONE', 'Poc Phone', 'Phone'], '-');
+
+        // Status badge color coding
+        let statusStyle = "background:#334155; color:#fff;";
+        if (status.toUpperCase().includes('APPROVED') || status.toUpperCase().includes('PREFERRED')) {
+          statusStyle = "background:rgba(16, 185, 129, 0.2); color:#10b981;";
+        } else if (status.toUpperCase().includes('PENDING')) {
+          statusStyle = "background:rgba(245, 158, 11, 0.2); color:#f59e0b;";
+        } else if (status.toUpperCase().includes('REJECTED')) {
+          statusStyle = "background:rgba(239, 68, 68, 0.2); color:#ef4444;";
+        }
+
+        return `
+          <tr>
+            <td><span style="font-size:0.7rem; font-weight:800; padding:3px 8px; border-radius:4px; ${statusStyle}">${status}</span></td>
+            <td style="font-weight: 700; color: var(--text-main);">${company}</td>
+            <td>${category}</td>
+            <td>${pocName}</td>
+            <td>${pocEmail ? `<a href="mailto:${pocEmail}" style="color:var(--accent-red); font-weight:600;">${pocEmail}</a>` : '-'}</td>
+            <td>${pocPhone}</td>
+          </tr>
+        `;
+      }).join('') || '<tr><td colspan="6" style="text-align:center;">No suppliers found.</td></tr>';
     }
 
-    // Render Staff Table
+    // Render Staff Table (Strict Mapping to Sheet Header Images)
     function renderStaff() {
       const tbody = document.querySelector('#tbl-staff tbody');
       if (!tbody) return;
 
-      tbody.innerHTML = window.staffData.map(st => `
-        <tr>
-          <td style="font-weight: 600;">${st['Name'] || st['Staff Name'] || 'N/A'}</td>
-          <td>${st['Role'] || st['Title'] || '-'}</td>
-          <td>${st['Department'] || '-'}</td>
-          <td>${st['Email'] ? `<a href="mailto:${st['Email']}">${st['Email']}</a>` : '-'}</td>
-        </tr>
-      `).join('') || '<tr><td colspan="4" style="text-align:center;">No staff records found.</td></tr>';
+      tbody.innerHTML = window.staffData.map(st => {
+        const firstName = getProp(st, ['NAME', 'Name', 'First Name'], '');
+        const surname = getProp(st, ['SURNAME', 'Surname', 'Last Name'], '');
+        const fullName = (firstName + ' ' + surname).trim() || 'N/A';
+
+        const jobTitle = getProp(st, ['JOB TITLE', 'Job Title', 'Role'], '-');
+        const phone = getProp(st, ['PHONE', 'Phone'], '-');
+        const email = getProp(st, ['EMAIL', 'Email'], '');
+
+        return `
+          <tr>
+            <td style="font-weight: 700; color: var(--text-main);">${fullName}</td>
+            <td>${jobTitle}</td>
+            <td>${phone}</td>
+            <td>${email ? `<a href="mailto:${email}" style="color:var(--accent-red); font-weight:600;">${email}</a>` : '-'}</td>
+          </tr>
+        `;
+      }).join('') || '<tr><td colspan="4" style="text-align:center;">No staff records found.</td></tr>';
+    }
+
+    // Populate Supplier Dropdowns across app
+    function populateSupplierDropdowns() {
+      const selects = [document.getElementById('tr-supplier-select'), document.getElementById('rfq-supplier-select')];
+      selects.forEach(select => {
+        if (!select) return;
+        select.innerHTML = '<option value="">-- Select Supplier --</option>';
+        window.suppliersData.forEach(s => {
+          const name = getProp(s, ['SUPPLIER NAME', 'Supplier Name', 'Company Name'], '');
+          const email = getProp(s, ['POC EMAIL', 'Poc Email', 'Email'], name);
+          if (name) {
+            const opt = document.createElement('option');
+            opt.value = email;
+            opt.textContent = name;
+            select.appendChild(opt);
+          }
+        });
+      });
     }
 
     // Populate Estimator Dropdown
@@ -695,30 +849,30 @@
 
       select.innerHTML = '<option value="">-- Select Material Grade --</option>';
       window.metalRatesData.forEach((item, idx) => {
-        const gradeName = item['Grade'] || item['Material Grade'] || `Item ${idx+1}`;
-        const category = item['Category'] || 'Steel';
+        const grade = getProp(item, ['Grade', 'Material Grade', 'Material'], `Grade ${idx+1}`);
+        const cat = getProp(item, ['Category', 'Type'], 'Steel');
         const opt = document.createElement('option');
         opt.value = idx;
-        opt.textContent = `${gradeName} (${category})`;
+        opt.textContent = `${grade} (${cat})`;
         select.appendChild(opt);
       });
     }
 
-    // Update Selected Material Rate
+    // Update Estimator Active Rate
     function updateEstimatorRate() {
       const select = document.getElementById('est-material-select');
       if (select.value === '') return;
 
       const item = window.metalRatesData[select.value];
-      currentSelectedDensity = parseFloat(item['Density'] || item['Density g/cm3']) || 7.85;
+      currentSelectedDensity = parseFloat(getProp(item, ['Density', 'Density g/cm3'], 7.85)) || 7.85;
 
-      const activeRate = parseFloat(item['Final Active Rate'] || item['Live Rate (R\\kg)'] || item['Live Rate R/kg']) || 0.00;
+      const activeRate = parseFloat(getProp(item, ['Final Active Rate', 'Live Rate (R\\kg)', 'Live Rate R/kg', 'Live Rate', 'Value'], 0.00)) || 0.00;
       document.getElementById('est-rate').value = activeRate.toFixed(2);
 
       calculateEstimatorTotals();
     }
 
-    // Calculate Estimator Values
+    // Calculate Estimator Totals
     function calculateEstimatorTotals() {
       const t = parseFloat(document.getElementById('est-thickness').value) || 0;
       const w = parseFloat(document.getElementById('est-width').value) || 0;
@@ -726,17 +880,12 @@
       const qty = parseFloat(document.getElementById('est-qty').value) || 0;
       const ratePerKg = parseFloat(document.getElementById('est-rate').value) || 0;
 
-      // Volume m³
       const volumeM3 = (t / 1000) * (w / 1000) * (l / 1000);
-
-      // Mass (kg)
       const totalMassKg = volumeM3 * (currentSelectedDensity * 1000) * qty;
 
-      // Surface Area (m²)
       const areaPerPieceM2 = 2 * ((w/1000)*(l/1000) + (w/1000)*(t/1000) + (l/1000)*(t/1000));
       const totalAreaM2 = areaPerPieceM2 * qty;
 
-      // Cost (ZAR)
       const totalCostZar = totalMassKg * ratePerKg;
 
       document.getElementById('res-total-mass').textContent = totalMassKg.toFixed(2) + ' kg';
@@ -744,50 +893,25 @@
       document.getElementById('res-total-cost').textContent = 'R ' + totalCostZar.toLocaleString('en-ZA', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
 
-    // Populate RFQ Supplier Dropdown
-    function populateRfqSupplierDropdowns() {
-      const select = document.getElementById('rfq-supplier-select');
-      if (!select) return;
-
-      select.innerHTML = '<option value="">-- Choose Vendor --</option>';
-      window.suppliersData.forEach(s => {
-        const name = s['Company Name'] || s['Supplier'];
-        if (name) {
-          const opt = document.createElement('option');
-          opt.value = s['Email'] || '';
-          opt.textContent = `${name} (${s['Email'] || 'No Email'})`;
-          select.appendChild(opt);
-        }
-      });
-    }
-
-    // Launch Email Link
+    // Draft Vendor Email
     function generateOutlookEmail() {
       const email = document.getElementById('rfq-supplier-select').value;
       const subject = encodeURIComponent(document.getElementById('rfq-subject').value);
-      const body = encodeURIComponent(document.getElementById('rfq-body-text').value);
+      const body = encodeURIComponent(document.getElementById('rfq-body').value);
 
       if (!email) {
-        alert("Please select a vendor with a valid email address.");
+        alert("Please select a vendor.");
         return;
       }
-
       window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
     }
 
-    // Export BOM CSV Placeholder
-    function exportBomCsv() {
-      alert("BOM CSV Export generated successfully!");
-    }
-
-    // Initialize Page
+    // Initialize
     document.addEventListener('DOMContentLoaded', () => {
-      navigateToView('view-landing');
-      loadPortalData();
-
-      // Set today's date on transmittal
       const dateInput = document.getElementById('tr-date');
       if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
+
+      loadPortalData();
     });
   </script>
 </body>
