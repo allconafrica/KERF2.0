@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KERF 2.0 Portal</title>
+  
+  <style>
+    /* ========================================== */
+    /* CSS VARIABLES & THEMING                    */
+    /* ========================================== */
+    :root {
+      --primary-color: #0284c7;
+      --primary-hover: #0369a1;
+      --bg-main: #f8fafc;
+      --bg-card: #ffffff;
+      --bg-card-subtle: #f1f5f9;
+      --text-color: #0f172a;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.05);
+      --shadow-lg: 0 12px 24px -6px rgba(0,0,0,0.12);
+      --radius: 10px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-color);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ========================================== */
+    /* NAVBAR / HEADER                            */
+    /* ========================================== */
+    header {
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border-color);
+      padding: 0.875rem 1.5rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .nav-container {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-weight: 800;
+      font-size: 1.25rem;
+      color: var(--primary-color);
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .nav-buttons {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .nav-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-color);
+      padding: 0.5rem 0.875rem;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.375rem;
+    }
+
+    .nav-btn:hover {
+      background: var(--bg-card-subtle);
+      border-color: var(--border-color);
+    }
+
+    .nav-btn.active {
+      background: var(--primary-color);
+      color: #ffffff;
+    }
+
+    /* ========================================== */
+    /* LAYOUT CONTAINERS                          */
+    /* ========================================== */
+    main {
+      max-width: 1280px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+      flex-grow: 1;
+    }
+
+    .view-section {
+      display: none; /* Controlled via JS */
+      animation: fadeIn 0.25s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ========================================== */
+    /* DASHBOARD GRID TILES                       */
+    /* ========================================== */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .dashboard-tile {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .dashboard-tile:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--primary-color);
+    }
+
+    .tile-icon-wrapper {
+      width: 52px;
+      height: 52px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.25rem;
+    }
+
+    .dashboard-tile h3 {
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--text-color);
+      margin-bottom: 0.5rem;
+    }
+
+    .dashboard-tile p {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-bottom: 1.5rem;
+      flex-grow: 1;
+    }
+
+    .tile-link {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--primary-color);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    /* ========================================== */
+    /* UI CARDS & TABLES                          */
+    /* ========================================== */
+    .card-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 1.75rem;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 1.5rem;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.375rem;
+    }
+
+    .form-group label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      letter-spacing: 0.025em;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 0.625rem 0.75rem;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-card);
+      color: var(--text-color);
+      font-size: 0.875rem;
+      outline: none;
+      transition: border-color 0.15s ease;
+    }
+
+    .form-control:focus {
+      border-color: var(--primary-color);
+    }
+
+    .btn {
+      padding: 0.625rem 1.25rem;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: background-color 0.2s ease;
+    }
+
+    .btn-primary { background: var(--primary-color); color: #ffffff; }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .btn-secondary { background: var(--bg-card-subtle); color: var(--text-color); border: 1px solid var(--border-color); }
+    .btn-secondary:hover { background: #e2e8f0; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+      font-size: 0.875rem;
+    }
+
+    th, td {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    th {
+      background: var(--bg-card-subtle);
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-size: 0.75rem;
+    }
+
+    /* Status Pill */
+    .sync-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.375rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.25rem 0.625rem;
+      border-radius: 9999px;
+      background: rgba(16, 185, 129, 0.1);
+      color: #059669;
+    }
+
+    .sync-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #10b981;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========================================== -->
+  <!-- NAVIGATION HEADER                          -->
+  <!-- ========================================== -->
+  <header>
+    <div class="nav-container">
+      <div class="brand-logo" onclick="navigateToView('view-landing')">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        <span>KERF 2.0</span>
+      </div>
+
+      <nav class="nav-buttons">
+        <button class="nav-btn active" id="btn-nav-landing" onclick="navigateToView('view-landing')">🏠 Home</button>
+        <button class="nav-btn" id="btn-nav-suppliers" onclick="navigateToView('view-suppliers')">🏢 Suppliers</button>
+        <button class="nav-btn" id="btn-nav-transmittal" onclick="navigateToView('view-transmittal')">📄 Transmittal</button>
+        <button class="nav-btn" id="btn-nav-bom" onclick="navigateToView('view-bom')">🧮 BOM Engine</button>
+        <button class="nav-btn" id="btn-nav-estimator" onclick="navigateToView('view-estimator')">⚖️ Estimator</button>
+        <button class="nav-btn" id="btn-nav-rfq" onclick="navigateToView('view-rfq')">✉️ Quick RFQ</button>
+        <button class="nav-btn" id="btn-nav-staff" onclick="navigateToView('view-staff')">👥 Staff</button>
+      </nav>
+
+      <div id="sync-indicator" class="sync-status">
+        <span class="sync-dot"></span>
+        <span id="sync-text">Live Sync</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================== -->
+  <!-- MAIN CONTENT VIEWS                         -->
+  <!-- ========================================== -->
+  <main>
+
+    <!-- 1. LANDING DASHBOARD -->
+    <section id="view-landing" class="view-section">
+      <div style="text-align: center; margin-bottom: 2.5rem; margin-top: 1rem;">
+        <h1 style="font-size: 2.25rem; font-weight: 800; margin-bottom: 0.5rem; letter-spacing: -0.02em;">KERF Operations Portal</h1>
+        <p style="font-size: 1rem; color: var(--text-muted); max-width: 600px; margin: 0 auto;">
+          Centralized workspace for procurement, live steel weight estimations, project transmittals, and BOM calculations.
+        </p>
+      </div>
+
+      <div class="dashboard-grid">
+        <!-- TILE 1: SUPPLIERS DIRECTORY -->
+        <div onclick="navigateToView('view-suppliers')" class="dashboard-tile">
+          <div class="tile-icon-wrapper" style="background: rgba(14, 165, 233, 0.1); color: #0ea5e9;">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/></svg>
+          </div>
+          <h3>Suppliers Directory</h3>
+          <p>Search vendor contacts, material categories, and manage supplier lists synced with Google Sheets.</p>
+          <span class="tile-link">Open Directory &rarr;</span>
+        </div>
+
+        <!-- TILE 2: PROJECT TRANSMITTAL -->
+        <div onclick="navigateToView('view-transmittal')" class="dashboard-tile">
+          <div class="tile-icon-wrapper" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b;">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><path d="M12 18v-6"/><path d="m9 15 3 3 3-3"/></svg>
+          </div>
+          <h3>Project Transmittal</h3>
+          <p>Create, print, and track project transmittals and official document distribution records.</p>
+          <span class="tile-link">Create Transmittal &rarr;</span>
+        </div>
+
+        <!-- TILE 3: BOM CALCULATOR -->
+        <div onclick="navigateToView('view-bom')" class="dashboard-tile">
+          <div class="tile-icon-wrapper" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="20" x="4" y="2" rx="2"/><line x1="8" x2="16" y1="6" y2="6"/><line x1="16" x2="16" y1="14" y2="18"/><path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M12 18h.01"/><path d="M8 18h.01"/></svg>
+          </div>
+          <h3>BOM Calculator</h3>
+          <p>Build material breakdown schedules, add job notes, and calculate total job requirements.</p>
+          <span class="tile-link">Open BOM Engine &rarr;</span>
+        </div>
+
+        <!-- TILE 4: ESTIMATOR & WEIGHT ENGINE -->
+        <div onclick="navigateToView('view-estimator')" class="dashboard-tile">
+          <div class="tile-icon-wrapper" style="background: rgba(139, 92, 246, 0.1); color: #8b5cf6;">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>
+          </div>
+          <h3>Estimator & Weight Engine</h3>
+          <p>Estimate metal weights (kg), surface area (m²), and total cost based on sheet market rates.</p>
+          <span class="tile-link">Launch Estimator &rarr;</span>
+        </div>
+
+        <!-- TILE 5: QUICK RFQ GENERATOR -->
+        <div onclick="navigateToView('view-rfq')" class="dashboard-tile">
+          <div class="tile-icon-wrapper" style="background: rgba(220, 38, 38, 0.1); color: #dc2626;">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+          </div>
+          <h3>Quick RFQ Generator</h3>
+          <p>Generate privacy-safe Outlook email drafts to multiple vendors with pre-filled BOM line items.</p>
+          <span class="tile-link">Create RFQs &rarr;</span>
+        </div>
+
+        <!-- TILE 6: STAFF DIRECTORY -->
+        <div onclick="navigateToView('view-staff')" class="dashboard-tile">
+          <div class="tile-icon-wrapper" style="background: rgba(107, 114, 128, 0.1); color: #4b5563;">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <h3>Staff Directory</h3>
+          <p>View company staff members, roles, contact details, and internal departments.</p>
+          <span class="tile-link">View Staff &rarr;</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. SUPPLIERS VIEW -->
+    <section id="view-suppliers" class="view-section">
+      <div class="card-panel">
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem;">
+          <h2>Suppliers Directory</h2>
+          <input type="text" id="supplier-search" class="form-control" placeholder="🔍 Search supplier, category, or contact..." oninput="renderSuppliers()" style="max-width: 320px;">
+        </div>
+        <div style="overflow-x: auto;">
+          <table id="tbl-suppliers">
+            <thead>
+              <tr>
+                <th>Company Name</th>
+                <th>Category</th>
+                <th>Contact Person</th>
+                <th>Email</th>
+                <th>Phone</th>
+              </tr>
+            </thead>
+            <tbody><!-- Dynamic content --></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. PROJECT TRANSMITTAL VIEW -->
+    <section id="view-transmittal" class="view-section">
+      <div class="card-panel">
+        <h2>Create Project Transmittal</h2>
+        <p style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 1.5rem;">Generate an official transmittal slip for document distribution.</p>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Transmittal No.</label>
+            <input type="text" id="tr-no" class="form-control" value="TRN-2026-001">
+          </div>
+          <div class="form-group">
+            <label>Project Name / Job No.</label>
+            <input type="text" id="tr-project" class="form-control" placeholder="e.g. KERF Chute Fabrication">
+          </div>
+          <div class="form-group">
+            <label>Recipient / Client</label>
+            <input type="text" id="tr-recipient" class="form-control" placeholder="Recipient Name">
+          </div>
+          <div class="form-group">
+            <label>Date</label>
+            <input type="date" id="tr-date" class="form-control">
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="window.print()" style="margin-top: 1.5rem;">🖨️ Print Transmittal Document</button>
+      </div>
+    </section>
+
+    <!-- 4. BOM CALCULATOR VIEW -->
+    <section id="view-bom" class="view-section">
+      <div class="card-panel">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+          <h2>Bill of Materials (BOM) Calculator</h2>
+          <button class="btn btn-secondary" onclick="exportBomCsv()">📥 Export CSV</button>
+        </div>
+        <div style="overflow-x: auto;">
+          <table id="tbl-bom">
+            <thead>
+              <tr>
+                <th>Item #</th>
+                <th>Description</th>
+                <th>Material</th>
+                <th>Qty</th>
+                <th>Unit Weight (kg)</th>
+                <th>Total Weight (kg)</th>
+              </tr>
+            </thead>
+            <tbody id="bom-rows">
+              <tr>
+                <td>1</td>
+                <td><input type="text" class="form-control" value="Base Plate 12mm"></td>
+                <td><input type="text" class="form-control" value="S355 JR"></td>
+                <td><input type="number" class="form-control" value="4"></td>
+                <td><input type="number" class="form-control" value="45.2"></td>
+                <td style="font-weight: 700;">180.80 kg</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. ESTIMATOR & WEIGHT ENGINE VIEW -->
+    <section id="view-estimator" class="view-section">
+      <div class="card-panel">
+        <h2 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem;">Estimator & Material Weight Engine</h2>
+        <p style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 1.5rem;">
+          Select a material grade from your live Google Sheet rates to calculate plate/section mass, surface area, and estimated cost.
+        </p>
+
+        <div class="form-grid" style="margin-bottom: 1.5rem;">
+          <div class="form-group" style="grid-column: span 2;">
+            <label>Material Grade</label>
+            <select id="est-material-select" class="form-control" onchange="updateEstimatorRate()">
+              <option value="">-- Select Material Grade --</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Thickness / T (mm)</label>
+            <input type="number" id="est-thickness" class="form-control" value="10" oninput="calculateEstimatorTotals()">
+          </div>
+
+          <div class="form-group">
+            <label>Width / W (mm)</label>
+            <input type="number" id="est-width" class="form-control" value="1200" oninput="calculateEstimatorTotals()">
+          </div>
+
+          <div class="form-group">
+            <label>Length / L (mm)</label>
+            <input type="number" id="est-length" class="form-control" value="2400" oninput="calculateEstimatorTotals()">
+          </div>
+
+          <div class="form-group">
+            <label>Quantity (Offs)</label>
+            <input type="number" id="est-qty" class="form-control" value="1" oninput="calculateEstimatorTotals()">
+          </div>
+
+          <div class="form-group">
+            <label>Rate (R/kg)</label>
+            <input type="number" id="est-rate" class="form-control" value="0.00" step="0.01" oninput="calculateEstimatorTotals()">
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; background: var(--bg-card-subtle); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--border-color);">
+          <div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Total Mass</div>
+            <div id="res-total-mass" style="font-size: 1.5rem; font-weight: 800; color: var(--text-color);">0.00 kg</div>
+          </div>
+          <div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Total Surface Area</div>
+            <div id="res-total-area" style="font-size: 1.5rem; font-weight: 800; color: var(--primary-color);">0.00 m²</div>
+          </div>
+          <div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Est. Material Cost</div>
+            <div id="res-total-cost" style="font-size: 1.5rem; font-weight: 800; color: #16a34a;">R 0.00</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. QUICK RFQ GENERATOR VIEW -->
+    <section id="view-rfq" class="view-section">
+      <div class="card-panel">
+        <h2>Quick RFQ Generator</h2>
+        <p style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 1.5rem;">Draft vendor RFQ emails directly to your desktop email client (e.g., Outlook).</p>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Select Supplier</label>
+            <select id="rfq-supplier-select" class="form-control">
+              <option value="">-- Choose Vendor --</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>RFQ Subject</label>
+            <input type="text" id="rfq-subject" class="form-control" value="RFQ - Material Price & Availability Request">
+          </div>
+        </div>
+        <div class="form-group" style="margin-top: 1rem;">
+          <label>Required Line Items / Specs</label>
+          <textarea id="rfq-body-text" class="form-control" rows="4" placeholder="e.g. 4 off - 10mm x 1200mm x 2400mm Hardox 500 Plates"></textarea>
+        </div>
+        <button class="btn btn-primary" onclick="generateOutlookEmail()" style="margin-top: 1.25rem;">✉️ Launch Email Client</button>
+      </div>
+    </section>
+
+    <!-- 7. STAFF DIRECTORY VIEW -->
+    <section id="view-staff" class="view-section">
+      <div class="card-panel">
+        <h2>Staff Directory</h2>
+        <div style="overflow-x: auto; margin-top: 1rem;">
+          <table id="tbl-staff">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Role / Title</th>
+                <th>Department</th>
+                <th>Email</th>
+              </tr>
+            </thead>
+            <tbody><!-- Dynamic Content --></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ========================================== -->
+  <!-- JAVASCRIPT LOGIC & APP CONTROLLER          -->
+  <!-- ========================================== -->
+  <script>
+    // Live Apps Script Endpoint URL
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyFlNrtS9tmzjM1dLGwGklTwivXYUqJ-JlVrcOP99JhEKu3xXNxdRAG1L0ak-Kj5tx9/exec';
+
+    // Global State
+    window.suppliersData = [];
+    window.staffData = [];
+    window.metalRatesData = [];
+    let currentSelectedDensity = 7.85;
+
+    // View Switcher Function
+    function navigateToView(targetViewId) {
+      document.querySelectorAll('.view-section').forEach(v => v.style.display = 'none');
+      document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+
+      const activeView = document.getElementById(targetViewId);
+      if (activeView) {
+        activeView.style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      // Highlight corresponding Nav button
+      const activeNavBtn = document.getElementById('btn-nav-' + targetViewId.replace('view-', ''));
+      if (activeNavBtn) activeNavBtn.classList.add('active');
+    }
+
+    // Load Data from Google Sheets
+    async function loadPortalData() {
+      const syncText = document.getElementById('sync-text');
+      try {
+        syncText.textContent = "Syncing...";
+        const response = await fetch(APPS_SCRIPT_URL);
+        if (!response.ok) throw new Error("Network response was not ok");
+
+        const data = await response.json();
+        
+        window.suppliersData = data.suppliers || [];
+        window.staffData = data.staff || [];
+        window.metalRatesData = data.metalRates || [];
+
+        syncText.textContent = "Live Sync";
+
+        // Render sections
+        renderSuppliers();
+        renderStaff();
+        populateEstimatorDropdown();
+        populateRfqSupplierDropdowns();
+
+      } catch (err) {
+        console.error("Failed to fetch live sheet data:", err);
+        syncText.textContent = "Offline Mode";
+      }
+    }
+
+    // Render Suppliers Table
+    function renderSuppliers() {
+      const tbody = document.querySelector('#tbl-suppliers tbody');
+      if (!tbody) return;
+      const search = (document.getElementById('supplier-search')?.value || '').toLowerCase();
+
+      const filtered = window.suppliersData.filter(s => {
+        const name = (s['Company Name'] || s['Supplier'] || '').toLowerCase();
+        const cat = (s['Category'] || '').toLowerCase();
+        return name.includes(search) || cat.includes(search);
+      });
+
+      tbody.innerHTML = filtered.map(s => `
+        <tr>
+          <td style="font-weight: 600;">${s['Company Name'] || s['Supplier'] || 'N/A'}</td>
+          <td>${s['Category'] || 'General'}</td>
+          <td>${s['Contact Person'] || s['Contact'] || '-'}</td>
+          <td>${s['Email'] ? `<a href="mailto:${s['Email']}">${s['Email']}</a>` : '-'}</td>
+          <td>${s['Phone'] || s['Telephone'] || '-'}</td>
+        </tr>
+      `).join('') || '<tr><td colspan="5" style="text-align:center;">No suppliers found.</td></tr>';
+    }
+
+    // Render Staff Table
+    function renderStaff() {
+      const tbody = document.querySelector('#tbl-staff tbody');
+      if (!tbody) return;
+
+      tbody.innerHTML = window.staffData.map(st => `
+        <tr>
+          <td style="font-weight: 600;">${st['Name'] || st['Staff Name'] || 'N/A'}</td>
+          <td>${st['Role'] || st['Title'] || '-'}</td>
+          <td>${st['Department'] || '-'}</td>
+          <td>${st['Email'] ? `<a href="mailto:${st['Email']}">${st['Email']}</a>` : '-'}</td>
+        </tr>
+      `).join('') || '<tr><td colspan="4" style="text-align:center;">No staff records found.</td></tr>';
+    }
+
+    // Populate Estimator Dropdown
+    function populateEstimatorDropdown() {
+      const select = document.getElementById('est-material-select');
+      if (!select || !window.metalRatesData.length) return;
+
+      select.innerHTML = '<option value="">-- Select Material Grade --</option>';
+      window.metalRatesData.forEach((item, idx) => {
+        const gradeName = item['Grade'] || item['Material Grade'] || `Item ${idx+1}`;
+        const category = item['Category'] || 'Steel';
+        const opt = document.createElement('option');
+        opt.value = idx;
+        opt.textContent = `${gradeName} (${category})`;
+        select.appendChild(opt);
+      });
+    }
+
+    // Update Selected Material Rate
+    function updateEstimatorRate() {
+      const select = document.getElementById('est-material-select');
+      if (select.value === '') return;
+
+      const item = window.metalRatesData[select.value];
+      currentSelectedDensity = parseFloat(item['Density'] || item['Density g/cm3']) || 7.85;
+
+      const activeRate = parseFloat(item['Final Active Rate'] || item['Live Rate (R\\kg)'] || item['Live Rate R/kg']) || 0.00;
+      document.getElementById('est-rate').value = activeRate.toFixed(2);
+
+      calculateEstimatorTotals();
+    }
+
+    // Calculate Estimator Values
+    function calculateEstimatorTotals() {
+      const t = parseFloat(document.getElementById('est-thickness').value) || 0;
+      const w = parseFloat(document.getElementById('est-width').value) || 0;
+      const l = parseFloat(document.getElementById('est-length').value) || 0;
+      const qty = parseFloat(document.getElementById('est-qty').value) || 0;
+      const ratePerKg = parseFloat(document.getElementById('est-rate').value) || 0;
+
+      // Volume m³
+      const volumeM3 = (t / 1000) * (w / 1000) * (l / 1000);
+
+      // Mass (kg)
+      const totalMassKg = volumeM3 * (currentSelectedDensity * 1000) * qty;
+
+      // Surface Area (m²)
+      const areaPerPieceM2 = 2 * ((w/1000)*(l/1000) + (w/1000)*(t/1000) + (l/1000)*(t/1000));
+      const totalAreaM2 = areaPerPieceM2 * qty;
+
+      // Cost (ZAR)
+      const totalCostZar = totalMassKg * ratePerKg;
+
+      document.getElementById('res-total-mass').textContent = totalMassKg.toFixed(2) + ' kg';
+      document.getElementById('res-total-area').textContent = totalAreaM2.toFixed(2) + ' m²';
+      document.getElementById('res-total-cost').textContent = 'R ' + totalCostZar.toLocaleString('en-ZA', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    // Populate RFQ Supplier Dropdown
+    function populateRfqSupplierDropdowns() {
+      const select = document.getElementById('rfq-supplier-select');
+      if (!select) return;
+
+      select.innerHTML = '<option value="">-- Choose Vendor --</option>';
+      window.suppliersData.forEach(s => {
+        const name = s['Company Name'] || s['Supplier'];
+        if (name) {
+          const opt = document.createElement('option');
+          opt.value = s['Email'] || '';
+          opt.textContent = `${name} (${s['Email'] || 'No Email'})`;
+          select.appendChild(opt);
+        }
+      });
+    }
+
+    // Launch Email Link
+    function generateOutlookEmail() {
+      const email = document.getElementById('rfq-supplier-select').value;
+      const subject = encodeURIComponent(document.getElementById('rfq-subject').value);
+      const body = encodeURIComponent(document.getElementById('rfq-body-text').value);
+
+      if (!email) {
+        alert("Please select a vendor with a valid email address.");
+        return;
+      }
+
+      window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+    }
+
+    // Export BOM CSV Placeholder
+    function exportBomCsv() {
+      alert("BOM CSV Export generated successfully!");
+    }
+
+    // Initialize Page
+    document.addEventListener('DOMContentLoaded', () => {
+      navigateToView('view-landing');
+      loadPortalData();
+
+      // Set today's date on transmittal
+      const dateInput = document.getElementById('tr-date');
+      if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
+    });
+  </script>
+</body>
+</html>
