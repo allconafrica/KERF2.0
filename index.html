@@ -17,7 +17,6 @@
   </script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    /* ================= SCREEN STYLES ================= */
     body { transition: background-color 0.2s, color 0.2s; }
     select, select option, select optgroup {
       background-color: #ffffff;
@@ -30,92 +29,59 @@
     input, textarea, select {
       color-scheme: light dark;
     }
-    .print-only { display: none !important; }
-
-    /* ================= PRINT STYLES ================= */
+    
+    /* Default Print Styles (For Dashboard, Staff, Suppliers, etc.) */
     @media print {
-      @page { margin: 15mm; }
-
       body {
         background-color: #ffffff !important;
         color: #000000 !important;
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
-        font-family: Arial, sans-serif !important;
       }
-      
-      /* Hide all UI elements */
-      .no-print, header, button, nav, .text-brand-red i {
+      .no-print, header, button, nav {
         display: none !important;
       }
-
-      /* Show specific print elements */
-      .print-only {
-        display: flex !important;
-      }
-
-      /* Strip all backgrounds, borders, shadows */
-      main { padding: 0 !important; max-width: 100% !important; margin: 0 !important; }
-      .card, .bg-white, .dark\:bg-zinc-900, .bg-zinc-50, .dark\:bg-zinc-950, #view-transmittal > div, .border {
-        background-color: transparent !important;
-        border: none !important;
-        box-shadow: none !important;
-        padding: 0 !important;
-        margin: 0 !important;
-      }
-
-      /* Minimal Typography */
-      h2, label {
-        color: #000 !important;
-      }
-      label {
-        font-size: 10px !important;
-        text-transform: uppercase !important;
-        font-weight: bold !important;
-        margin-bottom: 2px !important;
-      }
-
-      /* Convert inputs to simple lines for a document look */
-      input, select {
-        background-color: transparent !important;
-        color: #000 !important;
-        border: none !important;
-        border-bottom: 1px solid #000 !important;
-        border-radius: 0 !important;
-        padding: 2px 0 !important;
-        font-size: 12px !important;
+      .card, input, select, textarea {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+        border-color: #cbd5e1 !important;
         box-shadow: none !important;
       }
+    }
 
-      /* Minimal textarea */
-      textarea {
-        background-color: transparent !important;
-        color: #000 !important;
-        border: 1px solid #000 !important;
-        border-radius: 2px !important;
-        padding: 6px !important;
-        font-size: 12px !important;
+    /* Isolated Print Layout for the Project Transmittal Template */
+    @media print {
+      body.printing-transmittal > header,
+      body.printing-transmittal > main {
+        display: none !important;
       }
-
-      /* Fix Tailwind color overrides */
-      .text-brand-red, .text-zinc-500, .dark\:text-zinc-400 {
-        color: #000 !important;
+      body.printing-transmittal #print-transmittal-layout {
+        display: block !important;
       }
 
-      /* Job List Print Formatting */
-      #job-entries-list > div {
-        background-color: transparent !important;
-        border: none !important;
-        border-bottom: 1px solid #ccc !important;
-        padding: 6px 0 !important;
-        color: #000 !important;
+      /* Transmittal Layout Specifics */
+      #print-transmittal-layout {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 11px;
+        margin: 0;
+        padding: 20px; 
+        color: #000;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
       }
-      #job-entries-list > div span.text-brand-red, #job-entries-list > div span.text-zinc-500 {
-        color: #000 !important;
-      }
-      #job-entries-list button {
-        display: none !important; /* Hide trash cans */
-      }
+      #print-transmittal-layout .header-container { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 5px; }
+      #print-transmittal-layout .logo { width: 220px; }
+      #print-transmittal-layout .generated-date { font-weight: bold; font-size: 11px; }
+      #print-transmittal-layout .divider-red { border-top: 3px solid #d32f2f; margin-bottom: 2px; }
+      #print-transmittal-layout .divider-black { border-top: 1px solid #000; margin-bottom: 12px; }
+      #print-transmittal-layout h1 { font-size: 12px; font-weight: bold; margin: 0 0 12px 0; text-transform: uppercase; }
+      #print-transmittal-layout table { width: 100%; border-collapse: collapse; margin-bottom: 12px; }
+      #print-transmittal-layout th, #print-transmittal-layout td { border: 1px solid #000; padding: 6px 8px; text-align: left; vertical-align: middle; }
+      #print-transmittal-layout th { font-weight: bold; text-transform: uppercase; }
+      #print-transmittal-layout .col-15 { width: 15%; }
+      #print-transmittal-layout .col-35 { width: 35%; }
+      #print-transmittal-layout .col-25 { width: 25%; }
+      #print-transmittal-layout .val-text { color: #444; }
+      #print-transmittal-layout .job-banner { background-color: #d32f2f !important; color: #fff !important; font-weight: bold; text-transform: uppercase; padding: 6px 8px; border: 1px solid #000; border-bottom: none; margin-top: 10px; }
+      #print-transmittal-layout .job-table { margin-bottom: 12px; margin-top: 0; }
     }
   </style>
 </head>
@@ -329,17 +295,7 @@
     <!-- ================= PROJECT TRANSMITTAL BUILDER ================= -->
     <div id="view-transmittal" class="hidden space-y-6">
       <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 shadow-sm">
-        
-        <!-- PRINT ONLY HEADER (Google Doc Minimalist Style) -->
-        <div class="print-only flex justify-between items-end border-b-2 border-black pb-4 mb-6 w-full">
-          <img src="ALLCON-Logo.jpg" alt="ALLCON Logo" style="height: 50px; object-fit: contain;">
-          <div class="text-right">
-            <h1 class="text-2xl font-black uppercase tracking-widest text-black m-0 leading-none">Project Transmittal</h1>
-            <p class="text-[10px] text-black font-bold mt-1">OFFICIAL DOCUMENT</p>
-          </div>
-        </div>
-
-        <h2 class="text-lg font-bold flex items-center gap-2 no-print">
+        <h2 class="text-lg font-bold flex items-center gap-2">
           <i class="fa-solid fa-file-pdf text-brand-red"></i> Project Transmittal Builder
         </h2>
 
@@ -383,74 +339,67 @@
 
         <!-- JOB SCHEDULE BUILDER -->
         <div class="mt-8 p-5 bg-zinc-50 dark:bg-zinc-950 rounded-xl border border-zinc-200 dark:border-zinc-800">
-          <div class="text-xs font-bold text-brand-red uppercase tracking-wider flex items-center gap-2 mb-4 no-print">
+          <div class="text-xs font-bold text-brand-red uppercase tracking-wider flex items-center gap-2 mb-4">
             <i class="fa-solid fa-sitemap"></i> JOB ID SCHEDULE BUILDER
           </div>
-          
-          <!-- Explicit header for print list -->
-          <h3 class="print-only text-sm font-bold uppercase border-b border-black pb-1 mb-3">Job ID Schedule</h3>
 
-          <!-- Build Inputs: HIDE IN PRINT -->
-          <div class="no-print">
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <div>
-                <label class="text-[10px] text-zinc-500 uppercase font-bold">Job ID *</label>
-                <input type="text" id="job-id" placeholder="e.g. 5276" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded mt-1 focus:outline-none focus:border-brand-red">
-              </div>
-              <div>
-                <label class="text-[10px] text-zinc-500 uppercase font-bold">AC Number</label>
-                <input type="text" id="job-ac" placeholder="e.g. AC2902" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded mt-1 focus:outline-none focus:border-brand-red">
-              </div>
-              <div>
-                <label class="text-[10px] text-zinc-500 uppercase font-bold">Description</label>
-                <input type="text" id="job-desc" placeholder="e.g. MESH SCREEN" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded mt-1 focus:outline-none focus:border-brand-red">
-              </div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label class="text-[10px] text-zinc-500 uppercase font-bold">Job ID *</label>
+              <input type="text" id="job-id" placeholder="e.g. 5276" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded mt-1 focus:outline-none focus:border-brand-red">
             </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 mt-3">
-              <div>
-                <label class="text-[10px] text-zinc-500 uppercase font-bold">Category</label>
-                <select id="job-category" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded mt-1 focus:outline-none focus:border-brand-red">
-                  <option value="">-- Select Category --</option>
-                  <option value="Structural">Structural</option>
-                  <option value="Plate Work">Plate Work</option>
-                  <option value="Mesh Screen">Mesh Screen</option>
-                  <option value="Machining">Machining</option>
-                  <option value="Hardware">Hardware</option>
-                </select>
-              </div>
-              <div>
-                <label class="text-[10px] text-zinc-500 uppercase font-bold">Sub-Category</label>
-                <input type="text" id="job-subcategory" placeholder="e.g. SCREENING" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded mt-1 focus:outline-none focus:border-brand-red">
-              </div>
-              <div>
-                <label class="text-[10px] text-zinc-500 uppercase font-bold">Supplier Name</label>
-                <select id="job-supplier" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded mt-1 focus:outline-none focus:border-brand-red">
-                  <option value="">-- Select Supplier --</option>
-                </select>
-              </div>
-              <div>
-                <label class="text-[10px] text-zinc-500 uppercase font-bold">Purchase Order</label>
-                <input type="text" id="job-po" placeholder="PO18008" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded mt-1 focus:outline-none focus:border-brand-red">
-              </div>
+            <div>
+              <label class="text-[10px] text-zinc-500 uppercase font-bold">AC Number</label>
+              <input type="text" id="job-ac" placeholder="e.g. AC2902" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded mt-1 focus:outline-none focus:border-brand-red">
             </div>
-
-            <div class="flex justify-end mt-4">
-              <button onclick="addJobEntry()" class="bg-brand-red hover:bg-brand-redHover text-white text-xs font-bold px-4 py-2.5 rounded-lg flex items-center gap-2 transition">
-                <i class="fa-solid fa-plus"></i> Add Entry
-              </button>
+            <div>
+              <label class="text-[10px] text-zinc-500 uppercase font-bold">Description</label>
+              <input type="text" id="job-desc" placeholder="e.g. MESH SCREEN" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded mt-1 focus:outline-none focus:border-brand-red">
             </div>
           </div>
 
-          <!-- Entries Table: VISIBLE ON PRINT -->
-          <div class="mt-4 print:mt-0 border-t border-zinc-200 dark:border-zinc-800 pt-3 print:border-none print:pt-0">
-            <p id="no-jobs-msg" class="text-xs text-zinc-500 italic no-print">No Job IDs or entries added yet.</p>
+          <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 mt-3">
+            <div>
+              <label class="text-[10px] text-zinc-500 uppercase font-bold">Category</label>
+              <select id="job-category" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded mt-1 focus:outline-none focus:border-brand-red">
+                <option value="">-- Select Category --</option>
+                <option value="Structural">Structural</option>
+                <option value="Plate Work">Plate Work</option>
+                <option value="Mesh Screen">Mesh Screen</option>
+                <option value="Machining">Machining</option>
+                <option value="Hardware">Hardware</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-[10px] text-zinc-500 uppercase font-bold">Sub-Category</label>
+              <input type="text" id="job-subcategory" placeholder="e.g. SCREENING" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded mt-1 focus:outline-none focus:border-brand-red">
+            </div>
+            <div>
+              <label class="text-[10px] text-zinc-500 uppercase font-bold">Supplier Name</label>
+              <select id="job-supplier" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded mt-1 focus:outline-none focus:border-brand-red">
+                <option value="">-- Select Supplier --</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-[10px] text-zinc-500 uppercase font-bold">Purchase Order</label>
+              <input type="text" id="job-po" placeholder="PO18008" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded mt-1 focus:outline-none focus:border-brand-red">
+            </div>
+          </div>
+
+          <div class="mt-4 border-t border-zinc-200 dark:border-zinc-800 pt-3">
+            <p id="no-jobs-msg" class="text-xs text-zinc-500 italic">No Job IDs or entries added yet.</p>
             <div id="job-entries-list" class="space-y-2 mt-2"></div>
+          </div>
+
+          <div class="flex justify-end mt-4">
+            <button onclick="addJobEntry()" class="bg-brand-red hover:bg-brand-redHover text-white text-xs font-bold px-4 py-2.5 rounded-lg flex items-center gap-2 transition">
+              <i class="fa-solid fa-plus"></i> Add Entry
+            </button>
           </div>
         </div>
 
-        <div class="flex justify-end mt-6 no-print">
-          <button onclick="window.print()" class="bg-brand-red hover:bg-brand-redHover text-white text-xs font-bold px-6 py-3 rounded-lg flex items-center gap-2 shadow-lg transition">
+        <div class="flex justify-end mt-6">
+          <button onclick="printTransmittalSheet()" class="bg-brand-red hover:bg-brand-redHover text-white text-xs font-bold px-6 py-3 rounded-lg flex items-center gap-2 shadow-lg transition">
             <i class="fa-solid fa-print"></i> Generate / Print Official PDF Transmittal Sheet
           </button>
         </div>
@@ -678,6 +627,53 @@
     </div>
 
   </main>
+
+  <!-- ================= PRINT TRANSMITTAL LAYOUT ================= -->
+  <!-- This is completely hidden unless printing the transmittal sheet -->
+  <div id="print-transmittal-layout" class="hidden">
+    <div class="header-container">
+        <div>
+            <img src="logo.png" alt="ALLCON Fabrication & Engineering" class="logo" />
+        </div>
+        <div class="generated-date" id="pt-date">
+            Generated: N/A
+        </div>
+    </div>
+    
+    <div class="divider-red"></div>
+    <div class="divider-black"></div>
+
+    <h1>PROJECT TRANSMITTAL</h1>
+
+    <table>
+        <tr>
+            <th class="col-15">CLIENT:</th>
+            <td class="col-35 val-text" id="pt-client">N/A</td>
+            <th class="col-15">TARGET COMPLETION:</th>
+            <td class="col-35 val-text" id="pt-target">N/A</td>
+        </tr>
+        <tr>
+            <th>PROJECT NAME:</th>
+            <td class="val-text" id="pt-project">N/A</td>
+            <th>TECHNICAL BUYER:</th>
+            <td class="val-text" id="pt-buyer">N/A</td>
+        </tr>
+    </table>
+
+    <table>
+        <tr>
+            <th class="col-15" style="text-transform: none;">Inclusions:</th>
+            <td class="val-text" id="pt-inclusions">None specified</td>
+        </tr>
+        <tr>
+            <th style="text-transform: none;">Exclusions:</th>
+            <td class="val-text" id="pt-exclusions">None specified</td>
+        </tr>
+    </table>
+
+    <!-- Job Schedules will be dynamically injected here via JS -->
+    <div id="pt-jobs-container"></div>
+  </div>
 
   <script>
     // STANDARD PIPE MASS LOOKUP (KG/M) FOR SCHEDULE 40 & 80
@@ -1111,6 +1107,59 @@
           </button>
         </div>
       `).join('');
+    }
+
+    function printTransmittalSheet() {
+      // 1. Map fields from input values to the hidden print layout
+      document.getElementById('pt-client').innerText = document.getElementById('trans-client').value || 'N/A';
+      document.getElementById('pt-project').innerText = document.getElementById('trans-project').value || 'N/A';
+      document.getElementById('pt-date').innerText = 'Generated: ' + (document.getElementById('trans-date').value || new Date().toISOString().split('T')[0]);
+      document.getElementById('pt-target').innerText = document.getElementById('trans-target-date').value || 'N/A';
+      document.getElementById('pt-buyer').innerText = document.getElementById('trans-buyer').value || 'N/A';
+      document.getElementById('pt-inclusions').innerText = document.getElementById('trans-inclusions').value || 'None specified';
+      document.getElementById('pt-exclusions').innerText = document.getElementById('trans-exclusions').value || 'None specified';
+
+      // 2. Render jobs into the print layout
+      const jobsContainer = document.getElementById('pt-jobs-container');
+      if (jobEntries.length === 0) {
+        jobsContainer.innerHTML = '<p style="font-style: italic; color: #666; margin-top: 20px;">No Job IDs scheduled for this transmittal.</p>';
+      } else {
+        jobsContainer.innerHTML = jobEntries.map(job => `
+          <div class="job-banner">JOB ID: ${job.id}</div>
+          <table class="job-table">
+              <tr>
+                  <th class="col-25">AC NUMBER</th>
+                  <th>DESCRIPTION</th>
+              </tr>
+              <tr>
+                  <td class="val-text">${job.ac || 'N/A'}</td>
+                  <td class="val-text">${job.desc || 'N/A'}</td>
+              </tr>
+          </table>
+          <table>
+              <tr>
+                  <th class="col-25">CATEGORY</th>
+                  <th class="col-25">SUB-CATEGORY</th>
+                  <th class="col-25">SUPPLIER</th>
+                  <th class="col-25">PURCHASE ORDER</th>
+              </tr>
+              <tr>
+                  <td class="val-text">${job.category || 'N/A'}</td>
+                  <td class="val-text">${job.subcategory || 'N/A'}</td>
+                  <td class="val-text">${job.supplier || 'N/A'}</td>
+                  <td class="val-text">${job.po || 'N/A'}</td>
+              </tr>
+          </table>
+        `).join('');
+      }
+
+      // 3. Temporarily isolate layout via body class and trigger print dialog
+      document.body.classList.add('printing-transmittal');
+      setTimeout(() => {
+        window.print();
+        // Remove class after print dialog is handled
+        document.body.classList.remove('printing-transmittal');
+      }, 100);
     }
 
     // BOM & Metal Rates UI Functions
