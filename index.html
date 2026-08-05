@@ -29,24 +29,56 @@
     input, textarea, select {
       color-scheme: light dark;
     }
+
+    /* Hide Print Template on Screen */
+    #print-template {
+      display: none;
+    }
+
+    /* ==========================================
+       MINIMALIST INK-SAVING PRINT ENGINE (@media print)
+       ========================================== */
     @media print {
-      body {
+      @page {
+        size: A4 portrait;
+        margin: 8mm;
+      }
+
+      *, *:before, *:after {
+        box-sizing: border-box !important;
+      }
+
+      html, body {
         background-color: #ffffff !important;
         color: #000000 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        font-family: Arial, Helvetica, sans-serif !important;
+        font-size: 8pt !important;
+        line-height: 1.2 !important;
       }
-      .no-print, header, button, nav {
+
+      header, main, nav, button, .no-print {
         display: none !important;
       }
-      .card, input, select, textarea {
-        background-color: #ffffff !important;
-        color: #000000 !important;
-        border-color: #cbd5e1 !important;
-        box-shadow: none !important;
+
+      body.printing-transmittal #print-template {
+        display: block !important;
+        width: 100% !important;
+        margin: 0 auto !important;
+      }
+
+      table {
+        page-break-inside: avoid;
       }
     }
   </style>
 </head>
 <body class="min-h-screen flex flex-col bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
+
+  <!-- PRINT TEMPLATE CONTAINER (Matches Image Layout Exactly) -->
+  <div id="print-template"></div>
 
   <!-- TOP HEADER / NAVIGATION -->
   <header class="no-print border-b border-zinc-200 dark:border-zinc-900 bg-white dark:bg-zinc-900 px-6 py-3 flex items-center justify-between gap-4 relative z-50">
@@ -174,13 +206,12 @@
         </div>
       </div>
 
-      <!-- Quick Access Tiles: Tools & Directories -->
+      <!-- Quick Access Tiles -->
       <div class="space-y-3 pt-2">
         <h3 class="text-xs font-bold uppercase tracking-wider text-brand-red flex items-center gap-2">
           <i class="fa-solid fa-th-large"></i> Quick Access - Tools & Directories
         </h3>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
-          <!-- Transmittal Tile -->
           <div onclick="switchTab('transmittal')" class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-5 rounded-xl cursor-pointer hover:border-brand-red transition group shadow-sm flex flex-col justify-between">
             <div>
               <div class="bg-red-50 dark:bg-red-950/40 w-10 h-10 rounded-lg flex items-center justify-center text-brand-red border border-red-100 dark:border-red-900/40 mb-3 group-hover:scale-105 transition">
@@ -194,7 +225,6 @@
             </div>
           </div>
 
-          <!-- BOM Tile -->
           <div onclick="switchTab('bom')" class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-5 rounded-xl cursor-pointer hover:border-brand-red transition group shadow-sm flex flex-col justify-between">
             <div>
               <div class="bg-red-50 dark:bg-red-950/40 w-10 h-10 rounded-lg flex items-center justify-center text-brand-red border border-red-100 dark:border-red-900/40 mb-3 group-hover:scale-105 transition">
@@ -208,7 +238,6 @@
             </div>
           </div>
 
-          <!-- RFQ Tile -->
           <div onclick="switchTab('rfq')" class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-5 rounded-xl cursor-pointer hover:border-brand-red transition group shadow-sm flex flex-col justify-between">
             <div>
               <div class="bg-red-50 dark:bg-red-950/40 w-10 h-10 rounded-lg flex items-center justify-center text-brand-red border border-red-100 dark:border-red-900/40 mb-3 group-hover:scale-105 transition">
@@ -222,7 +251,6 @@
             </div>
           </div>
 
-          <!-- Supplier Directory Tile -->
           <div onclick="switchTab('suppliers')" class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-5 rounded-xl cursor-pointer hover:border-brand-red transition group shadow-sm flex flex-col justify-between">
             <div>
               <div class="bg-red-50 dark:bg-red-950/40 w-10 h-10 rounded-lg flex items-center justify-center text-brand-red border border-red-100 dark:border-red-900/40 mb-3 group-hover:scale-105 transition">
@@ -236,7 +264,6 @@
             </div>
           </div>
 
-          <!-- Staff Directory Tile -->
           <div onclick="switchTab('staff')" class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-5 rounded-xl cursor-pointer hover:border-brand-red transition group shadow-sm flex flex-col justify-between">
             <div>
               <div class="bg-red-50 dark:bg-red-950/40 w-10 h-10 rounded-lg flex items-center justify-center text-brand-red border border-red-100 dark:border-red-900/40 mb-3 group-hover:scale-105 transition">
@@ -360,14 +387,14 @@
         </div>
 
         <div class="flex justify-end mt-6">
-          <button onclick="window.print()" class="bg-brand-red hover:bg-brand-redHover text-white text-xs font-bold px-6 py-3 rounded-lg flex items-center gap-2 shadow-lg transition">
+          <button onclick="printTransmittalPDF()" class="bg-brand-red hover:bg-brand-redHover text-white text-xs font-bold px-6 py-3 rounded-lg flex items-center gap-2 shadow-lg transition">
             <i class="fa-solid fa-print"></i> Generate / Print Official PDF Transmittal Sheet
           </button>
         </div>
       </div>
     </div>
 
-    <!-- ================= BOM ESTIMATOR WITH METAL RATES ================= -->
+    <!-- ================= BOM ESTIMATOR ================= -->
     <div id="view-bom" class="hidden space-y-6">
       <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 shadow-sm">
         <h2 class="text-lg font-bold flex items-center gap-2 mb-2">
@@ -375,7 +402,6 @@
         </h2>
         <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-6">Capture drawing measurements on the fly, including linear profiles, plates, and mesh screens. Weights and pricing calculate automatically based on live steel density and rates.</p>
 
-        <!-- Calculator Header & Item Inputs -->
         <div class="bg-zinc-50 dark:bg-zinc-950 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 space-y-4">
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             <div>
@@ -432,7 +458,6 @@
               </div>
             </div>
 
-            <!-- Auto-Calculated Weight Placeholder, Steel Grade Dropdown, and Auto-Calculated Price Placeholder -->
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-3">
               <div>
                 <label class="text-[10px] font-bold text-zinc-500 uppercase">Est. Weight (kg) <span class="text-[9px] text-emerald-500 font-normal">(Auto-calculated / Override)</span></label>
@@ -458,7 +483,6 @@
           </button>
         </div>
 
-        <!-- BOM Table -->
         <div class="mt-6 overflow-x-auto">
           <table class="w-full text-left text-xs">
             <thead>
@@ -479,7 +503,6 @@
           </table>
         </div>
 
-        <!-- General Notes & Special Instructions -->
         <div class="mt-6 bg-zinc-50 dark:bg-zinc-950 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800">
           <label class="text-xs font-bold text-brand-red uppercase block mb-2 flex items-center gap-1.5">
             <i class="fa-solid fa-clipboard-list"></i> GENERAL NOTES & SPECIAL INSTRUCTIONS
@@ -493,7 +516,6 @@
           </button>
         </div>
 
-        <!-- Live Metal Rates Reference Card -->
         <div class="mt-8 border-t border-zinc-200 dark:border-zinc-800 pt-6">
           <h3 class="text-xs font-bold uppercase tracking-wider text-brand-red mb-3 flex items-center gap-2">
             <i class="fa-solid fa-table-list"></i> Google Sheets Metal Rates Reference Sheet
@@ -567,7 +589,7 @@
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
           <div>
             <h2 class="text-lg font-bold flex items-center gap-2"><i class="fa-solid fa-truck-ramp-box text-brand-red"></i> Supplier Directory</h2>
-            <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">Live Google Sheets sync displaying all columns (emails, numbers, addresses, payment terms) with collapsible A–Z sections.</p>
+            <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">Live Google Sheets sync displaying all columns with collapsible A–Z sections.</p>
           </div>
           <button onclick="expandAllSuppliers()" class="text-xs bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 px-3 py-1.5 rounded text-zinc-700 dark:text-zinc-300 font-semibold hover:border-brand-red transition">
             <i class="fa-solid fa-sort"></i> Toggle Expand / Collapse All
@@ -590,7 +612,6 @@
   </main>
 
   <script>
-    // STANDARD PIPE MASS LOOKUP (KG/M) FOR SCHEDULE 40 & 80
     const STANDARD_PIPES = {
         '15nb': { 'sch40': 1.27, 'sch80': 1.62 },
         '20nb': { 'sch40': 1.68, 'sch80': 2.20 },
@@ -605,12 +626,10 @@
         '150nb': { 'sch40': 26.37, 'sch80': 38.26 }
     };
 
-    // GOOGLE SHEETS LIVE CSV URLS
     const GOOGLE_SHEETS_SUPPLIERS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSNynT5Snb9PgJp6ti3QpuHUr9fX8bGKEG10H8kjkbCna_ZfkEC7aM06QrwkjHwxR1n6uu3ZgvvaKu6/pub?gid=0&single=true&output=csv";
     const GOOGLE_SHEETS_STAFF_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSNynT5Snb9PgJp6ti3QpuHUr9fX8bGKEG10H8kjkbCna_ZfkEC7aM06QrwkjHwxR1n6uu3ZgvvaKu6/pub?gid=1666500445&single=true&output=csv";
     const GOOGLE_SHEETS_METAL_RATES_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSNynT5Snb9PgJp6ti3QpuHUr9fX8bGKEG10H8kjkbCna_ZfkEC7aM06QrwkjHwxR1n6uu3ZgvvaKu6/pub?gid=1040371405&single=true&output=csv";
 
-    // Application MasterState
     let suppliersMaster = [];
     let staffData = [];
     let metalRatesData = [];
@@ -618,7 +637,6 @@
     let userWeightOverridden = false;
     let userPriceOverridden = false;
 
-    // Robust CSV Parsing Logic
     function parseCSV(text) {
       const lines = text.split(/\r?\n/).filter(line => line.trim() !== '');
       if (lines.length === 0) return [];
@@ -657,7 +675,6 @@
       return data;
     }
 
-    // App Initialization
     window.onload = async function() {
       const dateInput = document.getElementById('trans-date');
       if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
@@ -676,7 +693,6 @@
       });
     };
 
-    // Data Fetchers
     async function fetchSuppliers() {
       try {
         const res = await fetch(GOOGLE_SHEETS_SUPPLIERS_CSV);
@@ -775,7 +791,6 @@
       }
     }
 
-    // UI Navigation & Dropdowns
     function toggleDropdown(event, menuId) {
       event.stopPropagation();
       const otherId = menuId === 'tools-menu' ? 'directories-menu' : 'tools-menu';
@@ -809,7 +824,6 @@
       }
     }
 
-    // Dynamic BOM Material Type Change
     function onBomMaterialTypeChange() {
       const type = document.getElementById('bom-material-type').value;
       const label = document.getElementById('bom-stock-label');
@@ -845,17 +859,15 @@
       userPriceOverridden = true;
     }
 
-    // Density-Aware Calculation Engine (Supporting Standard Pipes, S355, Mild Steel, Stainless, Aluminum, Hardox & Mesh Screens)
     function triggerAutoCalculate() {
       const type = document.getElementById('bom-material-type').value;
       const qty = parseFloat(document.getElementById('bom-qty').value) || 0;
-      const dim = parseFloat(document.getElementById('bom-dim').value) || 0; // Length in mm
-      const stockOrWidth = parseFloat(document.getElementById('bom-stockbar').value) || 0; // Width or Stock length
+      const dim = parseFloat(document.getElementById('bom-dim').value) || 0;
+      const stockOrWidth = parseFloat(document.getElementById('bom-stockbar').value) || 0;
       const desc = document.getElementById('bom-desc').value.toUpperCase();
       
       const gradeSelect = document.getElementById('bom-item-grade');
       const ratePerKg = parseFloat(gradeSelect.value) || 0;
-      
       const gradeText = gradeSelect.selectedIndex >= 0 ? gradeSelect.options[gradeSelect.selectedIndex].text.toUpperCase() : '';
       
       let densityFactor = 0.00785;
@@ -882,8 +894,7 @@
         }
       } 
       else if (type === 'Mesh') {
-        // Mesh/Screen calculation based on area (m2) and default/custom mass per square meter
-        let kgPerSquareMeter = 5.0; // Default medium mesh weight per m2
+        let kgPerSquareMeter = 5.0;
         if (desc.includes('HEAVY') || desc.includes('5MM') || desc.includes('6MM')) {
           kgPerSquareMeter = 12.0;
         } else if (desc.includes('LIGHT') || desc.includes('1MM') || desc.includes('2MM')) {
@@ -895,9 +906,7 @@
         estimatedWeight = areaM2 * kgPerSquareMeter * quantity;
       }
       else if (type === 'Linear') {
-        let kgPerMeter = 5.8; // Default fallback
-
-        // Check standard pipe lookup first
+        let kgPerMeter = 5.8;
         let matchedSize = null;
         let matchedSch = 'sch40';
         if (desc.includes('SCH. 80') || desc.includes('SCH 80') || desc.includes('SCH80')) {
@@ -931,7 +940,6 @@
             kgPerMeter = side * side * densityFactor;
           }
         }
-
         estimatedWeight = kgPerMeter * lengthMeters * quantity;
       } 
       else {
@@ -963,7 +971,6 @@
       }
     }
 
-    // Transmittal Job Builder Functions
     function populateTransmittalSupplierDropdown() {
       const select = document.getElementById('job-supplier');
       if (!select) return;
@@ -1023,7 +1030,6 @@
       `).join('');
     }
 
-    // BOM & Metal Rates UI Functions
     function populateMetalRatesUI() {
       const select = document.getElementById('bom-item-grade');
       if (select) {
@@ -1108,7 +1114,6 @@
       triggerAutoCalculate();
     }
 
-    // RFQ Generator Functions
     function populateRfqDropdown() {
       const select = document.getElementById('rfq-supplier');
       select.innerHTML = suppliersMaster.map((s, i) => {
@@ -1151,7 +1156,6 @@
       window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
     }
 
-    // Supplier Directory Functions (Displays ALL sheet columns dynamically for each supplier)
     function renderSuppliersAlphabetical(list) {
       const container = document.getElementById('suppliers-alphabet-container');
       container.innerHTML = '';
@@ -1228,7 +1232,6 @@
       }));
     }
 
-    // Staff Directory Functions (Showing Name, Surname, Job Title, Phone, and Email)
     function renderStaffGrid() {
       const grid = document.getElementById('staff-grid');
       grid.innerHTML = staffData.map(s => `
@@ -1243,6 +1246,125 @@
           </div>
         </div>
       `).join('');
+    }
+
+    // ================= EXACT IMAGE LAYOUT PRINT GENERATOR =================
+    function prepareTransmittalPrint() {
+      const client = document.getElementById('trans-client').value || 'N/A';
+      const project = document.getElementById('trans-project').value || 'N/A';
+      const date = document.getElementById('trans-date').value || new Date().toISOString().split('T')[0];
+      const targetDate = document.getElementById('trans-target-date').value || 'N/A';
+      const buyer = document.getElementById('trans-buyer').value || 'N/A';
+      const inclusions = document.getElementById('trans-inclusions').value || 'None specified';
+      const exclusions = document.getElementById('trans-exclusions').value || 'None specified';
+
+      const container = document.getElementById('print-template');
+      
+      let jobsHtml = '';
+      if (jobEntries.length === 0) {
+        jobsHtml = `
+          <div style="margin-top: 10px; margin-bottom: 10px;">
+            <div style="background-color: #DC2626; color: #fff; font-weight: bold; padding: 4px 6px; font-size: 8pt; text-transform: uppercase;">JOB ID: 12345</div>
+            <table style="width: 100%; border-collapse: collapse; font-size: 8pt; border: 1px solid #000;">
+              <tr>
+                <td style="border: 1px solid #000; padding: 4px; font-weight: bold; width: 50%; background-color: #f1f5f9;">AC NUMBER</td>
+                <td style="border: 1px solid #000; padding: 4px; font-weight: bold; width: 50%; background-color: #f1f5f9;">DESCRIPTION</td>
+              </tr>
+              <tr>
+                <td style="border: 1px solid #000; padding: 4px;">1234</td>
+                <td style="border: 1px solid #000; padding: 4px;">PINION</td>
+              </tr>
+              <tr>
+                <td style="border: 1px solid #000; padding: 4px; font-weight: bold; background-color: #f1f5f9;">CATEGORY</td>
+                <td style="border: 1px solid #000; padding: 4px; font-weight: bold; background-color: #f1f5f9;">SUB-CATEGORY</td>
+                <td style="border: 1px solid #000; padding: 4px; font-weight: bold; background-color: #f1f5f9;">SUPPLIER</td>
+                <td style="border: 1px solid #000; padding: 4px; font-weight: bold; background-color: #f1f5f9;">PURCHASE ORDER</td>
+              </tr>
+              <tr>
+                <td style="border: 1px solid #000; padding: 4px;">MATERIAL</td>
+                <td style="border: 1px solid #000; padding: 4px;">STRUCTURAL</td>
+                <td style="border: 1px solid #000; padding: 4px;">Macsteel</td>
+                <td style="border: 1px solid #000; padding: 4px; font-weight: bold;">PO12345</td>
+              </tr>
+            </table>
+          </div>
+        `;
+      } else {
+        jobsHtml = jobEntries.map(e => `
+          <div style="margin-top: 10px; margin-bottom: 10px;">
+            <div style="background-color: #DC2626; color: #fff; font-weight: bold; padding: 4px 6px; font-size: 8pt; text-transform: uppercase;">JOB ID: ${e.id}</div>
+            <table style="width: 100%; border-collapse: collapse; font-size: 8pt; border: 1px solid #000;">
+              <tr>
+                <td style="border: 1px solid #000; padding: 4px; font-weight: bold; width: 30%; background-color: #f1f5f9;">AC NUMBER</td>
+                <td style="border: 1px solid #000; padding: 4px; font-weight: bold; width: 70%; background-color: #f1f5f9;" colspan="3">DESCRIPTION</td>
+              </tr>
+              <tr>
+                <td style="border: 1px solid #000; padding: 4px;">${e.ac || 'N/A'}</td>
+                <td style="border: 1px solid #000; padding: 4px;" colspan="3">${e.desc || 'N/A'}</td>
+              </tr>
+              <tr>
+                <td style="border: 1px solid #000; padding: 4px; font-weight: bold; background-color: #f1f5f9;">CATEGORY</td>
+                <td style="border: 1px solid #000; padding: 4px; font-weight: bold; background-color: #f1f5f9;">SUB-CATEGORY</td>
+                <td style="border: 1px solid #000; padding: 4px; font-weight: bold; background-color: #f1f5f9;">SUPPLIER</td>
+                <td style="border: 1px solid #000; padding: 4px; font-weight: bold; background-color: #f1f5f9;">PURCHASE ORDER</td>
+              </tr>
+              <tr>
+                <td style="border: 1px solid #000; padding: 4px;">${e.category || 'N/A'}</td>
+                <td style="border: 1px solid #000; padding: 4px;">${e.subcategory || 'N/A'}</td>
+                <td style="border: 1px solid #000; padding: 4px;">${e.supplier || 'N/A'}</td>
+                <td style="border: 1px solid #000; padding: 4px; font-weight: bold;">${e.po || 'N/A'}</td>
+              </tr>
+            </table>
+          </div>
+        `).join('');
+      }
+
+      container.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 8px;">
+          <div style="background-color: #DC2626; color: #fff; padding: 6px 10px; font-weight: 900; font-size: 11pt; letter-spacing: -0.5px; line-height: 1.1;">
+            ALLCON<br><span style="font-size: 5pt; font-weight: normal; letter-spacing: 0.5px;">FABRICATION & ENGINEERING (PTY) LTD.</span>
+          </div>
+          <div style="font-size: 8pt; font-weight: bold;">Generated: ${date}</div>
+        </div>
+
+        <div style="font-size: 10pt; font-weight: bold; color: #000; text-transform: uppercase; border-bottom: 2px solid #DC2626; padding-bottom: 3px; margin-bottom: 8px;">
+          PROJECT TRANSMITTAL
+        </div>
+
+        <table style="width: 100%; border-collapse: collapse; font-size: 8pt; border: 1px solid #000; margin-bottom: 10px;">
+          <tr>
+            <td style="border: 1px solid #000; padding: 4px; font-weight: bold; width: 20%; background-color: #f1f5f9;">CLIENT:</td>
+            <td style="border: 1px solid #000; padding: 4px; width: 30%;">${client}</td>
+            <td style="border: 1px solid #000; padding: 4px; font-weight: bold; width: 25%; background-color: #f1f5f9;">TARGET COMPLETION:</td>
+            <td style="border: 1px solid #000; padding: 4px; width: 25%;">${targetDate}</td>
+          </tr>
+          <tr>
+            <td style="border: 1px solid #000; padding: 4px; font-weight: bold; background-color: #f1f5f9;">PROJECT NAME:</td>
+            <td style="border: 1px solid #000; padding: 4px;">${project}</td>
+            <td style="border: 1px solid #000; padding: 4px; font-weight: bold; background-color: #f1f5f9;">TECHNICAL BUYER:</td>
+            <td style="border: 1px solid #000; padding: 4px;">${buyer}</td>
+          </tr>
+          <tr>
+            <td style="border: 1px solid #000; padding: 4px; font-weight: bold; background-color: #f1f5f9;">Inclusions:</td>
+            <td style="border: 1px solid #000; padding: 4px;" colspan="3">${inclusions}</td>
+          </tr>
+          <tr>
+            <td style="border: 1px solid #000; padding: 4px; font-weight: bold; background-color: #f1f5f9;">Exclusions:</td>
+            <td style="border: 1px solid #000; padding: 4px;" colspan="3">${exclusions}</td>
+          </tr>
+        </table>
+
+        ${jobsHtml}
+      `;
+    }
+
+    function printTransmittalPDF() {
+      prepareTransmittalPrint();
+      document.body.classList.add('printing-transmittal');
+      window.print();
+      setTimeout(() => {
+        document.body.classList.remove('printing-transmittal');
+      }, 500);
     }
   </script>
 </body>
