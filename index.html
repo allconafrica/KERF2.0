@@ -3,1246 +3,1403 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ALLCON - KERF Portal</title>
+  <title>KERF Portal</title>
+  
+  <!-- RED WRENCH FAVICON -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path fill='%23dc2626' d='M501.1 395.7L384 278.6c-4.5-4.5-10.6-7-17-7h-14.1l-24.8-24.8c42.7-56.4 39.4-136.5-10.4-189.2-56.7-60.1-152-61.9-211-.9l81.3 81.3c9.4 9.4 9.4 24.6 0 33.9l-33.9 33.9c-9.4 9.4-24.6 9.4-33.9 0L39.1 124.6c-61 59-59.2 154.3.9 211 52.8 49.8 132.8 53.1 189.2 10.4l24.8 24.8v14.1c0 6.4 2.5 12.5 7 17l117.1 117.1c14.6 14.6 38.2 14.6 52.8 0l50.3-50.3c14.6-14.7 14.6-38.4 0-53z'/></svg>">
+
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: { brand: { red: '#DC2626', redHover: '#B91C1C' } }
-        }
-      }
-    }
-  </script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    tailwind.config = { darkMode: 'class' }
+  </script>
   <style>
-    body { transition: background-color 0.2s, color 0.2s; }
-    select, select option, select optgroup {
-      background-color: #ffffff;
-      color: #18181b;
+    /* Dark Mode Theme Overrides */
+    html.dark, html.dark body {
+      background-color: #0b0b0c !important;
+      color: #f4f4f5 !important;
     }
-    .dark select, .dark select option, .dark select optgroup {
-      background-color: #09090b;
-      color: #f4f4f5;
+
+    /* Main Builder Outer Frame */
+    html.dark .builder-frame {
+      background-color: #1e1e24 !important;
+      border-color: #3f3f46 !important;
     }
-    input, textarea, select {
-      color-scheme: light dark;
+
+    /* Builder Sub-sections */
+    html.dark .builder-section {
+      background-color: #27272a !important;
+      border-color: #3f3f46 !important;
     }
+
+    /* Form Text Inputs & Selects */
+    html.dark input, 
+    html.dark textarea, 
+    html.dark select {
+      background-color: #3f3f46 !important;
+      color: #ffffff !important;
+      border-color: #52525b !important;
+    }
+
+    html.dark input::placeholder, 
+    html.dark textarea::placeholder {
+      color: #d4d4d8 !important;
+    }
+
+    html.dark input:focus, 
+    html.dark textarea:focus, 
+    html.dark select:focus {
+      outline: none;
+      border-color: #dc2626 !important;
+      box-shadow: 0 0 0 1px #dc2626;
+    }
+
+    /* Hide Print Templates on Screen */
+    #print-template, #print-template-bom {
+      display: none;
+    }
+
+    /* ==========================================
+       NATIVE PRINT / PDF ENGINE (@media print)
+       ========================================== */
     @media print {
-      body {
+      @page {
+        size: A4 portrait;
+        margin: 10mm;
+      }
+
+      *, *:before, *:after {
+        box-sizing: border-box !important;
+      }
+
+      /* STRICT WHITE BACKGROUND OVERRIDE FOR PRINTING */
+      html, body {
         background-color: #ffffff !important;
         color: #000000 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
       }
-      .no-print, header, button, nav {
+
+      /* Hide web portal UI completely */
+      header, main, nav, button, .builder-frame {
         display: none !important;
       }
-      .card, input, select, textarea {
-        background-color: #ffffff !important;
+
+      /* Display active print template exclusively */
+      body.printing-transmittal #print-template {
+        display: block !important;
+        width: 100% !important;
+        margin: 0 auto !important;
+        font-family: Arial, Helvetica, sans-serif !important;
+        font-size: 8.5pt;
         color: #000000 !important;
-        border-color: #cbd5e1 !important;
-        box-shadow: none !important;
+        background-color: #ffffff !important;
+      }
+
+      body.printing-bom #print-template-bom {
+        display: block !important;
+        width: 100% !important;
+        margin: 0 auto !important;
+        font-family: Arial, Helvetica, sans-serif !important;
+        font-size: 8.5pt;
+        color: #000000 !important;
+        background-color: #ffffff !important;
+      }
+
+      .print-header-banner {
+        background-color: #dc2626 !important;
+        color: #ffffff !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      /* Light Red Tint Header */
+      .print-table-header {
+        background-color: #fef2f2 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      /* Table Structure & Border Lockdown */
+      .print-container table {
+        display: table !important;
+        width: 100% !important;
+        border-collapse: collapse !important;
+        table-layout: fixed !important;
+        margin-bottom: 8px !important;
+        border: 1px solid #000000 !important;
+        box-sizing: border-box !important;
+      }
+
+      .print-container tr { 
+        display: table-row !important; 
+      }
+
+      .print-container th, 
+      .print-container td { 
+        display: table-cell !important;
+        border: 1px solid #000000 !important;
+        padding: 5px 8px !important;
+        word-wrap: break-word !important;
+        overflow-wrap: break-word !important;
+        vertical-align: middle !important;
+        box-sizing: border-box !important;
+      }
+
+      /* Remove outer borders for clean top header table */
+      .print-container table.no-border, 
+      .print-container table.no-border td {
+        border: none !important;
       }
     }
   </style>
 </head>
-<body class="min-h-screen flex flex-col bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
+<body class="bg-zinc-200 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 font-sans min-h-screen flex flex-col transition-colors duration-200">
 
-  <!-- TOP HEADER / NAVIGATION -->
-  <header class="no-print border-b border-zinc-200 dark:border-zinc-900 bg-white dark:bg-zinc-900 px-6 py-3 flex items-center justify-between gap-4 relative z-50">
-    <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('dashboard')">
-      <div class="bg-brand-red text-white font-black px-3 py-1 rounded tracking-tighter text-lg shadow-sm">ALLCON</div>
-      <span class="text-xl font-bold tracking-wider">KERF PORTAL</span>
-    </div>
-
-    <div class="flex items-center space-x-4">
-      <nav class="flex items-center space-x-2 bg-zinc-100 dark:bg-black/40 p-1.5 rounded-lg border border-zinc-200 dark:border-zinc-800">
-        <button onclick="switchTab('dashboard')" class="px-3 py-1.5 rounded text-xs font-semibold text-zinc-700 dark:text-zinc-300 hover:text-brand-red transition">
-          <i class="fa-solid fa-chart-line mr-1"></i> Dashboard
-        </button>
-        <div class="h-4 w-px bg-zinc-300 dark:bg-zinc-700 mx-1"></div>
-        
-        <!-- Tools Menu -->
-        <div class="relative">
-          <button onclick="toggleDropdown(event, 'tools-menu')" class="px-3 py-1.5 rounded text-xs font-semibold text-zinc-700 dark:text-zinc-300 hover:text-brand-red flex items-center gap-1.5 transition">
-            <i class="fa-solid fa-wrench text-brand-red"></i> Tools <i class="fa-solid fa-chevron-down text-[10px]"></i>
+  <!-- WEB HEADER -->
+  <header class="bg-black text-white shadow-lg border-b-4 border-red-600">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col sm:flex-row justify-between items-center gap-4">
+      
+      <div class="flex items-center gap-4">
+        <div class="bg-white p-1 rounded flex items-center justify-center h-12 min-w-[120px]">
+          <img src="./ALLCON-Logo.jpg" alt="ALLCON Logo" class="h-10 w-auto object-contain" onerror="this.onerror=null; this.outerHTML='<div class=\'bg-red-600 text-white font-black px-3 py-1 rounded text-xl tracking-wider\'>ALLCON</div>';">
+        </div>
+        <div>
+          <h1 class="text-xl font-black tracking-wider text-white uppercase">KERF Portal</h1>
+        </div>
+      </div>
+      
+      <div class="flex items-center gap-5">
+        <div class="flex items-center gap-2 bg-zinc-900 p-1.5 rounded-full border border-zinc-700">
+          <span class="text-[10px] font-bold px-1 text-zinc-400 dark:text-zinc-500">LIGHT</span>
+          <button id="theme-toggle" onclick="toggleDarkMode()" class="w-12 h-6 bg-zinc-600 dark:bg-red-600 rounded-full p-1 transition-colors duration-200 focus:outline-none flex items-center">
+            <div id="toggle-circle" class="w-4 h-4 bg-white rounded-full shadow-md transform transition-transform duration-200 translate-x-6"></div>
           </button>
-          <div id="tools-menu" class="hidden absolute left-0 mt-2 w-52 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg shadow-xl py-1 z-50">
-            <a onclick="switchTab('transmittal')" class="block px-4 py-2 text-xs text-zinc-700 dark:text-zinc-300 hover:bg-brand-red hover:text-white cursor-pointer transition">
-              <i class="fa-solid fa-file-pdf w-5 text-brand-red"></i> Project Transmittal
-            </a>
-            <a onclick="switchTab('bom')" class="block px-4 py-2 text-xs text-zinc-700 dark:text-zinc-300 hover:bg-brand-red hover:text-white cursor-pointer transition">
-              <i class="fa-solid fa-calculator w-5 text-brand-red"></i> BOM & Estimator
-            </a>
-            <a onclick="switchTab('rfq')" class="block px-4 py-2 text-xs text-zinc-700 dark:text-zinc-300 hover:bg-brand-red hover:text-white cursor-pointer transition">
-              <i class="fa-solid fa-paper-plane w-5 text-brand-red"></i> RFQ Generator
-            </a>
-          </div>
+          <span class="text-[10px] font-bold px-1 text-zinc-500 dark:text-red-500">DARK</span>
         </div>
 
-        <div class="h-4 w-px bg-zinc-300 dark:bg-zinc-700 mx-1"></div>
-
-        <!-- Directories Menu -->
-        <div class="relative">
-          <button onclick="toggleDropdown(event, 'directories-menu')" class="px-3 py-1.5 rounded text-xs font-semibold text-zinc-700 dark:text-zinc-300 hover:text-brand-red flex items-center gap-1.5 transition">
-            <i class="fa-solid fa-folder-open text-brand-red"></i> Directories <i class="fa-solid fa-chevron-down text-[10px]"></i>
-          </button>
-          <div id="directories-menu" class="hidden absolute left-0 mt-2 w-52 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg shadow-xl py-1 z-50">
-            <a onclick="switchTab('suppliers')" class="block px-4 py-2 text-xs text-zinc-700 dark:text-zinc-300 hover:bg-brand-red hover:text-white cursor-pointer transition">
-              <i class="fa-solid fa-truck-ramp-box w-5 text-brand-red"></i> Supplier Directory
-            </a>
-            <a onclick="switchTab('staff')" class="block px-4 py-2 text-xs text-zinc-700 dark:text-zinc-300 hover:bg-brand-red hover:text-white cursor-pointer transition">
-              <i class="fa-solid fa-id-card w-5 text-brand-red"></i> Staff Directory
-            </a>
-          </div>
-        </div>
-      </nav>
-
-      <!-- Theme Switcher -->
-      <button onclick="toggleTheme()" class="p-2 rounded-lg border border-zinc-300 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900 text-xs font-semibold flex items-center gap-2 hover:border-brand-red transition">
-        <i id="theme-icon" class="fa-solid fa-moon text-yellow-400"></i>
-        <span id="theme-label" class="text-[11px] hidden sm:inline">Dark</span>
-      </button>
+        <nav class="flex flex-wrap bg-zinc-900 p-1 rounded-lg border border-zinc-800 text-xs font-semibold gap-1">
+          <button id="tab-suppliers" onclick="switchTab('suppliers')" class="px-3 py-1.5 rounded-md text-zinc-400 hover:text-white">Suppliers</button>
+          <button id="tab-generator" onclick="switchTab('generator')" class="px-3 py-1.5 rounded-md bg-red-600 text-white">Project Transmittal</button>
+          <button id="tab-bom" onclick="switchTab('bom')" class="px-3 py-1.5 rounded-md text-zinc-400 hover:text-white">BOM Calculator</button>
+          <button id="tab-staff" onclick="switchTab('staff')" class="px-3 py-1.5 rounded-md text-zinc-400 hover:text-white">Staff</button>
+        </nav>
+      </div>
     </div>
   </header>
 
-  <!-- MAIN CONTAINER -->
-  <main class="flex-1 p-6 max-w-7xl w-full mx-auto">
+  <!-- MAIN APPLICATION CONTAINER -->
+  <main class="max-w-7xl mx-auto px-4 py-6 flex-grow w-full">
 
-    <!-- ================= DASHBOARD VIEW ================= -->
-    <div id="view-dashboard" class="space-y-6">
-      <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shadow-sm">
-        <div>
-          <span class="bg-brand-red text-white text-[10px] font-bold px-2 py-0.5 rounded tracking-wide uppercase">ALLCON PROCUREMENT ENGINE</span>
-          <h1 class="text-2xl font-bold mt-2">Welcome to KERF Portal</h1>
-          <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-1">Centralized workspace for live supplier directories, project transmittals, material BOM estimation (including mesh screens), and internal staff records.</p>
+    <!-- VIEW 1: SUPPLIERS DIRECTORY -->
+    <section id="view-suppliers" class="hidden">
+      <div class="bg-white dark:bg-zinc-900 p-4 rounded-xl border border-zinc-300 dark:border-zinc-800 mb-6 flex flex-col md:flex-row justify-between items-center gap-4">
+        <div class="w-full md:w-1/2 relative">
+          <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-zinc-400"></i>
+          <input type="text" id="supplier-search" onkeyup="renderSuppliers()" placeholder="Search suppliers by name, category, services, or contact person..." class="w-full pl-9 pr-4 py-2 rounded-lg text-sm border border-zinc-300 dark:border-zinc-700">
         </div>
-        <div class="flex space-x-3">
-          <button onclick="switchTab('transmittal')" class="bg-brand-red hover:bg-brand-redHover text-white text-xs font-semibold px-4 py-2.5 rounded-lg flex items-center gap-2 transition">
-            <i class="fa-solid fa-plus"></i> New Transmittal
-          </button>
-          <button onclick="switchTab('bom')" class="bg-zinc-800 text-white text-xs font-semibold px-4 py-2.5 rounded-lg border border-zinc-700 hover:bg-zinc-700 flex items-center gap-2 transition">
-            <i class="fa-solid fa-calculator"></i> Build BOM
-          </button>
+        <div class="flex items-center gap-3">
+          <div class="text-xs text-zinc-500 font-semibold" id="supplier-count">Loading Suppliers...</div>
+          <button onclick="expandAllSuppliers()" class="text-xs bg-zinc-200 dark:bg-zinc-800 hover:bg-zinc-300 dark:hover:bg-zinc-700 px-3 py-1.5 rounded-lg font-semibold transition">Expand All</button>
+          <button onclick="collapseAllSuppliers()" class="text-xs bg-zinc-200 dark:bg-zinc-800 hover:bg-zinc-300 dark:hover:bg-zinc-700 px-3 py-1.5 rounded-lg font-semibold transition">Collapse All</button>
         </div>
       </div>
 
-      <!-- KPI Summary Cards -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-5 rounded-xl flex items-center justify-between shadow-sm cursor-pointer hover:border-brand-red transition" onclick="switchTab('suppliers')">
-          <div>
-            <p class="text-[11px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Total Suppliers</p>
-            <p class="text-3xl font-extrabold mt-1" id="dash-sup-count">--</p>
-            <p class="text-[10px] text-emerald-500 mt-1"><i class="fa-solid fa-sync fa-spin text-[8px] mr-1"></i> Syncing Sheets</p>
-          </div>
-          <div class="bg-red-50 dark:bg-red-950/40 p-3.5 rounded-xl border border-red-100 dark:border-red-900/40 text-brand-red">
-            <i class="fa-solid fa-truck text-xl"></i>
-          </div>
-        </div>
-
-        <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-5 rounded-xl flex items-center justify-between shadow-sm cursor-pointer hover:border-brand-red transition" onclick="switchTab('bom')">
-          <div>
-            <p class="text-[11px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Metal Pricing Rates</p>
-            <p class="text-3xl font-extrabold mt-1" id="dash-rates-count">--</p>
-            <p class="text-[10px] text-zinc-400 mt-1">Live Material Feed</p>
-          </div>
-          <div class="bg-red-50 dark:bg-red-950/40 p-3.5 rounded-xl border border-red-100 dark:border-red-900/40 text-brand-red">
-            <i class="fa-solid fa-layer-group text-xl"></i>
-          </div>
-        </div>
-
-        <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-5 rounded-xl flex items-center justify-between shadow-sm cursor-pointer hover:border-brand-red transition" onclick="switchTab('bom')">
-          <div>
-            <p class="text-[11px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">BOM Estimates</p>
-            <p class="text-3xl font-extrabold mt-1">Active</p>
-            <p class="text-[10px] text-zinc-400 mt-1">Linears, Plates, Mesh & Hardware</p>
-          </div>
-          <div class="bg-red-50 dark:bg-red-950/40 p-3.5 rounded-xl border border-red-100 dark:border-red-900/40 text-brand-red">
-            <i class="fa-solid fa-calculator text-xl"></i>
-          </div>
-        </div>
-
-        <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-5 rounded-xl flex items-center justify-between shadow-sm cursor-pointer hover:border-brand-red transition" onclick="switchTab('staff')">
-          <div>
-            <p class="text-[11px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Staff Directory</p>
-            <p class="text-3xl font-extrabold mt-1" id="dash-staff-count">--</p>
-            <p class="text-[10px] text-zinc-400 mt-1">Synced Personnel</p>
-          </div>
-          <div class="bg-red-50 dark:bg-red-950/40 p-3.5 rounded-xl border border-red-100 dark:border-red-900/40 text-brand-red">
-            <i class="fa-solid fa-users text-xl"></i>
-          </div>
-        </div>
+      <div id="suppliers-list-container" class="space-y-6">
+        <div class="text-center p-8 text-zinc-500"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Fetching Live Supplier Data...</div>
       </div>
+    </section>
 
-      <!-- Quick Access Tiles: Tools & Directories -->
-      <div class="space-y-3 pt-2">
-        <h3 class="text-xs font-bold uppercase tracking-wider text-brand-red flex items-center gap-2">
-          <i class="fa-solid fa-th-large"></i> Quick Access - Tools & Directories
-        </h3>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
-          <!-- Transmittal Tile -->
-          <div onclick="switchTab('transmittal')" class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-5 rounded-xl cursor-pointer hover:border-brand-red transition group shadow-sm flex flex-col justify-between">
-            <div>
-              <div class="bg-red-50 dark:bg-red-950/40 w-10 h-10 rounded-lg flex items-center justify-center text-brand-red border border-red-100 dark:border-red-900/40 mb-3 group-hover:scale-105 transition">
-                <i class="fa-solid fa-file-pdf"></i>
-              </div>
-              <h4 class="font-bold text-sm text-zinc-900 dark:text-zinc-100">Project Transmittal</h4>
-              <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-1">Build and print professional transmittal sheets & job schedules.</p>
-            </div>
-            <div class="mt-4 flex items-center text-xs font-bold text-brand-red gap-1">
-              Open Tool <i class="fa-solid fa-arrow-right text-[10px] group-hover:translate-x-1 transition"></i>
-            </div>
-          </div>
-
-          <!-- BOM Tile -->
-          <div onclick="switchTab('bom')" class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-5 rounded-xl cursor-pointer hover:border-brand-red transition group shadow-sm flex flex-col justify-between">
-            <div>
-              <div class="bg-red-50 dark:bg-red-950/40 w-10 h-10 rounded-lg flex items-center justify-center text-brand-red border border-red-100 dark:border-red-900/40 mb-3 group-hover:scale-105 transition">
-                <i class="fa-solid fa-calculator"></i>
-              </div>
-              <h4 class="font-bold text-sm text-zinc-900 dark:text-zinc-100">BOM & Estimator</h4>
-              <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-1">Calculate linear, plate, mesh screen & pricing with live metal rates.</p>
-            </div>
-            <div class="mt-4 flex items-center text-xs font-bold text-brand-red gap-1">
-              Open Tool <i class="fa-solid fa-arrow-right text-[10px] group-hover:translate-x-1 transition"></i>
-            </div>
-          </div>
-
-          <!-- RFQ Tile -->
-          <div onclick="switchTab('rfq')" class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-5 rounded-xl cursor-pointer hover:border-brand-red transition group shadow-sm flex flex-col justify-between">
-            <div>
-              <div class="bg-red-50 dark:bg-red-950/40 w-10 h-10 rounded-lg flex items-center justify-center text-brand-red border border-red-100 dark:border-red-900/40 mb-3 group-hover:scale-105 transition">
-                <i class="fa-solid fa-paper-plane"></i>
-              </div>
-              <h4 class="font-bold text-sm text-zinc-900 dark:text-zinc-100">RFQ Generator</h4>
-              <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-1">Draft and send standardized supplier quotation requests instantly.</p>
-            </div>
-            <div class="mt-4 flex items-center text-xs font-bold text-brand-red gap-1">
-              Open Tool <i class="fa-solid fa-arrow-right text-[10px] group-hover:translate-x-1 transition"></i>
-            </div>
-          </div>
-
-          <!-- Supplier Directory Tile -->
-          <div onclick="switchTab('suppliers')" class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-5 rounded-xl cursor-pointer hover:border-brand-red transition group shadow-sm flex flex-col justify-between">
-            <div>
-              <div class="bg-red-50 dark:bg-red-950/40 w-10 h-10 rounded-lg flex items-center justify-center text-brand-red border border-red-100 dark:border-red-900/40 mb-3 group-hover:scale-105 transition">
-                <i class="fa-solid fa-truck-ramp-box"></i>
-              </div>
-              <h4 class="font-bold text-sm text-zinc-900 dark:text-zinc-100">Supplier Directory</h4>
-              <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-1">Alphabetical collapsible directory synced from Google Sheets.</p>
-            </div>
-            <div class="mt-4 flex items-center text-xs font-bold text-brand-red gap-1">
-              Open Directory <i class="fa-solid fa-arrow-right text-[10px] group-hover:translate-x-1 transition"></i>
-            </div>
-          </div>
-
-          <!-- Staff Directory Tile -->
-          <div onclick="switchTab('staff')" class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-5 rounded-xl cursor-pointer hover:border-brand-red transition group shadow-sm flex flex-col justify-between">
-            <div>
-              <div class="bg-red-50 dark:bg-red-950/40 w-10 h-10 rounded-lg flex items-center justify-center text-brand-red border border-red-100 dark:border-red-900/40 mb-3 group-hover:scale-105 transition">
-                <i class="fa-solid fa-id-card"></i>
-              </div>
-              <h4 class="font-bold text-sm text-zinc-900 dark:text-zinc-100">Staff Directory</h4>
-              <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-1">Internal contacts with name, surname, job title, phone & email.</p>
-            </div>
-            <div class="mt-4 flex items-center text-xs font-bold text-brand-red gap-1">
-              Open Directory <i class="fa-solid fa-arrow-right text-[10px] group-hover:translate-x-1 transition"></i>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ================= PROJECT TRANSMITTAL BUILDER ================= -->
-    <div id="view-transmittal" class="hidden space-y-6">
-      <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 shadow-sm">
-        <h2 class="text-lg font-bold flex items-center gap-2">
-          <i class="fa-solid fa-file-pdf text-brand-red"></i> Project Transmittal Builder
+    <!-- VIEW 2: PROJECT TRANSMITTAL -->
+    <section id="view-generator" class="block">
+      <div class="builder-frame bg-white rounded-2xl shadow-xl border border-zinc-300 p-6 mb-6 transition-colors duration-200">
+        <h2 class="text-xl font-bold mb-5 text-red-600 dark:text-red-500 flex items-center gap-2">
+          <i class="fa-solid fa-file-pdf"></i> Project Transmittal Builder
         </h2>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+        <!-- METADATA FORM -->
+        <div class="builder-section grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 bg-zinc-100 p-4 rounded-xl text-xs border border-zinc-200">
           <div>
-            <label class="text-[11px] font-bold text-zinc-500 dark:text-zinc-400">Client Name</label>
-            <input type="text" id="trans-client" placeholder="e.g. NCP International" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded-lg mt-1 focus:outline-none focus:border-brand-red">
+            <label class="block font-semibold mb-1 text-zinc-700 dark:text-zinc-300">Client Name</label>
+            <input type="text" id="meta-client" placeholder="e.g. NCP International" class="w-full p-2.5 rounded-lg text-sm">
           </div>
           <div>
-            <label class="text-[11px] font-bold text-zinc-500 dark:text-zinc-400">Project Name</label>
-            <input type="text" id="trans-project" placeholder="e.g. SHANTA NEW - CHOCKEY BLOCKS" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded-lg mt-1 focus:outline-none focus:border-brand-red">
+            <label class="block font-semibold mb-1 text-zinc-700 dark:text-zinc-300">Project Name</label>
+            <input type="text" id="meta-project" placeholder="e.g. SHANTA NEW - CHOCKEY BLOCKS" class="w-full p-2.5 rounded-lg text-sm">
           </div>
           <div>
-            <label class="text-[11px] font-bold text-zinc-500 dark:text-zinc-400">Date Info Sheet Generated</label>
-            <input type="date" id="trans-date" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded-lg mt-1 focus:outline-none focus:border-brand-red">
+            <label class="block font-semibold mb-1 text-zinc-700 dark:text-zinc-300">Date Transmittal Generated</label>
+            <input type="date" id="meta-date-gen" class="w-full p-2.5 rounded-lg text-sm">
+          </div>
+          <div>
+            <label class="block font-semibold mb-1 text-red-600 dark:text-red-400">Target Completion Date</label>
+            <input type="text" id="meta-date-comp" placeholder="e.g. 11 SEPT 2026" class="w-full p-2.5 rounded-lg text-sm border-red-300 dark:border-red-900/50">
+          </div>
+          <div>
+            <label class="block font-semibold mb-1 text-zinc-700 dark:text-zinc-300">Technical Buyer</label>
+            <input type="text" id="meta-buyer" placeholder="Enter Buyer Name" class="w-full p-2.5 rounded-lg font-semibold text-sm">
           </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+        <!-- INCLUSIONS & EXCLUSIONS -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 text-xs">
           <div>
-            <label class="text-[11px] font-bold text-brand-red">Target Completion Date</label>
-            <input type="text" id="trans-target-date" placeholder="e.g. 11 SEPT 2026" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded-lg mt-1 focus:outline-none focus:border-brand-red">
+            <label class="block font-semibold mb-1 text-zinc-700 dark:text-zinc-300">Inclusions</label>
+            <textarea id="meta-inclusions" rows="3" placeholder="e.g. MATERIAL S355, FABRICATION, MACHINING..." class="w-full p-2.5 rounded-lg text-sm"></textarea>
           </div>
           <div>
-            <label class="text-[11px] font-bold text-zinc-500 dark:text-zinc-400">Technical Buyer</label>
-            <input type="text" id="trans-buyer" placeholder="Enter Buyer Name" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded-lg mt-1 focus:outline-none focus:border-brand-red">
+            <label class="block font-semibold mb-1 text-zinc-700 dark:text-zinc-300">Exclusions</label>
+            <textarea id="meta-exclusions" rows="3" placeholder="e.g. SAND BLAST & PAINT, MPI, WELDING..." class="w-full p-2.5 rounded-lg text-sm"></textarea>
           </div>
         </div>
 
-        <!-- Inclusions & Exclusions -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-          <div>
-            <label class="text-[11px] font-bold text-zinc-500 dark:text-zinc-400">Inclusions</label>
-            <textarea id="trans-inclusions" rows="3" placeholder="e.g. MATERIAL S355, MESH SCREENS, FABRICATION..." class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded-lg mt-1 focus:outline-none focus:border-brand-red resize-none"></textarea>
-          </div>
-          <div>
-            <label class="text-[11px] font-bold text-zinc-500 dark:text-zinc-400">Exclusions</label>
-            <textarea id="trans-exclusions" rows="3" placeholder="e.g. SAND BLAST & PAINT, MPI, WELDING..." class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded-lg mt-1 focus:outline-none focus:border-brand-red resize-none"></textarea>
-          </div>
-        </div>
-
-        <!-- JOB SCHEDULE BUILDER -->
-        <div class="mt-8 p-5 bg-zinc-50 dark:bg-zinc-950 rounded-xl border border-zinc-200 dark:border-zinc-800">
-          <div class="text-xs font-bold text-brand-red uppercase tracking-wider flex items-center gap-2 mb-4">
-            <i class="fa-solid fa-sitemap"></i> JOB ID SCHEDULE BUILDER
-          </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <!-- JOB ID SCHEDULE BUILDER -->
+        <div class="builder-section bg-red-950/20 p-4 rounded-xl border border-red-200 dark:border-zinc-700 mb-6 relative pb-16">
+          <h3 class="text-xs font-bold uppercase mb-3 text-red-600 dark:text-red-400"><i class="fa-solid fa-diagram-project mr-2"></i>Job ID Schedule Builder</h3>
+          
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 mb-4 bg-zinc-200 dark:bg-zinc-900 p-3 rounded-lg text-xs">
             <div>
-              <label class="text-[10px] text-zinc-500 uppercase font-bold">Job ID *</label>
-              <input type="text" id="job-id" placeholder="e.g. 5276" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded mt-1 focus:outline-none focus:border-brand-red">
+              <label class="block font-bold mb-1 text-zinc-700 dark:text-zinc-300">Job ID *</label>
+              <input type="text" id="input-job-id" placeholder="e.g. 5276" class="w-full p-2 rounded-lg font-bold">
             </div>
             <div>
-              <label class="text-[10px] text-zinc-500 uppercase font-bold">AC Number</label>
-              <input type="text" id="job-ac" placeholder="e.g. AC2902" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded mt-1 focus:outline-none focus:border-brand-red">
+              <label class="block font-bold mb-1 text-zinc-700 dark:text-zinc-300">AC Number</label>
+              <input type="text" id="input-ac-num" placeholder="e.g. AC2902" class="w-full p-2 rounded-lg font-bold">
+            </div>
+            <div class="sm:col-span-2">
+              <label class="block font-bold mb-1 text-zinc-700 dark:text-zinc-300">Description</label>
+              <input type="text" id="input-ac-desc" placeholder="e.g. PINION" class="w-full p-2 rounded-lg">
             </div>
             <div>
-              <label class="text-[10px] text-zinc-500 uppercase font-bold">Description</label>
-              <input type="text" id="job-desc" placeholder="e.g. MESH SCREEN" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded mt-1 focus:outline-none focus:border-brand-red">
-            </div>
-          </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 mt-3">
-            <div>
-              <label class="text-[10px] text-zinc-500 uppercase font-bold">Category</label>
-              <select id="job-category" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded mt-1 focus:outline-none focus:border-brand-red">
+              <label class="block font-bold mb-1 text-zinc-700 dark:text-zinc-300">Category</label>
+              <select id="input-ac-category" class="w-full p-2 rounded-lg">
                 <option value="">-- Select Category --</option>
-                <option value="Structural">Structural</option>
-                <option value="Plate Work">Plate Work</option>
-                <option value="Mesh Screen">Mesh Screen</option>
-                <option value="Machining">Machining</option>
-                <option value="Hardware">Hardware</option>
+                <option value="MATERIAL">MATERIAL</option>
+                <option value="MACHINING">MACHINING</option>
+                <option value="FABRICATION">FABRICATION</option>
+                <option value="COATING">COATING</option>
+                <option value="TRANSPORT">TRANSPORT</option>
               </select>
             </div>
             <div>
-              <label class="text-[10px] text-zinc-500 uppercase font-bold">Sub-Category</label>
-              <input type="text" id="job-subcategory" placeholder="e.g. SCREENING" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded mt-1 focus:outline-none focus:border-brand-red">
+              <label class="block font-bold mb-1 text-zinc-700 dark:text-zinc-300">Sub-Category</label>
+              <input type="text" id="input-ac-subcategory" placeholder="e.g. STRUCTURAL" class="w-full p-2 rounded-lg">
             </div>
             <div>
-              <label class="text-[10px] text-zinc-500 uppercase font-bold">Supplier Name</label>
-              <select id="job-supplier" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded mt-1 focus:outline-none focus:border-brand-red">
+              <label class="block font-bold mb-1 text-zinc-700 dark:text-zinc-300">Supplier Name</label>
+              <select id="input-ac-supplier" class="w-full p-2 rounded-lg">
                 <option value="">-- Select Supplier --</option>
               </select>
             </div>
             <div>
-              <label class="text-[10px] text-zinc-500 uppercase font-bold">Purchase Order</label>
-              <input type="text" id="job-po" placeholder="PO18008" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded mt-1 focus:outline-none focus:border-brand-red">
+              <label class="block font-bold mb-1 text-zinc-700 dark:text-zinc-300">Purchase Order</label>
+              <input type="text" id="input-ac-po" placeholder="PO18008" class="w-full p-2 rounded-lg font-bold">
             </div>
           </div>
 
-          <div class="mt-4 border-t border-zinc-200 dark:border-zinc-800 pt-3">
-            <p id="no-jobs-msg" class="text-xs text-zinc-500 italic">No Job IDs or entries added yet.</p>
-            <div id="job-entries-list" class="space-y-2 mt-2"></div>
-          </div>
-
-          <div class="flex justify-end mt-4">
-            <button onclick="addJobEntry()" class="bg-brand-red hover:bg-brand-redHover text-white text-xs font-bold px-4 py-2.5 rounded-lg flex items-center gap-2 transition">
+          <!-- STATIC BOTTOM RIGHT BUTTON -->
+          <div class="absolute right-4 bottom-4">
+            <button onclick="addLinkedACLine()" class="bg-red-600 hover:bg-red-700 text-white font-bold px-5 py-2.5 rounded-lg text-xs transition shadow flex items-center gap-1.5">
               <i class="fa-solid fa-plus"></i> Add Entry
             </button>
           </div>
+
+          <div id="grouped-ac-container" class="space-y-4">
+            <div class="text-xs text-zinc-400 italic">No Job IDs or entries added yet.</div>
+          </div>
         </div>
 
-        <div class="flex justify-end mt-6">
-          <button onclick="window.print()" class="bg-brand-red hover:bg-brand-redHover text-white text-xs font-bold px-6 py-3 rounded-lg flex items-center gap-2 shadow-lg transition">
+        <div class="flex justify-end">
+          <button onclick="triggerPrintPDF()" class="bg-red-600 hover:bg-red-700 text-white font-bold px-6 py-3 rounded-lg text-sm flex items-center gap-2 shadow-md transition">
             <i class="fa-solid fa-print"></i> Generate / Print Official PDF Transmittal Sheet
           </button>
         </div>
       </div>
-    </div>
+    </section>
 
-    <!-- ================= BOM ESTIMATOR WITH METAL RATES ================= -->
-    <div id="view-bom" class="hidden space-y-6">
-      <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 shadow-sm">
-        <h2 class="text-lg font-bold flex items-center gap-2 mb-2">
-          <i class="fa-solid fa-calculator text-brand-red"></i> BOM & Material Requirement Calculator
+    <!-- VIEW 3: BOM CALCULATOR -->
+    <section id="view-bom" class="hidden">
+      <div class="builder-frame bg-white rounded-2xl shadow-xl border border-zinc-300 p-6 mb-6 transition-colors duration-200">
+        <h2 class="text-xl font-bold mb-2 text-red-600 dark:text-red-500 flex items-center gap-2">
+          <i class="fa-solid fa-calculator"></i> BOM & Material Requirement Calculator
         </h2>
-        <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-6">Capture drawing measurements on the fly, including linear profiles, plates, and mesh screens. Weights and pricing calculate automatically based on live steel density and rates.</p>
+        <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-6">Capture drawing measurements on the fly. Linear items are automatically aggregated per material type to calculate stock bar requirements, and plates are dynamically calculated with a 25% kerf/waste line dimension.</p>
 
-        <!-- Calculator Header & Item Inputs -->
-        <div class="bg-zinc-50 dark:bg-zinc-950 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 space-y-4">
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-            <div>
-              <label class="text-[10px] font-bold text-zinc-500 uppercase">Client Name</label>
-              <input type="text" id="bom-client" placeholder="e.g. NCP International" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1">
-            </div>
-            <div>
-              <label class="text-[10px] font-bold text-zinc-500 uppercase">Project Name</label>
-              <input type="text" id="bom-proj" placeholder="e.g. SHANTA NEW - CHOCKEY BLOCKS" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1">
-            </div>
-            <div>
-              <label class="text-[10px] font-bold text-zinc-500 uppercase">Job ID *</label>
-              <input type="text" id="bom-jobid" placeholder="e.g. 5276" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1">
-            </div>
-            <div>
-              <label class="text-[10px] font-bold text-zinc-500 uppercase">AC Number *</label>
-              <input type="text" id="bom-ac" placeholder="e.g. AC2902" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1">
-            </div>
+        <!-- BOM METADATA FORM -->
+        <div class="builder-section grid grid-cols-1 md:grid-cols-5 gap-3 mb-6 bg-zinc-100 p-4 rounded-xl text-xs border border-zinc-200">
+          <div>
+            <label class="block font-semibold mb-1 text-zinc-700 dark:text-zinc-300">Client Name</label>
+            <input type="text" id="bom-meta-client" placeholder="e.g. NCP International" class="w-full p-2 rounded-lg text-sm">
           </div>
-
-          <div class="border-t border-zinc-200 dark:border-zinc-800 pt-4">
-            <div class="text-xs font-bold text-brand-red uppercase mb-3 flex items-center gap-1.5">
-              <i class="fa-solid fa-plus-circle"></i> Add Material Item
-            </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3">
-              <div>
-                <label class="text-[10px] font-bold text-zinc-500 uppercase">Material Type *</label>
-                <select id="bom-material-type" onchange="onBomMaterialTypeChange(); triggerAutoCalculate();" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1">
-                  <option value="Linear">Linear (Angle/Pipe/Tube/Bar)</option>
-                  <option value="Plate">Plate / Flat Bar</option>
-                  <option value="Mesh">Mesh / Wire Screen / Expanded Metal</option>
-                  <option value="Hardware">Hardware / Fastener</option>
-                </select>
-              </div>
-              <div>
-                <label class="text-[10px] font-bold text-zinc-500 uppercase">Subject / Material Name *</label>
-                <input type="text" id="bom-desc" oninput="triggerAutoCalculate()" placeholder="E.G. SS304 WELDED MESH 50X50X3MM" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1">
-              </div>
-              <div>
-                <label class="text-[10px] font-bold text-zinc-500 uppercase">Item / Mark</label>
-                <input type="text" id="bom-mark" placeholder="e.g. Screen A" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1">
-              </div>
-              <div>
-                <label class="text-[10px] font-bold text-zinc-500 uppercase">Quantity *</label>
-                <input type="number" id="bom-qty" oninput="triggerAutoCalculate()" placeholder="e.g. 1" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1">
-              </div>
-              <div>
-                <label class="text-[10px] font-bold text-zinc-500 uppercase">Length (mm)</label>
-                <input type="text" id="bom-dim" oninput="triggerAutoCalculate()" placeholder="e.g. 2000" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1">
-              </div>
-              <div>
-                <label id="bom-stock-label" class="text-[10px] font-bold text-zinc-500 uppercase">Stock Bar / Width (mm)</label>
-                <input type="text" id="bom-stockbar" oninput="triggerAutoCalculate()" value="1000" placeholder="e.g. 1000" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1">
-              </div>
-            </div>
-
-            <!-- Auto-Calculated Weight Placeholder, Steel Grade Dropdown, and Auto-Calculated Price Placeholder -->
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-3">
-              <div>
-                <label class="text-[10px] font-bold text-zinc-500 uppercase">Est. Weight (kg) <span class="text-[9px] text-emerald-500 font-normal">(Auto-calculated / Override)</span></label>
-                <input type="number" id="bom-weight" placeholder="e.g. 10.00" oninput="onWeightOverride()" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1 font-semibold">
-              </div>
-              <div>
-                <label class="text-[10px] font-bold text-zinc-500 uppercase">Steel Grade / Rate (Live Feed)</label>
-                <select id="bom-item-grade" onchange="triggerAutoCalculate()" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1 focus:border-brand-red">
-                  <option value="">-- Loading Live Rates... --</option>
-                </select>
-              </div>
-              <div>
-                <label class="text-[10px] font-bold text-zinc-500 uppercase">Total Price (ZAR) <span class="text-[9px] text-emerald-500 font-normal">(Auto-calculated / Override)</span></label>
-                <input type="number" id="bom-rate" placeholder="e.g. 331.96" oninput="onPriceOverride()" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1 font-semibold">
-              </div>
-            </div>
+          <div class="md:col-span-2">
+            <label class="block font-semibold mb-1 text-zinc-700 dark:text-zinc-300">Project Name</label>
+            <input type="text" id="bom-meta-project" placeholder="e.g. SHANTA NEW - CHOCKEY BLOCKS" class="w-full p-2 rounded-lg text-sm">
+          </div>
+          <div>
+            <label class="block font-semibold mb-1 text-zinc-700 dark:text-zinc-300">Job ID *</label>
+            <input type="text" id="bom-meta-jobid" placeholder="e.g. 5276" class="w-full p-2 rounded-lg font-bold text-sm">
+          </div>
+          <div>
+            <label class="block font-semibold mb-1 text-zinc-700 dark:text-zinc-300">AC Number *</label>
+            <input type="text" id="bom-meta-acnum" placeholder="e.g. AC2902" class="w-full p-2 rounded-lg font-bold text-sm">
+          </div>
+          <div class="md:col-span-2">
+            <label class="block font-semibold mb-1 text-zinc-700 dark:text-zinc-300">Technical Buyer</label>
+            <input type="text" id="bom-meta-buyer" placeholder="Enter Buyer Name" class="w-full p-2 rounded-lg font-semibold text-sm">
           </div>
         </div>
 
-        <div class="flex justify-end mt-3">
-          <button onclick="addBomRow()" class="bg-brand-red hover:bg-brand-redHover text-white text-xs font-semibold px-4 py-2.5 rounded-lg flex items-center gap-2 transition">
-            <i class="fa-solid fa-plus"></i> Add to BOM
-          </button>
+        <!-- BOM ENTRY FORM -->
+        <div class="builder-section bg-red-950/20 p-4 rounded-xl border border-red-200 dark:border-zinc-700 mb-6 relative pb-16">
+          <h3 class="text-xs font-bold uppercase mb-3 text-red-600 dark:text-red-400"><i class="fa-solid fa-plus-circle mr-2"></i>Add Material Item</h3>
+          
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-3 mb-4 bg-zinc-200 dark:bg-zinc-900 p-3 rounded-lg text-xs">
+            <div>
+              <label class="block font-bold mb-1 text-zinc-700 dark:text-zinc-300">Material Type *</label>
+              <select id="bom-type" onchange="toggleBomInputs()" class="w-full p-2 rounded-lg font-bold">
+                <option value="LINEAR">Linear (Angle/Pipe/Tube)</option>
+                <option value="PLATE">Plate</option>
+                <option value="HARDWARE">Hardware (Bolts/Nuts)</option>
+              </select>
+            </div>
+            <div class="md:col-span-2">
+              <label class="block font-bold mb-1 text-zinc-700 dark:text-zinc-300">Subject / Material Name *</label>
+              <input type="text" id="bom-subject" placeholder="e.g. 50X50X6 ANGLE IRON" class="w-full p-2 rounded-lg font-bold uppercase">
+            </div>
+            <div>
+              <label class="block font-bold mb-1 text-zinc-700 dark:text-zinc-300">Item / Mark</label>
+              <input type="text" id="bom-mark" placeholder="e.g. 1A or Gusset" class="w-full p-2 rounded-lg">
+            </div>
+            <div>
+              <label class="block font-bold mb-1 text-zinc-700 dark:text-zinc-300">Quantity *</label>
+              <input type="number" id="bom-qty" placeholder="e.g. 5" class="w-full p-2 rounded-lg font-bold">
+            </div>
+            <div id="wrapper-length" class="block">
+              <label class="block font-bold mb-1 text-zinc-700 dark:text-zinc-300">Length (mm)</label>
+              <input type="number" id="bom-length" placeholder="e.g. 1050" class="w-full p-2 rounded-lg">
+            </div>
+            <div id="wrapper-width" class="hidden">
+              <label class="block font-bold mb-1 text-zinc-700 dark:text-zinc-300">Width (mm)</label>
+              <input type="number" id="bom-width" placeholder="e.g. 110" class="w-full p-2 rounded-lg">
+            </div>
+            <div id="wrapper-notes" class="hidden sm:col-span-2">
+              <label class="block font-bold mb-1 text-zinc-700 dark:text-zinc-300">Size / Notes</label>
+              <input type="text" id="bom-notes" placeholder="e.g. 50mm Long / Standard" class="w-full p-2 rounded-lg">
+            </div>
+            <div id="wrapper-stock" class="block">
+              <label class="block font-bold mb-1 text-zinc-700 dark:text-zinc-300">Stock Bar (mm)</label>
+              <input type="number" id="bom-stock-len" value="6000" class="w-full p-2 rounded-lg font-bold">
+            </div>
+          </div>
+
+          <!-- STATIC BOTTOM RIGHT BUTTON -->
+          <div class="absolute right-4 bottom-4">
+            <button onclick="addBomItem()" class="bg-red-600 hover:bg-red-700 text-white font-bold px-5 py-2.5 rounded-lg text-xs transition shadow flex items-center gap-1.5">
+              <i class="fa-solid fa-plus"></i> Add to BOM
+            </button>
+          </div>
         </div>
 
-        <!-- BOM Table -->
-        <div class="mt-6 overflow-x-auto">
-          <table class="w-full text-left text-xs">
-            <thead>
-              <tr class="border-b border-zinc-200 dark:border-zinc-800 text-zinc-500 uppercase text-[10px]">
-                <th class="p-2">Material Type</th>
-                <th class="p-2">Subject / Description</th>
-                <th class="p-2">Mark</th>
-                <th class="p-2">Qty</th>
-                <th class="p-2">Length / Dim</th>
-                <th class="p-2">Stock / Width</th>
-                <th class="p-2">Weight (kg)</th>
-                <th class="p-2">Total Price (ZAR)</th>
-                <th class="p-2 text-right">Action</th>
-              </tr>
-            </thead>
-            <tbody id="bom-table-body" class="divide-y divide-zinc-200 dark:divide-zinc-800">
-            </tbody>
-          </table>
+        <!-- BOM TABLES CONTAINER -->
+        <div class="space-y-6" id="bom-tables-container">
+          <div class="text-xs text-zinc-400 italic text-center p-6">No materials added to the BOM calculator yet.</div>
         </div>
 
-        <!-- General Notes & Special Instructions -->
-        <div class="mt-6 bg-zinc-50 dark:bg-zinc-950 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800">
-          <label class="text-xs font-bold text-brand-red uppercase block mb-2 flex items-center gap-1.5">
-            <i class="fa-solid fa-clipboard-list"></i> GENERAL NOTES & SPECIAL INSTRUCTIONS
+        <!-- BOM GENERAL NOTES SECTION -->
+        <div class="builder-section bg-zinc-100 dark:bg-zinc-800/60 p-4 rounded-xl border border-zinc-200 dark:border-zinc-700/60 mt-6">
+          <label class="block font-bold text-xs uppercase mb-2 text-zinc-700 dark:text-zinc-300 flex items-center gap-1.5">
+            <i class="fa-solid fa-note-sticky text-red-600 dark:text-red-500"></i> General Notes & Special Instructions
           </label>
-          <textarea id="bom-notes" rows="3" placeholder="Enter any general project notes, mesh aperture specifications, surface finishes, or delivery instructions..." class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded-lg focus:outline-none focus:border-brand-red resize-none"></textarea>
+          <textarea id="bom-general-notes" rows="3" placeholder="Enter any general project notes, material specifications, surface finishes, or delivery instructions..." class="w-full p-2.5 rounded-lg text-xs"></textarea>
         </div>
 
         <div class="flex justify-end mt-6">
-          <button onclick="window.print()" class="bg-brand-red hover:bg-brand-redHover text-white text-xs font-bold px-6 py-3 rounded-lg flex items-center gap-2 shadow-lg transition">
+          <button onclick="triggerPrintBOM()" class="bg-red-600 hover:bg-red-700 text-white font-bold px-6 py-3 rounded-lg text-sm flex items-center gap-2 shadow-md transition">
             <i class="fa-solid fa-print"></i> Print / Export BOM Sheet
           </button>
         </div>
+      </div>
+    </section>
 
-        <!-- Live Metal Rates Reference Card -->
-        <div class="mt-8 border-t border-zinc-200 dark:border-zinc-800 pt-6">
-          <h3 class="text-xs font-bold uppercase tracking-wider text-brand-red mb-3 flex items-center gap-2">
-            <i class="fa-solid fa-table-list"></i> Google Sheets Metal Rates Reference Sheet
-          </h3>
-          <div id="metal-rates-table-container" class="overflow-x-auto">
-            <p class="text-xs text-zinc-500 italic">Fetching metal rates...</p>
-          </div>
+    <!-- VIEW 4: STAFF DIRECTORY -->
+    <section id="view-staff" class="hidden">
+      <div class="bg-white dark:bg-zinc-900 p-4 rounded-xl border border-zinc-300 dark:border-zinc-800 mb-6 flex flex-col md:flex-row justify-between items-center gap-4">
+        <div class="w-full md:w-1/2 relative">
+          <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-zinc-400"></i>
+          <input type="text" id="staff-search" onkeyup="renderStaff()" placeholder="Search staff by name, surname, job title, phone, or email..." class="w-full pl-9 pr-4 py-2 rounded-lg text-sm border border-zinc-300 dark:border-zinc-700">
         </div>
+        <div class="text-xs text-zinc-500 font-semibold" id="staff-count">Loading Staff...</div>
       </div>
-    </div>
 
-    <!-- ================= RFQ EMAIL GENERATOR ================= -->
-    <div id="view-rfq" class="hidden space-y-6">
-      <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 shadow-sm">
-        <h2 class="text-lg font-bold flex items-center gap-2 mb-2">
-          <i class="fa-solid fa-paper-plane text-brand-red"></i> RFQ Email Generator
-        </h2>
-        <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-6">Quickly assemble and copy standardized RFQ requests for suppliers.</p>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div class="space-y-4">
-            <div>
-              <label class="text-[11px] font-bold text-zinc-500 dark:text-zinc-400">Select Supplier</label>
-              <select id="rfq-supplier" onchange="generateRfqPreview()" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded-lg mt-1 focus:border-brand-red">
-                <option value="">-- Loading Suppliers... --</option>
-              </select>
-            </div>
-            
-            <div class="grid grid-cols-2 gap-4">
-              <div>
-                <label class="text-[11px] font-bold text-zinc-500 dark:text-zinc-400">AC Number</label>
-                <input type="text" id="rfq-ac" placeholder="e.g. AC2902" onkeyup="generateRfqPreview()" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded-lg mt-1 focus:border-brand-red">
-              </div>
-              <div>
-                <label class="text-[11px] font-bold text-zinc-500 dark:text-zinc-400">Project Name</label>
-                <input type="text" id="rfq-project" placeholder="e.g. SHANTA NEW" onkeyup="generateRfqPreview()" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded-lg mt-1 focus:border-brand-red">
-              </div>
-            </div>
-
-            <div>
-              <label class="text-[11px] font-bold text-zinc-500 dark:text-zinc-400">Items Required (List)</label>
-              <textarea id="rfq-items" rows="5" placeholder="• 1x SS304 Welded Mesh 50x50x3mm (2000x1000mm)&#10;• 5x Profile Base Flanges as per DWG" onkeyup="generateRfqPreview()" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded-lg mt-1 resize-none focus:border-brand-red"></textarea>
-            </div>
-          </div>
-
-          <div class="bg-zinc-50 dark:bg-zinc-950 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 flex flex-col justify-between">
-            <div>
-              <div class="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800 pb-2 mb-3">
-                <span class="text-xs font-bold text-brand-red uppercase">Generated Email Output</span>
-                <span class="text-[10px] text-zinc-500">Live Preview</span>
-              </div>
-              <input type="hidden" id="rfq-subject-val">
-              <textarea id="rfq-preview" readonly rows="12" class="w-full bg-transparent text-xs font-mono text-zinc-900 dark:text-zinc-300 focus:outline-none resize-none"></textarea>
-            </div>
-            <div class="mt-4 flex gap-2">
-              <button onclick="copyRfqText()" class="flex-1 bg-zinc-800 hover:bg-zinc-700 text-white text-xs font-bold py-2.5 rounded-lg flex items-center justify-center gap-2 transition">
-                <i class="fa-solid fa-copy"></i> Copy Text
-              </button>
-              <button onclick="openEmailClient()" class="flex-1 bg-brand-red hover:bg-brand-redHover text-white text-xs font-bold py-2.5 rounded-lg flex items-center justify-center gap-2 transition">
-                <i class="fa-solid fa-envelope"></i> Open in Email App
-              </button>
-            </div>
-          </div>
-        </div>
+      <div id="staff-list-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="col-span-3 text-center p-8 text-zinc-500"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Fetching Live Staff Data...</div>
       </div>
-    </div>
-
-    <!-- ================= SUPPLIER DIRECTORY ================= -->
-    <div id="view-suppliers" class="hidden space-y-6">
-      <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 shadow-sm">
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-          <div>
-            <h2 class="text-lg font-bold flex items-center gap-2"><i class="fa-solid fa-truck-ramp-box text-brand-red"></i> Supplier Directory</h2>
-            <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">Live Google Sheets sync displaying all columns (emails, numbers, addresses, payment terms) with collapsible A–Z sections.</p>
-          </div>
-          <button onclick="expandAllSuppliers()" class="text-xs bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 px-3 py-1.5 rounded text-zinc-700 dark:text-zinc-300 font-semibold hover:border-brand-red transition">
-            <i class="fa-solid fa-sort"></i> Toggle Expand / Collapse All
-          </button>
-        </div>
-        <input type="text" id="supplier-search" onkeyup="filterSuppliers()" placeholder="Filter suppliers by any field (name, email, phone, terms, address)..." class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-3 rounded-lg mb-6 focus:border-brand-red">
-        <div id="suppliers-alphabet-container" class="space-y-4"></div>
-      </div>
-    </div>
-
-    <!-- ================= STAFF DIRECTORY ================= -->
-    <div id="view-staff" class="hidden space-y-6">
-      <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 shadow-sm">
-        <h2 class="text-lg font-bold flex items-center gap-2 mb-1"><i class="fa-solid fa-id-card text-brand-red"></i> Internal Staff Directory</h2>
-        <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-6">Live directory synced from Google Sheets showing Name, Surname, Job Title, Phone, and Email.</p>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="staff-grid"></div>
-      </div>
-    </div>
+    </section>
 
   </main>
 
+  <!-- PRINT TEMPLATE 1: PROJECT TRANSMITTAL -->
+  <div id="print-template" class="print-container">
+    
+    <!-- HEADER -->
+    <table class="no-border" style="width: 100%; border-bottom: 2px solid #dc2626 !important; padding-bottom: 8px; margin-bottom: 12px;">
+      <tr>
+        <td style="vertical-align: top; width: 60%; text-align: left;">
+          <div style="margin-bottom: 4px;">
+            <img src="./ALLCON-Logo.jpg" alt="ALLCON Logo" style="height: 44px; width: auto; max-width: 260px; object-fit: contain;" onerror="this.onerror=null; this.outerHTML='<div class=\'print-header-banner\' style=\'font-weight: 900; font-size: 20pt; padding: 4px 12px; display: inline-block; letter-spacing: 2px;\'>ALLCON</div>';">
+          </div>
+          <div style="font-size: 8.5pt; color: #000000; text-transform: uppercase; font-weight: bold; margin-top: 6px;">PROJECT TRANSMITTAL</div>
+        </td>
+        <td style="vertical-align: top; text-align: right; width: 40%;">
+          <div style="font-size: 8.5pt; color: #000000; font-weight: bold;" id="print-out-gen-date"></div>
+        </td>
+      </tr>
+    </table>
+
+    <!-- METADATA TABLE -->
+    <table style="width: 100%; margin-bottom: 12px;">
+      <colgroup>
+        <col style="width: 18%;">
+        <col style="width: 32%;">
+        <col style="width: 22%;">
+        <col style="width: 28%;">
+      </colgroup>
+      <tbody>
+        <tr>
+          <td style="font-weight: bold;">CLIENT:</td>
+          <td id="print-out-client">N/A</td>
+          <td style="font-weight: bold;">TARGET COMPLETION:</td>
+          <td style="font-weight: bold;" id="print-out-comp-date">N/A</td>
+        </tr>
+        <tr>
+          <td style="font-weight: bold;">PROJECT NAME:</td>
+          <td id="print-out-project">N/A</td>
+          <td style="font-weight: bold;">TECHNICAL BUYER:</td>
+          <td id="print-out-buyer">N/A</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- INCLUSIONS & EXCLUSIONS -->
+    <table style="width: 100%; margin-bottom: 12px;">
+      <colgroup>
+        <col style="width: 18%;">
+        <col style="width: 82%;">
+      </colgroup>
+      <tbody>
+        <tr>
+          <td style="font-weight: bold;">Inclusions:</td>
+          <td id="print-out-inclusions">None specified</td>
+        </tr>
+        <tr>
+          <td style="font-weight: bold;">Exclusions:</td>
+          <td id="print-out-exclusions">None specified</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- LINKED AC SCHEDULE CONTAINER -->
+    <div id="print-job-groups-container" style="margin-bottom: 12px;"></div>
+
+  </div>
+
+  <!-- PRINT TEMPLATE 2: SEPARATE BOM CALCULATOR PRINT LAYOUT -->
+  <div id="print-template-bom" class="print-container">
+    
+    <!-- HEADER -->
+    <table class="no-border" style="width: 100%; border-bottom: 2px solid #dc2626 !important; padding-bottom: 8px; margin-bottom: 12px;">
+      <tr>
+        <td style="vertical-align: top; width: 60%; text-align: left;">
+          <div style="margin-bottom: 4px;">
+            <img src="./ALLCON-Logo.jpg" alt="ALLCON Logo" style="height: 44px; width: auto; max-width: 260px; object-fit: contain;" onerror="this.onerror=null; this.outerHTML='<div class=\'print-header-banner\' style=\'font-weight: 900; font-size: 20pt; padding: 4px 12px; display: inline-block; letter-spacing: 2px;\'>ALLCON</div>';">
+          </div>
+          <div style="font-size: 8.5pt; color: #000000; text-transform: uppercase; font-weight: bold; margin-top: 6px;">BOM & MATERIAL REQUIREMENT CALCULATOR</div>
+        </td>
+        <td style="vertical-align: top; text-align: right; width: 40%;">
+          <div style="font-size: 8.5pt; color: #000000; font-weight: bold;" id="print-bom-gen-date"></div>
+        </td>
+      </tr>
+    </table>
+
+    <!-- METADATA TABLE -->
+    <table style="width: 100%; margin-bottom: 12px;">
+      <colgroup>
+        <col style="width: 18%;">
+        <col style="width: 32%;">
+        <col style="width: 22%;">
+        <col style="width: 28%;">
+      </colgroup>
+      <tbody>
+        <tr>
+          <td style="font-weight: bold;">CLIENT:</td>
+          <td id="print-bom-client">N/A</td>
+          <td style="font-weight: bold;">JOB ID:</td>
+          <td style="font-weight: bold;" id="print-bom-jobid">N/A</td>
+        </tr>
+        <tr>
+          <td style="font-weight: bold;">PROJECT NAME:</td>
+          <td id="print-bom-project">N/A</td>
+          <td style="font-weight: bold;">AC NUMBER:</td>
+          <td style="font-weight: bold;" id="print-bom-acnum">N/A</td>
+        </tr>
+        <tr>
+          <td style="font-weight: bold;">TECHNICAL BUYER:</td>
+          <td id="print-bom-buyer" colspan="3">N/A</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- BOM TABLES CONTAINER -->
+    <div id="print-bom-groups-container" style="margin-bottom: 12px;"></div>
+
+    <!-- BOM PRINT NOTES CONTAINER -->
+    <div id="print-bom-notes-container" style="margin-bottom: 12px; display: none;">
+      <div style="background-color: #dc2626; color: #ffffff; font-weight: bold; font-size: 8pt; padding: 4px 6px;" class="print-header-banner">NOTES & SPECIAL INSTRUCTIONS</div>
+      <table style="width: 100%; table-layout: fixed; margin-top: 0 !important;">
+        <tbody>
+          <tr>
+            <td id="print-bom-notes-text" style="padding: 6px; white-space: pre-wrap; font-size: 8pt;"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
   <script>
-    // STANDARD PIPE MASS LOOKUP (KG/M) FOR SCHEDULE 40 & 80
-    const STANDARD_PIPES = {
-        '15nb': { 'sch40': 1.27, 'sch80': 1.62 },
-        '20nb': { 'sch40': 1.68, 'sch80': 2.20 },
-        '25nb': { 'sch40': 2.50, 'sch80': 3.24 },
-        '32nb': { 'sch40': 3.39, 'sch80': 4.47 },
-        '40nb': { 'sch40': 3.87, 'sch80': 5.41 },
-        '50nb': { 'sch40': 5.44, 'sch80': 7.48 },
-        '65nb': { 'sch40': 8.63, 'sch80': 11.11 },
-        '80nb': { 'sch40': 11.29, 'sch80': 15.27 },
-        '100nb': { 'sch40': 16.07, 'sch80': 22.32 },
-        '125nb': { 'sch40': 21.77, 'sch80': 30.97 },
-        '150nb': { 'sch40': 26.37, 'sch80': 38.26 }
-    };
+    // DEDICATED GOOGLE SHEET TAB ENDPOINTS
+    const STAFF_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSNynT5Snb9PgJp6ti3QpuHUr9fX8bGKEG10H8kjkbCna_ZfkEC7aM06QrwkjHwxR1n6uu3ZgvvaKu6/pub?gid=1666500445&single=true&output=csv";
+    const SUPPLIERS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSNynT5Snb9PgJp6ti3QpuHUr9fX8bGKEG10H8kjkbCna_ZfkEC7aM06QrwkjHwxR1n6uu3ZgvvaKu6/pub?gid=0&single=true&output=csv";
 
-    // GOOGLE SHEETS LIVE CSV URLS
-    const GOOGLE_SHEETS_SUPPLIERS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSNynT5Snb9PgJp6ti3QpuHUr9fX8bGKEG10H8kjkbCna_ZfkEC7aM06QrwkjHwxR1n6uu3ZgvvaKu6/pub?gid=0&single=true&output=csv";
-    const GOOGLE_SHEETS_STAFF_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSNynT5Snb9PgJp6ti3QpuHUr9fX8bGKEG10H8kjkbCna_ZfkEC7aM06QrwkjHwxR1n6uu3ZgvvaKu6/pub?gid=1666500445&single=true&output=csv";
-    const GOOGLE_SHEETS_METAL_RATES_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSNynT5Snb9PgJp6ti3QpuHUr9fX8bGKEG10H8kjkbCna_ZfkEC7aM06QrwkjHwxR1n6uu3ZgvvaKu6/pub?gid=1040371405&single=true&output=csv";
+    let jobDataMap = {};
+    let bomItemsList = [];
+    let liveStaffData = [];
+    let liveSupplierData = [];
+    let collapsedSuppliers = {};
 
-    // Application MasterState
-    let suppliersMaster = [];
-    let staffData = [];
-    let metalRatesData = [];
-    let jobEntries = [];
-    let userWeightOverridden = false;
-    let userPriceOverridden = false;
-
-    // Robust CSV Parsing Logic
     function parseCSV(text) {
-      const lines = text.split(/\r?\n/).filter(line => line.trim() !== '');
-      if (lines.length === 0) return [];
+      const lines = text.trim().split(/\r?\n/);
+      if (lines.length < 2) return [];
 
-      const parseRow = (rowStr) => {
-        const matches = [];
-        let cur = '';
+      const parseRow = (rowText) => {
+        const result = [];
+        let current = '';
         let inQuotes = false;
-        for (let i = 0; i < rowStr.length; i++) {
-          const c = rowStr[i];
-          if (c === '"') {
+        for (let i = 0; i < rowText.length; i++) {
+          const char = rowText[i];
+          if (char === '"' && rowText[i + 1] === '"') {
+            current += '"';
+            i++;
+          } else if (char === '"') {
             inQuotes = !inQuotes;
-          } else if (c === ',' && !inQuotes) {
-            matches.push(cur.trim().replace(/^"|"$/g, ''));
-            cur = '';
+          } else if (char === ',' && !inQuotes) {
+            result.push(current.trim());
+            current = '';
           } else {
-            cur += c;
+            current += char;
           }
         }
-        matches.push(cur.trim().replace(/^"|"$/g, ''));
-        return matches;
+        result.push(current.trim());
+        return result;
       };
 
-      const headers = parseRow(lines[0]).map(h => h.toLowerCase().trim());
-      const data = [];
-      for (let i = 1; i < lines.length; i++) {
-        const row = parseRow(lines[i]);
-        if (row.length > 0) {
-          const obj = {};
-          headers.forEach((h, idx) => {
-            obj[h] = row[idx] ? row[idx].trim() : '';
-          });
-          data.push(obj);
-        }
-      }
-      return data;
-    }
-
-    // App Initialization
-    window.onload = async function() {
-      const dateInput = document.getElementById('trans-date');
-      if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
-
-      await Promise.all([
-        fetchSuppliers(),
-        fetchStaff(),
-        fetchMetalRates()
-      ]);
-
-      document.addEventListener('click', function(e) {
-        if (!e.target.closest('.relative')) {
-          document.getElementById('tools-menu').classList.add('hidden');
-          document.getElementById('directories-menu').classList.add('hidden');
-        }
-      });
-    };
-
-    // Data Fetchers
-    async function fetchSuppliers() {
-      try {
-        const res = await fetch(GOOGLE_SHEETS_SUPPLIERS_CSV);
-        const text = await res.text();
-        const raw = parseCSV(text);
-        
-        suppliersMaster = raw.map(r => {
-          const nameKey = Object.keys(r).find(k => k.includes('name') || k.includes('supplier') || k.includes('company')) || Object.keys(r)[0];
-          return {
-            name: r[nameKey] || 'Unnamed Supplier',
-            rawFields: r
-          };
-        }).filter(s => s.name && s.name !== 'Unnamed Supplier');
-      } catch (e) {
-        console.warn("Could not fetch suppliers CSV, using backup.", e);
-      }
-
-      if (suppliersMaster.length === 0) {
-        suppliersMaster = [
-          { name: "Apex Steel Works", rawFields: { name: "Apex Steel Works", category: "Structural", contact: "David", email: "orders@apexsteel.co.za", phone: "011 555 1234", address: "14 Steel Road", terms: "30 Days" } },
-          { name: "Boltfast Fasteners", rawFields: { name: "Boltfast Fasteners", category: "Hardware", contact: "Norman", email: "quotes@boltfast.co.za", phone: "011 555 5678", address: "22 Bolt Avenue", terms: "COD" } },
-          { name: "Macsteel Trading", rawFields: { name: "Macsteel Trading", category: "Plates", contact: "Sarah", email: "sales@macsteel.co.za", phone: "011 555 9988", address: "5 Mega Park", terms: "30 Days EOM" } }
-        ];
-      }
-
-      document.getElementById('dash-sup-count').innerText = suppliersMaster.length;
-      renderSuppliersAlphabetical(suppliersMaster);
-      populateRfqDropdown();
-      populateTransmittalSupplierDropdown();
-      generateRfqPreview();
-    }
-
-    async function fetchStaff() {
-      try {
-        const res = await fetch(GOOGLE_SHEETS_STAFF_CSV);
-        const text = await res.text();
-        const raw = parseCSV(text);
-        
-        staffData = raw.map(r => {
-          const fullName = r.name || r['staff name'] || r.employee || 'Staff Member';
-          const nameParts = fullName.split(' ');
-          const firstName = r['first name'] || nameParts[0] || '';
-          const surname = r.surname || r['last name'] || (nameParts.length > 1 ? nameParts.slice(1).join(' ') : '');
-          const role = r.role || r['job title'] || r.title || r.position || 'Specialist';
-          const email = r.email || r['email address'] || '';
-          const phone = r.phone || r['phone number'] || r.telephone || r.mobile || r.contact || 'N/A';
-          return { firstName, surname, role, email, phone };
+      const headers = parseRow(lines[0]).map(h => h.toLowerCase());
+      
+      return lines.slice(1).map(line => {
+        if (!line.trim()) return null;
+        const values = parseRow(line);
+        const entry = {};
+        headers.forEach((h, idx) => {
+          entry[h] = values[idx] || '';
         });
-      } catch (e) {
-        console.warn("Could not fetch staff CSV, using backup.", e);
-        staffData = [
-          { firstName: "Riaan", surname: "", role: "Procurement Manager", email: "riaan@allcon.co.za", phone: "011 555 0101" },
-          { firstName: "Norlene", surname: "", role: "Senior Specialist", email: "norlene@allcon.co.za", phone: "011 555 0202" }
-        ];
-      }
-      document.getElementById('dash-staff-count').innerText = staffData.length;
-      renderStaffGrid();
+        return entry;
+      }).filter(Boolean);
     }
 
-    async function fetchMetalRates() {
+    async function loadLiveData() {
       try {
-        const res = await fetch(GOOGLE_SHEETS_METAL_RATES_CSV);
-        const text = await res.text();
-        const raw = parseCSV(text);
+        const staffRes = await fetch(STAFF_CSV_URL);
+        const staffCsv = await staffRes.text();
+        const staffRaw = parseCSV(staffCsv);
 
-        metalRatesData = raw.map(r => {
-          const rawRate = r['final active rate'] || r['live rate (r\\kg)'] || r['live rate'] || r['live rate (r/kg)'] || r.rate || r.price || '0';
-          const cleanedRate = String(rawRate).replace(/[^0-9.]/g, '');
-
-          return {
-            material: r.grade || r.material || r.item || r.description || 'Steel Grade',
-            rate: cleanedRate,
-            unit: r.unit || r.uom || 'kg'
-          };
-        }).filter(m => m.material && m.material.toLowerCase() !== 'grade' && parseFloat(m.rate) > 0);
-
-      } catch (e) {
-        console.warn("Could not fetch metal rates CSV, using backup.", e);
+        liveStaffData = staffRaw.map(r => ({
+          name: r['name'] || r['first name'] || '',
+          surname: r['surname'] || r['last name'] || '',
+          jobTitle: r['job title'] || r['title'] || r['position'] || '',
+          phone: r['phone'] || r['mobile'] || r['contact'] || '',
+          email: r['email'] || ''
+        }));
+        renderStaff();
+      } catch (err) {
+        console.error("Failed to load Staff Directory data:", err);
       }
 
-      if (metalRatesData.length === 0) {
-        metalRatesData = [
-          { material: "S355 JR / J2", rate: "15.5269335", unit: "kg" },
-          { material: "Mild Steel Plate", rate: "14.4561105", unit: "kg" },
-          { material: "304 Stainless", rate: "33.195513", unit: "kg" },
-          { material: "316 Stainless", rate: "44.974566", unit: "kg" },
-          { material: "6082-T6", rate: "35.337159", unit: "kg" },
-          { material: "Hardox 500", rate: "28.3768095", unit: "kg" }
-        ];
-      }
+      try {
+        const suppRes = await fetch(SUPPLIERS_CSV_URL);
+        const suppCsv = await suppRes.text();
+        const suppRaw = parseCSV(suppCsv);
 
-      document.getElementById('dash-rates-count').innerText = metalRatesData.length;
-      populateMetalRatesUI();
-      if (typeof triggerAutoCalculate === 'function') {
-        triggerAutoCalculate();
-      }
-    }
+        liveSupplierData = suppRaw.map(r => ({
+          status: r['status'] || 'APPROVED',
+          supplierName: r['supplier name'] || r['company'] || r['supplier'] || '',
+          category: r['category'] || r['service'] || '',
+          pocName: r['poc name'] || r['contact person'] || r['poc'] || '',
+          pocEmail: r['poc email'] || r['email'] || '',
+          pocPhone: r['poc phone'] || r['phone'] || '',
+          servicesOffered: r['services offered'] || r['services'] || '',
+          logistics: r['logistics'] || '',
+          paymentTerms: r['payment terms'] || r['terms'] || '',
+          standardEta: r['standard eta'] || r['eta'] || '',
+          address: r['address'] || '',
+          notes: r['notes'] || ''
+        }));
 
-    // UI Navigation & Dropdowns
-    function toggleDropdown(event, menuId) {
-      event.stopPropagation();
-      const otherId = menuId === 'tools-menu' ? 'directories-menu' : 'tools-menu';
-      document.getElementById(otherId).classList.add('hidden');
-      document.getElementById(menuId).classList.toggle('hidden');
-    }
+        // Initialize all letter groups to collapsed by default
+        const uniqueLetters = new Set(liveSupplierData.map(s => {
+          const name = s.supplierName || '';
+          const firstLetter = name.charAt(0).toUpperCase();
+          return /[A-Z]/.test(firstLetter) ? firstLetter : '#';
+        }));
+        uniqueLetters.forEach(l => { collapsedSuppliers[l] = true; });
 
-    function switchTab(tabId) {
-      document.getElementById('tools-menu').classList.add('hidden');
-      document.getElementById('directories-menu').classList.add('hidden');
-      ['dashboard', 'transmittal', 'bom', 'rfq', 'suppliers', 'staff'].forEach(v => {
-        document.getElementById(`view-${v}`).classList.add('hidden');
-      });
-      document.getElementById(`view-${tabId}`).classList.remove('hidden');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function toggleTheme() {
-      const html = document.documentElement;
-      const icon = document.getElementById('theme-icon');
-      const label = document.getElementById('theme-label');
-
-      if (html.classList.contains('dark')) {
-        html.classList.remove('dark');
-        icon.className = "fa-solid fa-sun text-amber-500";
-        label.innerText = "Light";
-      } else {
-        html.classList.add('dark');
-        icon.className = "fa-solid fa-moon text-yellow-400";
-        label.innerText = "Dark";
+        renderSuppliers();
+        populateSupplierDropdown();
+      } catch (err) {
+        console.error("Failed to load Suppliers data:", err);
       }
     }
 
-    // Dynamic BOM Material Type Change
-    function onBomMaterialTypeChange() {
-      const type = document.getElementById('bom-material-type').value;
-      const label = document.getElementById('bom-stock-label');
-      const input = document.getElementById('bom-stockbar');
+    document.addEventListener("DOMContentLoaded", () => {
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const dd = String(today.getDate()).padStart(2, '0');
+      document.getElementById('meta-date-gen').value = `${yyyy}-${mm}-${dd}`;
+      loadLiveData();
+    });
 
-      if (type === 'Plate') {
-        label.innerText = 'Width (mm)';
-        input.placeholder = 'e.g. 1200';
-      } else if (type === 'Mesh') {
-        label.innerText = 'Width (mm)';
-        input.placeholder = 'e.g. 1000';
-      } else if (type === 'Linear') {
-        label.innerText = 'Stock Bar (mm)';
-        input.placeholder = 'e.g. 6000';
-        if (!input.value) input.value = '6000';
-      } else {
-        label.innerText = 'Stock / Pack Size';
-        input.placeholder = 'e.g. 100';
-      }
-    }
-
-    function onWeightOverride() {
-      userWeightOverridden = true;
-      const weightVal = parseFloat(document.getElementById('bom-weight').value) || 0;
-      const gradeSelect = document.getElementById('bom-item-grade');
-      const ratePerKg = parseFloat(gradeSelect.value) || 0;
-      if (weightVal > 0 && ratePerKg > 0 && !userPriceOverridden) {
-        document.getElementById('bom-rate').placeholder = (weightVal * ratePerKg).toFixed(2);
-      }
-    }
-
-    function onPriceOverride() {
-      userPriceOverridden = true;
-    }
-
-    // Density-Aware Calculation Engine (Supporting Standard Pipes, S355, Mild Steel, Stainless, Aluminum, Hardox & Mesh Screens)
-    function triggerAutoCalculate() {
-      const type = document.getElementById('bom-material-type').value;
-      const qty = parseFloat(document.getElementById('bom-qty').value) || 0;
-      const dim = parseFloat(document.getElementById('bom-dim').value) || 0; // Length in mm
-      const stockOrWidth = parseFloat(document.getElementById('bom-stockbar').value) || 0; // Width or Stock length
-      const desc = document.getElementById('bom-desc').value.toUpperCase();
-      
-      const gradeSelect = document.getElementById('bom-item-grade');
-      const ratePerKg = parseFloat(gradeSelect.value) || 0;
-      
-      const gradeText = gradeSelect.selectedIndex >= 0 ? gradeSelect.options[gradeSelect.selectedIndex].text.toUpperCase() : '';
-      
-      let densityFactor = 0.00785;
-      if (gradeText.includes('6082') || gradeText.includes('ALUMINIUM') || desc.includes('ALUMINIUM')) {
-        densityFactor = 0.0027;
-      } else if (gradeText.includes('304') || gradeText.includes('316') || gradeText.includes('STAINLESS') || desc.includes('STAINLESS')) {
-        densityFactor = 0.00793;
-      }
-
-      let estimatedWeight = 0;
-      const quantity = qty > 0 ? qty : 1;
-      const lengthMeters = (dim > 0 ? dim : 6000) / 1000;
-
-      if (type === 'Plate') {
-        const thicknessMatch = desc.match(/(\d+(?:\.\d+)?)\s*MM/i);
-        const thickness = thicknessMatch ? parseFloat(thicknessMatch[1]) : 10;
-        
-        if (dim > 0 && stockOrWidth > 0) {
-          estimatedWeight = (dim * stockOrWidth * thickness * (densityFactor / 1000)) * quantity;
-        } else {
-          const width = stockOrWidth > 0 ? stockOrWidth : 1000;
-          const kgPerMeter = (width * thickness * densityFactor) / 1000;
-          estimatedWeight = kgPerMeter * lengthMeters * quantity;
-        }
-      } 
-      else if (type === 'Mesh') {
-        // Mesh/Screen calculation based on area (m2) and default/custom mass per square meter
-        let kgPerSquareMeter = 5.0; // Default medium mesh weight per m2
-        if (desc.includes('HEAVY') || desc.includes('5MM') || desc.includes('6MM')) {
-          kgPerSquareMeter = 12.0;
-        } else if (desc.includes('LIGHT') || desc.includes('1MM') || desc.includes('2MM')) {
-          kgPerSquareMeter = 2.5;
-        }
-        
-        const widthMeters = (stockOrWidth > 0 ? stockOrWidth : 1000) / 1000;
-        const areaM2 = lengthMeters * widthMeters;
-        estimatedWeight = areaM2 * kgPerSquareMeter * quantity;
-      }
-      else if (type === 'Linear') {
-        let kgPerMeter = 5.8; // Default fallback
-
-        // Check standard pipe lookup first
-        let matchedSize = null;
-        let matchedSch = 'sch40';
-        if (desc.includes('SCH. 80') || desc.includes('SCH 80') || desc.includes('SCH80')) {
-          matchedSch = 'sch80';
-        }
-        for (let nb in STANDARD_PIPES) {
-          if (desc.includes(nb.toUpperCase())) {
-            matchedSize = nb;
-            break;
-          }
-        }
-
-        if (matchedSize && STANDARD_PIPES[matchedSize]) {
-          kgPerMeter = STANDARD_PIPES[matchedSize][matchedSch];
-        } else {
-          const angleMatch = desc.match(/(\d+)X(\d+)X(\d+(?:\.\d+)?)/);
-          if (angleMatch && (desc.includes('ANGLE') || desc.includes('EQUAL') || !desc.includes('TUBE'))) {
-            const leg1 = parseFloat(angleMatch[1]);
-            const thk = parseFloat(angleMatch[3]);
-            kgPerMeter = (leg1 * 2 - thk) * thk * densityFactor;
-          } 
-          else if (desc.includes('ROUND') || desc.includes('BAR')) {
-            const diaMatch = desc.match(/(\d+(?:\.\d+)?)/);
-            const dia = diaMatch ? parseFloat(diaMatch[1]) : 20;
-            const roundFactor = densityFactor * 0.785398;
-            kgPerMeter = dia * dia * roundFactor;
-          }
-          else if (desc.includes('SQUARE') && !desc.includes('TUBE')) {
-            const sideMatch = desc.match(/(\d+(?:\.\d+)?)/);
-            const side = sideMatch ? parseFloat(sideMatch[1]) : 50;
-            kgPerMeter = side * side * densityFactor;
-          }
-        }
-
-        estimatedWeight = kgPerMeter * lengthMeters * quantity;
-      } 
-      else {
-        estimatedWeight = quantity * 1.5;
-      }
-
-      if (estimatedWeight > 0) {
-        document.getElementById('bom-weight').placeholder = estimatedWeight.toFixed(2);
-        if (!userWeightOverridden) {
-          document.getElementById('bom-weight').value = '';
-        }
-
-        const activeWeightForCalc = userWeightOverridden && document.getElementById('bom-weight').value !== '' 
-          ? parseFloat(document.getElementById('bom-weight').value) 
-          : estimatedWeight;
-
-        if (ratePerKg > 0) {
-          const totalPrice = activeWeightForCalc * ratePerKg;
-          document.getElementById('bom-rate').placeholder = totalPrice.toFixed(2);
-          if (!userPriceOverridden) {
-            document.getElementById('bom-rate').value = '';
-          }
-        } else {
-          document.getElementById('bom-rate').placeholder = 'e.g. 331.96';
-        }
-      } else {
-        document.getElementById('bom-weight').placeholder = 'e.g. 10.00';
-        document.getElementById('bom-rate').placeholder = 'e.g. 331.96';
-      }
-    }
-
-    // Transmittal Job Builder Functions
-    function populateTransmittalSupplierDropdown() {
-      const select = document.getElementById('job-supplier');
+    function populateSupplierDropdown() {
+      const select = document.getElementById('input-ac-supplier');
       if (!select) return;
-      select.innerHTML = `<option value="">-- Select Supplier --</option>` + 
-        suppliersMaster.map(s => `<option value="${s.name}">${s.name}</option>`).join('');
+
+      const sortedNames = liveSupplierData
+        .map(s => s.supplierName)
+        .filter(Boolean)
+        .sort((a, b) => a.localeCompare(b));
+
+      const groups = {};
+      sortedNames.forEach(name => {
+        const firstLetter = name.charAt(0).toUpperCase();
+        const key = /[A-Z]/.test(firstLetter) ? firstLetter : '#';
+        if (!groups[key]) groups[key] = [];
+        groups[key].push(name);
+      });
+
+      const sortedKeys = Object.keys(groups).sort((a, b) => {
+        if (a === '#') return 1;
+        if (b === '#') return -1;
+        return a.localeCompare(b);
+      });
+
+      let html = `<option value="">-- Select Supplier --</option>`;
+      sortedKeys.forEach(letter => {
+        html += `<optgroup label="${letter} - (${groups[letter].length})">`;
+        groups[letter].forEach(name => {
+          html += `<option value="${name}">${name}</option>`;
+        });
+        html += `</optgroup>`;
+      });
+
+      select.innerHTML = html;
     }
 
-    function addJobEntry() {
-      const id = document.getElementById('job-id').value;
-      const ac = document.getElementById('job-ac').value;
-      const desc = document.getElementById('job-desc').value;
-      const category = document.getElementById('job-category').value;
-      const subcategory = document.getElementById('job-subcategory').value;
-      const supplier = document.getElementById('job-supplier').value;
-      const po = document.getElementById('job-po').value;
-
-      if (!id) { alert("Please enter a Job ID."); return; }
-
-      jobEntries.push({ id, ac, desc, category, subcategory, supplier, po });
-      renderJobEntries();
-
-      document.getElementById('job-id').value = '';
-      document.getElementById('job-ac').value = '';
-      document.getElementById('job-desc').value = '';
-      document.getElementById('job-category').value = '';
-      document.getElementById('job-subcategory').value = '';
-      document.getElementById('job-supplier').value = '';
-      document.getElementById('job-po').value = '';
+    function getStatusBadgeClass(status) {
+      const cleanStatus = (status || '').toUpperCase().trim();
+      switch (cleanStatus) {
+        case 'APPROVED': return 'bg-blue-600';
+        case 'PREFERRED': return 'bg-emerald-600';
+        case 'REJECTED': return 'bg-red-600';
+        case 'PENDING NDA': return 'bg-amber-500';
+        default: return 'bg-zinc-600';
+      }
     }
 
-    function renderJobEntries() {
-      const msg = document.getElementById('no-jobs-msg');
-      const container = document.getElementById('job-entries-list');
+    function toggleSupplierGroup(letter) {
+      collapsedSuppliers[letter] = !collapsedSuppliers[letter];
+      renderSuppliers();
+    }
 
-      if (jobEntries.length === 0) {
-        msg.classList.remove('hidden');
-        container.innerHTML = '';
+    function expandAllSuppliers() {
+      Object.keys(collapsedSuppliers).forEach(l => { collapsedSuppliers[l] = false; });
+      renderSuppliers();
+    }
+
+    function collapseAllSuppliers() {
+      Object.keys(collapsedSuppliers).forEach(l => { collapsedSuppliers[l] = true; });
+      renderSuppliers();
+    }
+
+    function renderSuppliers() {
+      const query = (document.getElementById('supplier-search')?.value || '').toLowerCase();
+      const container = document.getElementById('suppliers-list-container');
+      
+      const filtered = liveSupplierData.filter(s => 
+        (s.supplierName || '').toLowerCase().includes(query) ||
+        (s.category || '').toLowerCase().includes(query) ||
+        (s.pocName || '').toLowerCase().includes(query) ||
+        (s.servicesOffered || '').toLowerCase().includes(query)
+      );
+
+      document.getElementById('supplier-count').innerText = `Showing ${filtered.length} Suppliers`;
+
+      if (filtered.length === 0) {
+        container.innerHTML = `<div class="text-center p-8 text-zinc-500">No suppliers found matching your query.</div>`;
         return;
       }
 
-      msg.classList.add('hidden');
-      container.innerHTML = jobEntries.map((e, idx) => `
-        <div class="flex items-center justify-between bg-zinc-100 dark:bg-zinc-900 p-2.5 rounded border border-zinc-200 dark:border-zinc-800 text-xs">
-          <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2 w-full pr-4">
-            <div><span class="font-bold text-brand-red">ID:</span> ${e.id}</div>
-            <div><span class="font-bold text-zinc-500">AC:</span> ${e.ac || '-'}</div>
-            <div><span class="font-bold text-zinc-500">Desc:</span> ${e.desc || '-'}</div>
-            <div><span class="font-bold text-zinc-500">Cat:</span> ${e.category || '-'}</div>
-            <div><span class="font-bold text-zinc-500">Sub:</span> ${e.subcategory || '-'}</div>
-            <div><span class="font-bold text-zinc-500">Supp:</span> ${e.supplier || '-'}</div>
-            <div><span class="font-bold text-zinc-500">PO:</span> ${e.po || '-'}</div>
+      filtered.sort((a, b) => (a.supplierName || '').localeCompare(b.supplierName || ''));
+
+      const groups = {};
+      filtered.forEach(s => {
+        const name = s.supplierName || '';
+        const firstLetter = name.charAt(0).toUpperCase();
+        const key = /[A-Z]/.test(firstLetter) ? firstLetter : '#';
+        if (!groups[key]) groups[key] = [];
+        groups[key].push(s);
+      });
+
+      const sortedKeys = Object.keys(groups).sort((a, b) => {
+        if (a === '#') return 1;
+        if (b === '#') return -1;
+        return a.localeCompare(b);
+      });
+
+      container.innerHTML = sortedKeys.map(letter => {
+        const suppliersInGroup = groups[letter];
+        const isCollapsed = query ? false : (collapsedSuppliers[letter] !== false);
+        const iconClass = isCollapsed ? "fa-chevron-right" : "fa-chevron-down";
+
+        const cardsHtml = suppliersInGroup.map(s => {
+          const badgeClass = getStatusBadgeClass(s.status);
+          return `
+            <div class="bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-xl p-5 shadow-sm hover:shadow-md transition">
+              <div class="flex justify-between items-start mb-3">
+                <div>
+                  <span class="text-[10px] font-bold px-2 py-0.5 rounded text-white ${badgeClass}">${s.status || 'N/A'}</span>
+                  <h3 class="text-base font-bold mt-1 text-zinc-900 dark:text-zinc-100">${s.supplierName}</h3>
+                  <p class="text-xs text-red-600 dark:text-red-400 font-semibold">${s.category}</p>
+                </div>
+              </div>
+              <div class="grid grid-cols-1 gap-1.5 text-xs text-zinc-600 dark:text-zinc-300 my-3 bg-zinc-50 dark:bg-zinc-800/50 p-3 rounded-lg border border-zinc-200 dark:border-zinc-700/50">
+                ${s.pocName ? `<div><strong>POC Name:</strong> ${s.pocName}</div>` : ''}
+                ${s.pocEmail ? `<div><strong>POC Email:</strong> <a href="mailto:${s.pocEmail}" class="text-red-600 hover:underline">${s.pocEmail}</a></div>` : ''}
+                ${s.pocPhone ? `<div><strong>POC Phone:</strong> <a href="tel:${s.pocPhone}" class="text-red-600 hover:underline">${s.pocPhone}</a></div>` : ''}
+                ${s.servicesOffered ? `<div><strong>Services Offered:</strong> ${s.servicesOffered}</div>` : ''}
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        return `
+          <div class="border border-zinc-300 dark:border-zinc-800 rounded-xl bg-white dark:bg-zinc-900 overflow-hidden shadow-sm">
+            <div onclick="toggleSupplierGroup('${letter}')" class="flex items-center gap-3 p-4 cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-800/60 transition select-none">
+              <span class="w-8 h-8 rounded-lg bg-red-600 text-white font-black text-sm flex items-center justify-center shadow">${letter}</span>
+              <div class="flex-grow border-t border-zinc-200 dark:border-zinc-800"></div>
+              <span class="text-xs font-semibold text-zinc-500">${suppliersInGroup.length} supplier${suppliersInGroup.length === 1 ? '' : 's'}</span>
+              <i class="fa-solid ${iconClass} text-zinc-400 text-xs ml-2 w-4 text-center"></i>
+            </div>
+            <div class="${isCollapsed ? 'hidden' : 'grid'} grid-cols-1 md:grid-cols-2 gap-4 p-4 pt-0">
+              ${cardsHtml}
+            </div>
           </div>
-          <button onclick="jobEntries.splice(${idx}, 1); renderJobEntries();" class="text-zinc-500 hover:text-red-400 shrink-0">
-            <i class="fa-solid fa-trash"></i>
-          </button>
+        `;
+      }).join('');
+    }
+
+    function renderStaff() {
+      const query = (document.getElementById('staff-search')?.value || '').toLowerCase();
+      const container = document.getElementById('staff-list-container');
+
+      const filtered = liveStaffData.filter(st => 
+        (st.name || '').toLowerCase().includes(query) ||
+        (st.surname || '').toLowerCase().includes(query) ||
+        (st.jobTitle || '').toLowerCase().includes(query) ||
+        (st.email || '').toLowerCase().includes(query) ||
+        (st.phone || '').toLowerCase().includes(query)
+      );
+
+      document.getElementById('staff-count').innerText = `Showing ${filtered.length} Staff Members`;
+
+      if (filtered.length === 0) {
+        container.innerHTML = `<div class="col-span-3 text-center p-8 text-zinc-500">No staff members found matching your search.</div>`;
+        return;
+      }
+
+      container.innerHTML = filtered.map(st => `
+        <div class="bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-xl p-4 shadow-sm hover:shadow-md transition">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-10 h-10 rounded-full bg-red-600 text-white flex items-center justify-center font-black text-sm">
+              ${st.name ? st.name.charAt(0) : ''}${st.surname ? st.surname.charAt(0) : ''}
+            </div>
+            <div>
+              <h3 class="text-sm font-bold text-zinc-900 dark:text-zinc-100">${st.name} ${st.surname}</h3>
+              <p class="text-xs text-red-600 dark:text-red-400 font-medium">${st.jobTitle}</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 gap-1 text-xs text-zinc-600 dark:text-zinc-300 bg-zinc-50 dark:bg-zinc-800/50 p-2.5 rounded-lg border border-zinc-200 dark:border-zinc-700/50">
+            ${st.phone ? `<div><strong>Phone:</strong> <a href="tel:${st.phone}" class="text-red-600 hover:underline">${st.phone}</a></div>` : ''}
+            ${st.email ? `<div><strong>Email:</strong> <a href="mailto:${st.email}" class="text-red-600 hover:underline">${st.email}</a></div>` : ''}
+          </div>
         </div>
       `).join('');
     }
 
-    // BOM & Metal Rates UI Functions
-    function populateMetalRatesUI() {
-      const select = document.getElementById('bom-item-grade');
-      if (select) {
-        select.innerHTML = `<option value="">-- Select Steel Grade / Rate --</option>` + 
-          metalRatesData.map((m) => `<option value="${m.rate}">${m.material} (R ${parseFloat(m.rate).toFixed(2)} / ${m.unit})</option>`).join('');
+    // BOM CALCULATOR LOGIC
+    function toggleBomInputs() {
+      const type = document.getElementById('bom-type').value;
+      const wrapLen = document.getElementById('wrapper-length');
+      const wrapWidth = document.getElementById('wrapper-width');
+      const wrapNotes = document.getElementById('wrapper-notes');
+      const wrapStock = document.getElementById('wrapper-stock');
+
+      if (type === 'LINEAR') {
+        wrapLen.classList.remove('hidden');
+        wrapWidth.classList.add('hidden');
+        wrapNotes.classList.add('hidden');
+        wrapStock.classList.remove('hidden');
+      } else if (type === 'PLATE') {
+        wrapLen.classList.remove('hidden');
+        wrapWidth.classList.remove('hidden');
+        wrapNotes.classList.add('hidden');
+        wrapStock.classList.add('hidden');
+      } else if (type === 'HARDWARE') {
+        wrapLen.classList.add('hidden');
+        wrapWidth.classList.add('hidden');
+        wrapNotes.classList.remove('hidden');
+        wrapStock.classList.add('hidden');
       }
-
-      const tableContainer = document.getElementById('metal-rates-table-container');
-      if (!tableContainer) return;
-
-      if (metalRatesData.length === 0) {
-        tableContainer.innerHTML = `<p class="text-xs text-zinc-500 italic">No metal rates available.</p>`;
-        return;
-      }
-
-      tableContainer.innerHTML = `
-        <table class="w-full text-left text-xs border border-zinc-200 dark:border-zinc-800 rounded-lg overflow-hidden">
-          <thead class="bg-zinc-100 dark:bg-zinc-800 text-zinc-500 uppercase text-[10px]">
-            <tr>
-              <th class="p-2.5">Material Grade / Description</th>
-              <th class="p-2.5">Rate (ZAR)</th>
-              <th class="p-2.5">Unit</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-zinc-200 dark:divide-zinc-800">
-            ${metalRatesData.map(m => `
-              <tr class="hover:bg-zinc-100 dark:hover:bg-zinc-900/50">
-                <td class="p-2.5 font-semibold">${m.material}</td>
-                <td class="p-2.5 font-mono text-brand-red font-bold">R ${parseFloat(m.rate).toFixed(4)}</td>
-                <td class="p-2.5 text-zinc-500">${m.unit}</td>
-              </tr>
-            `).join('')}
-          </tbody>
-        </table>
-      `;
     }
 
-    function addBomRow() {
-      const type = document.getElementById('bom-material-type').value;
-      const desc = document.getElementById('bom-desc').value;
-      const mark = document.getElementById('bom-mark').value;
-      const qty = document.getElementById('bom-qty').value || "1";
-      const dim = document.getElementById('bom-dim').value;
-      const stockOrWidth = document.getElementById('bom-stockbar').value;
-      const stockLabelText = document.getElementById('bom-stock-label').innerText;
-      
-      const weightInput = document.getElementById('bom-weight');
-      const weight = weightInput.value || weightInput.placeholder;
-      
-      const rateInput = document.getElementById('bom-rate');
-      const totalPrice = rateInput.value || rateInput.placeholder;
+    function addBomItem() {
+      const type = document.getElementById('bom-type').value;
+      const subject = document.getElementById('bom-subject').value.trim().toUpperCase();
+      const mark = document.getElementById('bom-mark').value.trim();
+      const qty = parseFloat(document.getElementById('bom-qty').value);
 
-      if (!desc) { alert("Please specify a subject / material name."); return; }
+      if (!subject) return alert('Please enter a Subject / Material Name.');
+      if (isNaN(qty) || qty <= 0) return alert('Please enter a valid quantity.');
 
-      const tbody = document.getElementById('bom-table-body');
-      const tr = document.createElement('tr');
-      tr.className = "hover:bg-zinc-100 dark:hover:bg-zinc-900/40";
-      tr.innerHTML = `
-        <td class="p-2 font-medium">${type}</td>
-        <td class="p-2 font-semibold">${desc}</td>
-        <td class="p-2 text-zinc-500">${mark || '-'}</td>
-        <td class="p-2">${qty}</td>
-        <td class="p-2">${dim ? dim + ' mm' : '-'}</td>
-        <td class="p-2">${stockOrWidth ? stockOrWidth + ' mm (' + stockLabelText.split(' ')[0] + ')' : '-'}</td>
-        <td class="p-2">${weight ? weight + ' kg' : '-'}</td>
-        <td class="p-2 font-bold text-brand-red">R ${totalPrice || '0.00'}</td>
-        <td class="p-2 text-right">
-          <button onclick="this.closest('tr').remove()" class="text-zinc-500 hover:text-red-400"><i class="fa-solid fa-trash"></i></button>
-        </td>
-      `;
-      tbody.appendChild(tr);
+      let length = parseFloat(document.getElementById('bom-length').value) || 0;
+      let width = parseFloat(document.getElementById('bom-width').value) || 0;
+      let notes = document.getElementById('bom-notes').value.trim();
+      let stockLen = parseFloat(document.getElementById('bom-stock-len').value) || 6000;
 
-      document.getElementById('bom-desc').value = '';
+      bomItemsList.push({ type, subject, mark, qty, length, width, notes, stockLen });
+
+      document.getElementById('bom-subject').value = '';
       document.getElementById('bom-mark').value = '';
       document.getElementById('bom-qty').value = '';
-      document.getElementById('bom-dim').value = '';
-      document.getElementById('bom-weight').value = '';
-      document.getElementById('bom-rate').value = '';
-      userWeightOverridden = false;
-      userPriceOverridden = false;
-      document.getElementById('bom-item-grade').selectedIndex = 0;
-      triggerAutoCalculate();
+      document.getElementById('bom-length').value = '';
+      document.getElementById('bom-width').value = '';
+      document.getElementById('bom-notes').value = '';
+
+      renderBomTables();
     }
 
-    // RFQ Generator Functions
-    function populateRfqDropdown() {
-      const select = document.getElementById('rfq-supplier');
-      select.innerHTML = suppliersMaster.map((s, i) => {
-        const email = s.rawFields['email'] || s.rawFields['email address'] || '';
-        return `<option value="${i}">${s.name} ${email ? '(' + email + ')' : ''}</option>`;
-      }).join('');
+    function removeBomItem(index) {
+      bomItemsList.splice(index, 1);
+      renderBomTables();
     }
 
-    function generateRfqPreview() {
-      const supplierIndex = document.getElementById('rfq-supplier').value;
-      const supplier = suppliersMaster[supplierIndex];
-      const ac = document.getElementById('rfq-ac').value || "AC2902";
-      const proj = document.getElementById('rfq-project').value || "SHANTA NEW";
-      const items = document.getElementById('rfq-items').value || "• 1x SS304 Welded Mesh 50x50x3mm (2000x1000mm)\n• 5x Profile Base Flanges as per DWG";
-      const pocName = supplier && supplier.rawFields ? (supplier.rawFields['poc'] || supplier.rawFields['contact person'] || supplier.rawFields['contact'] || supplier.name) : "Supplier";
-
-      const subject = `${ac} - ${proj} - QUOTE`;
-      const body = `Hi ${pocName},\n\nTrust you are well.\n\nKindly quote on the following items:\n\n${items}\n\nThank you in advance.`;
-
-      document.getElementById('rfq-subject-val').value = subject;
-      document.getElementById('rfq-preview').value = `SUBJECT: ${subject}\n\n${body}`;
-    }
-
-    function copyRfqText() {
-      const text = document.getElementById('rfq-preview').value;
-      navigator.clipboard.writeText(text);
-      alert("RFQ format copied to clipboard!");
-    }
-
-    function openEmailClient() {
-      const supplierIndex = document.getElementById('rfq-supplier').value;
-      const supplier = suppliersMaster[supplierIndex];
-      const email = supplier?.rawFields['email'] || supplier?.rawFields['email address'] || supplier?.rawFields['mail'] || "";
-      const subject = encodeURIComponent(document.getElementById('rfq-subject-val').value);
-      
-      const fullText = document.getElementById('rfq-preview').value;
-      const bodyText = fullText.substring(fullText.indexOf('\n\n') + 2);
-      const body = encodeURIComponent(bodyText);
-
-      window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
-    }
-
-    // Supplier Directory Functions (Displays ALL sheet columns dynamically for each supplier)
-    function renderSuppliersAlphabetical(list) {
-      const container = document.getElementById('suppliers-alphabet-container');
-      container.innerHTML = '';
-      if (list.length === 0) {
-        container.innerHTML = `<p class="text-xs text-zinc-500 italic p-4">No matching suppliers found.</p>`;
+    function renderBomTables() {
+      const container = document.getElementById('bom-tables-container');
+      if (bomItemsList.length === 0) {
+        container.innerHTML = `<div class="text-xs text-zinc-400 italic text-center p-6">No materials added to the BOM calculator yet.</div>`;
         return;
       }
 
-      const groups = {};
-      list.forEach(s => {
-        const letter = (s.name || "?").charAt(0).toUpperCase();
-        if (!groups[letter]) groups[letter] = [];
-        groups[letter].push(s);
-      });
+      const linearItems = bomItemsList.map((item, idx) => ({ ...item, originalIndex: idx })).filter(i => i.type === 'LINEAR');
+      const plateItems = bomItemsList.map((item, idx) => ({ ...item, originalIndex: idx })).filter(i => i.type === 'PLATE');
+      const hardwareItems = bomItemsList.map((item, idx) => ({ ...item, originalIndex: idx })).filter(i => i.type === 'HARDWARE');
 
-      Object.keys(groups).sort().forEach(letter => {
-        const letterGroup = groups[letter];
+      let html = '';
+
+      if (linearItems.length > 0) {
+        const groupedLinear = {};
+        linearItems.forEach(item => {
+          if (!groupedLinear[item.subject]) {
+            groupedLinear[item.subject] = { totalLen: 0, stockLen: item.stockLen || 6000, rows: [] };
+          }
+          const totalLineLen = item.qty * item.length;
+          groupedLinear[item.subject].totalLen += totalLineLen;
+          groupedLinear[item.subject].rows.push(item);
+        });
+
+        let linearRowsHtml = '';
+        Object.keys(groupedLinear).forEach(subj => {
+          const group = groupedLinear[subj];
+          const stockNeeded = Math.ceil(group.totalLen / group.stockLen);
+
+          group.rows.forEach(r => {
+            const totalLen = r.qty * r.length;
+            linearRowsHtml += `
+              <tr class="border-b border-zinc-200 dark:border-zinc-800 text-xs">
+                <td class="p-2.5 font-bold text-red-600 dark:text-red-400">${r.subject}</td>
+                <td class="p-2.5">${r.mark || '--'}</td>
+                <td class="p-2.5">${r.qty}</td>
+                <td class="p-2.5">${r.length} mm</td>
+                <td class="p-2.5 font-semibold">${totalLen} mm</td>
+                <td class="p-2.5 text-right"><button onclick="removeBomItem(${r.originalIndex})" class="text-red-500 hover:underline">Remove</button></td>
+              </tr>
+            `;
+          });
+
+          linearRowsHtml += `
+            <tr class="bg-red-50 dark:bg-red-950/30 font-bold text-xs border-b-2 border-red-200 dark:border-red-900">
+              <td colspan="4" class="p-2.5 text-right uppercase">Total Required for ${subj}: ${group.totalLen} mm (${stockNeeded} x ${group.stockLen}mm Bars Needed)</td>
+              <td colspan="2" class="p-2.5 text-red-600 dark:text-red-400">Order Stock: ${stockNeeded} Bar(s)</td>
+            </tr>
+          `;
+        });
+
+        html += `
+          <div class="bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-lg overflow-hidden p-3">
+            <div class="bg-zinc-900 text-white text-xs font-bold px-3 py-2 rounded mb-2 uppercase">Structural & Linear Materials</div>
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-zinc-200 dark:bg-zinc-900 text-[10px] text-zinc-600 dark:text-zinc-400">
+                  <th class="p-2">Subject / Material</th>
+                  <th class="p-2">Item / Mark</th>
+                  <th class="p-2">Qty</th>
+                  <th class="p-2">Length per Piece</th>
+                  <th class="p-2">Total Length</th>
+                  <th class="p-2 text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody>${linearRowsHtml}</tbody>
+            </table>
+          </div>
+        `;
+      }
+
+      if (plateItems.length > 0) {
+        let plateRowsHtml = plateItems.map(r => {
+          const scaledLen = Math.round(r.qty * r.length * 1.25);
+          return `
+            <tr class="border-b border-zinc-200 dark:border-zinc-800 text-xs">
+              <td class="p-2.5 font-bold text-red-600 dark:text-red-400">${r.subject}</td>
+              <td class="p-2.5">${r.mark || '--'}</td>
+              <td class="p-2.5">${r.qty}</td>
+              <td class="p-2.5">${r.width} mm</td>
+              <td class="p-2.5">${r.length} mm</td>
+              <td class="p-2.5 font-semibold text-zinc-800 dark:text-zinc-200">${scaledLen} x ${r.width} mm (Line + 25%)</td>
+              <td class="p-2.5 text-right"><button onclick="removeBomItem(${r.originalIndex})" class="text-red-500 hover:underline">Remove</button></td>
+            </tr>
+          `;
+        }).join('');
+
+        html += `
+          <div class="bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-lg overflow-hidden p-3">
+            <div class="bg-zinc-900 text-white text-xs font-bold px-3 py-2 rounded mb-2 uppercase">Plates & Sheets</div>
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-zinc-200 dark:bg-zinc-900 text-[10px] text-zinc-600 dark:text-zinc-400">
+                  <th class="p-2">Subject / Material</th>
+                  <th class="p-2">Item / Mark</th>
+                  <th class="p-2">Qty</th>
+                  <th class="p-2">Width mm</th>
+                  <th class="p-2">Length mm</th>
+                  <th class="p-2">Total Area Required (Line + 25%)</th>
+                  <th class="p-2 text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody>${plateRowsHtml}</tbody>
+            </table>
+          </div>
+        `;
+      }
+
+      if (hardwareItems.length > 0) {
+        let hwRowsHtml = hardwareItems.map(r => `
+          <tr class="border-b border-zinc-200 dark:border-zinc-800 text-xs">
+            <td class="p-2.5 font-bold text-red-600 dark:text-red-400">${r.subject}</td>
+            <td class="p-2.5">${r.mark || '--'}</td>
+            <td class="p-2.5 font-bold">${r.qty}</td>
+            <td class="p-2.5">${r.notes || '--'}</td>
+            <td class="p-2.5 text-right"><button onclick="removeBomItem(${r.originalIndex})" class="text-red-500 hover:underline">Remove</button></td>
+          </tr>
+        `).join('');
+
+        html += `
+          <div class="bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-lg overflow-hidden p-3">
+            <div class="bg-zinc-900 text-white text-xs font-bold px-3 py-2 rounded mb-2 uppercase">Hardware & Loose Items</div>
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-zinc-200 dark:bg-zinc-900 text-[10px] text-zinc-600 dark:text-zinc-400">
+                  <th class="p-2">Subject / Material</th>
+                  <th class="p-2">Item / Mark</th>
+                  <th class="p-2">Qty</th>
+                  <th class="p-2">Notes / Size</th>
+                  <th class="p-2 text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody>${hwRowsHtml}</tbody>
+            </table>
+          </div>
+        `;
+      }
+
+      container.innerHTML = html;
+    }
+
+    function triggerPrintBOM() {
+      if (bomItemsList.length === 0) return alert('No BOM items to print.');
+
+      document.body.className = document.body.className.replace(' printing-transmittal', '') + ' printing-bom';
+
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const dd = String(today.getDate()).padStart(2, '0');
+      document.getElementById('print-bom-gen-date').innerText = `Generated: ${yyyy}-${mm}-${dd}`;
+
+      document.getElementById('print-bom-client').innerText = document.getElementById('bom-meta-client').value.trim() || "N/A";
+      document.getElementById('print-bom-project').innerText = document.getElementById('bom-meta-project').value.trim() || "N/A";
+      document.getElementById('print-bom-jobid').innerText = document.getElementById('bom-meta-jobid').value.trim() || "N/A";
+      document.getElementById('print-bom-acnum').innerText = document.getElementById('bom-meta-acnum').value.trim() || "N/A";
+      document.getElementById('print-bom-buyer').innerText = document.getElementById('bom-meta-buyer').value.trim() || "N/A";
+
+      const printGroupsContainer = document.getElementById('print-bom-groups-container');
+      
+      const linearItems = bomItemsList.filter(i => i.type === 'LINEAR');
+      const plateItems = bomItemsList.filter(i => i.type === 'PLATE');
+      const hardwareItems = bomItemsList.filter(i => i.type === 'HARDWARE');
+
+      let printHtml = '';
+
+      if (linearItems.length > 0) {
+        const groupedLinear = {};
+        linearItems.forEach(item => {
+          if (!groupedLinear[item.subject]) {
+            groupedLinear[item.subject] = { totalLen: 0, stockLen: item.stockLen || 6000, rows: [] };
+          }
+          groupedLinear[item.subject].totalLen += (item.qty * item.length);
+          groupedLinear[item.subject].rows.push(item);
+        });
+
+        let rows = '';
+        Object.keys(groupedLinear).forEach(subj => {
+          const group = groupedLinear[subj];
+          const stockNeeded = Math.ceil(group.totalLen / group.stockLen);
+          group.rows.forEach(r => {
+            rows += `<tr><td>${r.subject}</td><td>${r.mark || '&nbsp;'}</td><td>${r.qty}</td><td>${r.length} mm</td><td>${r.qty * r.length} mm</td></tr>`;
+          });
+          rows += `<tr style="background-color: #fef2f2; font-weight: bold;"><td colspan="4" style="text-align: right;">TOTAL FOR ${subj} (${stockNeeded} x ${group.stockLen}mm BARS):</td><td>${group.totalLen} mm</td></tr>`;
+        });
+
+        printHtml += `
+          <div style="margin-bottom: 12px;">
+            <div style="background-color: #dc2626; color: #ffffff; font-weight: bold; font-size: 8pt; padding: 4px 6px;" class="print-header-banner">STRUCTURAL & LINEAR MATERIALS</div>
+            <table style="width: 100%; table-layout: fixed; margin-top: 0 !important;">
+              <colgroup><col style="width: 30%;"><col style="width: 20%;"><col style="width: 10%;"><col style="width: 20%;"><col style="width: 20%;"></colgroup>
+              <thead>
+                <tr class="print-table-header" style="font-size: 8pt;">
+                  <th>SUBJECT / MATERIAL</th><th>MARK</th><th>QTY</th><th>LENGTH / PC</th><th>TOTAL LENGTH</th>
+                </tr>
+              </thead>
+              <tbody>${rows}</tbody>
+            </table>
+          </div>
+        `;
+      }
+
+      if (plateItems.length > 0) {
+        let rows = plateItems.map(r => `
+          <tr>
+            <td>${r.subject}</td>
+            <td>${r.mark || '&nbsp;'}</td>
+            <td>${r.qty}</td>
+            <td>${r.width} mm</td>
+            <td>${r.length} mm</td>
+            <td style="font-weight: bold;">${Math.round(r.qty * r.length * 1.25)} x ${r.width} mm (Line + 25%)</td>
+          </tr>
+        `).join('');
+
+        printHtml += `
+          <div style="margin-bottom: 12px;">
+            <div style="background-color: #dc2626; color: #ffffff; font-weight: bold; font-size: 8pt; padding: 4px 6px;" class="print-header-banner">PLATES & SHEETS</div>
+            <table style="width: 100%; table-layout: fixed; margin-top: 0 !important;">
+              <colgroup><col style="width: 25%;"><col style="width: 15%;"><col style="width: 10%;"><col style="width: 15%;"><col style="width: 15%;"><col style="width: 20%;"></colgroup>
+              <thead>
+                <tr class="print-table-header" style="font-size: 8pt;">
+                  <th>SUBJECT / MATERIAL</th><th>MARK</th><th>QTY</th><th>WIDTH</th><th>LENGTH</th><th>TOTAL REQ (LINE + 25%)</th>
+                </tr>
+              </thead>
+              <tbody>${rows}</tbody>
+            </table>
+          </div>
+        `;
+      }
+
+      if (hardwareItems.length > 0) {
+        let rows = hardwareItems.map(r => `
+          <tr>
+            <td>${r.subject}</td>
+            <td>${r.mark || '&nbsp;'}</td>
+            <td style="font-weight: bold;">${r.qty}</td>
+            <td>${r.notes || '&nbsp;'}</td>
+          </tr>
+        `).join('');
+
+        printHtml += `
+          <div style="margin-bottom: 12px;">
+            <div style="background-color: #dc2626; color: #ffffff; font-weight: bold; font-size: 8pt; padding: 4px 6px;" class="print-header-banner">HARDWARE & LOOSE ITEMS</div>
+            <table style="width: 100%; table-layout: fixed; margin-top: 0 !important;">
+              <colgroup><col style="width: 35%;"><col style="width: 25%;"><col style="width: 15%;"><col style="width: 25%;"></colgroup>
+              <thead>
+                <tr class="print-table-header" style="font-size: 8pt;">
+                  <th>SUBJECT / MATERIAL</th><th>MARK</th><th>QTY</th><th>NOTES / SIZE</th>
+                </tr>
+              </thead>
+              <tbody>${rows}</tbody>
+            </table>
+          </div>
+        `;
+      }
+
+      printGroupsContainer.innerHTML = printHtml;
+
+      const notesVal = document.getElementById('bom-general-notes')?.value.trim() || '';
+      const notesContainer = document.getElementById('print-bom-notes-container');
+      if (notesVal) {
+        document.getElementById('print-bom-notes-text').innerText = notesVal;
+        if (notesContainer) notesContainer.style.display = 'block';
+      } else {
+        if (notesContainer) notesContainer.style.display = 'none';
+      }
+
+      window.print();
+    }
+
+    function addLinkedACLine() {
+      const jobId = document.getElementById('input-job-id').value.trim();
+      const acNum = document.getElementById('input-ac-num').value.trim();
+      const description = document.getElementById('input-ac-desc').value.trim();
+      const category = document.getElementById('input-ac-category').value;
+      const subCategory = document.getElementById('input-ac-subcategory').value.trim();
+      const supplier = document.getElementById('input-ac-supplier').value;
+      const poNum = document.getElementById('input-ac-po').value.trim();
+
+      if (!jobId) return alert('Please enter a Job ID.');
+
+      if (!jobDataMap[jobId]) {
+        jobDataMap[jobId] = { acList: [], supList: [] };
+      }
+
+      if (acNum || description) {
+        jobDataMap[jobId].acList.push({ num: acNum, desc: description });
+      }
+
+      if (category || supplier || poNum) {
+        jobDataMap[jobId].supList.push({ category, subCategory, supplier, po: poNum });
+      }
+
+      document.getElementById('input-ac-num').value = '';
+      document.getElementById('input-ac-desc').value = '';
+      document.getElementById('input-ac-category').value = '';
+      document.getElementById('input-ac-subcategory').value = '';
+      document.getElementById('input-ac-supplier').value = '';
+      document.getElementById('input-ac-po').value = '';
+      
+      renderGroupedACTable();
+    }
+
+    function removeACItem(jobId, type, index) {
+      if (jobDataMap[jobId]) {
+        jobDataMap[jobId][type].splice(index, 1);
+        if (jobDataMap[jobId].acList.length === 0 && jobDataMap[jobId].supList.length === 0) {
+          delete jobDataMap[jobId];
+        }
+        renderGroupedACTable();
+      }
+    }
+
+    function renderGroupedACTable() {
+      const container = document.getElementById('grouped-ac-container');
+      const jobKeys = Object.keys(jobDataMap);
+
+      if (jobKeys.length === 0) {
+        container.innerHTML = `<span class="text-xs text-zinc-400 italic">No Job IDs or entries added yet.</span>`;
+        return;
+      }
+
+      container.innerHTML = '';
+      jobKeys.forEach(jobId => {
+        let acRows = jobDataMap[jobId].acList.map((item, idx) => `
+          <tr class="border-b border-zinc-200 dark:border-zinc-800 text-xs">
+            <td class="p-2 font-bold text-red-600 dark:text-red-400 w-[30%]">${item.num || '--'}</td>
+            <td class="p-2 w-[60%] text-zinc-700 dark:text-zinc-300">${item.desc || '--'}</td>
+            <td class="p-2 text-right w-[10%]"><button onclick="removeACItem('${jobId}', 'acList', ${idx})" class="text-red-500 hover:underline">Remove</button></td>
+          </tr>
+        `).join('');
+
+        let supRows = jobDataMap[jobId].supList.map((item, idx) => `
+          <tr class="border-b border-zinc-200 dark:border-zinc-800 text-xs">
+            <td class="p-2 font-bold w-[25%]">${item.category || '--'}</td>
+            <td class="p-2 w-[25%]"">${item.subCategory || '--'}</td>
+            <td class="p-2 w-[30%]"">${item.supplier || '--'}</td>
+            <td class="p-2 w-[15%]" font-bold>${item.po || '--'}</td>
+            <td class="p-2 text-right w-[5%]">
+              <button onclick="removeACItem('${jobId}', 'supList', ${idx})" class="text-red-500 hover:underline">Remove</button>
+            </td>
+          </tr>
+        `).join('');
+
         container.innerHTML += `
-          <div class="border border-zinc-200 dark:border-zinc-800 rounded-lg bg-zinc-50 dark:bg-zinc-950 overflow-hidden">
-            <button onclick="toggleSection('group-${letter}')" class="w-full px-4 py-3 flex items-center justify-between text-left font-bold text-xs border-b border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition">
-              <span class="flex items-center gap-2">
-                <span class="bg-brand-red text-white text-[10px] w-5 h-5 rounded flex items-center justify-center font-bold">${letter}</span>
-                <span>${letter} Supplier Category Group</span>
-                <span class="text-[10px] text-zinc-500 font-normal">(${letterGroup.length})</span>
-              </span>
-              <i class="fa-solid fa-chevron-down text-zinc-400 text-xs"></i>
-            </button>
-            <div id="group-${letter}" class="hidden divide-y divide-zinc-200 dark:divide-zinc-800 supplier-group">
-              ${letterGroup.map(s => {
-                const fields = s.rawFields;
-                const entries = Object.entries(fields).filter(([k]) => {
-                  const lk = k.toLowerCase();
-                  return !lk.includes('name') && !lk.includes('supplier') && !lk.includes('company');
-                });
+          <div class="bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-lg overflow-hidden p-3 mb-4">
+            <div class="bg-zinc-900 text-white text-xs font-bold px-3 py-2 rounded mb-2">JOB ID: ${jobId}</div>
+            
+            <div class="text-[11px] font-semibold mb-1 text-zinc-600 dark:text-zinc-400">AC & Description Schedule</div>
+            <table class="w-full text-left border-collapse mb-3">
+              <thead>
+                <tr class="bg-zinc-200 dark:bg-zinc-900 text-[10px] text-zinc-600 dark:text-zinc-400">
+                  <th class="p-1.5">AC Number</th>
+                  <th class="p-1.5">Description</th>
+                  <th class="p-1.5 text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody>${acRows || '<tr><td colspan="3" class="p-2 italic text-zinc-400">No AC items added</td></tr>'}</tbody>
+            </table>
 
-                return `
-                  <div class="p-4 space-y-3 hover:bg-zinc-100 dark:hover:bg-zinc-900/60 transition">
-                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-zinc-200 dark:border-zinc-800/60 pb-2">
-                      <h4 class="font-bold text-sm text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
-                        <i class="fa-solid fa-building text-brand-red text-xs"></i> ${s.name}
-                      </h4>
-                    </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
-                      ${entries.map(([k, v]) => `
-                        <div class="bg-white dark:bg-zinc-900 p-2.5 rounded-lg border border-zinc-200 dark:border-zinc-800 text-[11px]">
-                          <span class="font-bold uppercase text-zinc-400 block text-[9px] tracking-wider mb-0.5">${k.replace(/[_]/g, ' ')}</span>
-                          <span class="text-zinc-800 dark:text-zinc-200 font-medium break-words">${v || '<span class="text-zinc-400 italic">N/A</span>'}</span>
-                        </div>
-                      `).join('')}
-                    </div>
-                  </div>
-                `;
-              }).join('')}
-            </div>
+            <div class="text-[11px] font-semibold mb-1 text-zinc-600 dark:text-zinc-400">Category & Supplier Schedule</div>
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-zinc-200 dark:bg-zinc-900 text-[10px] text-zinc-600 dark:text-zinc-400">
+                  <th class="p-1.5">Category</th>
+                  <th class="p-1.5">Sub-Category</th>
+                  <th class="p-1.5">Supplier</th>
+                  <th class="p-1.5">PO</th>
+                  <th class="p-1.5 text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody>${supRows || '<tr><td colspan="5" class="p-2 italic text-zinc-400">No supplier items added</td></tr>'}</tbody>
+            </table>
           </div>
         `;
       });
     }
 
-    function toggleSection(id) { document.getElementById(id).classList.toggle('hidden'); }
+    function triggerPrintPDF() {
+      document.body.className = document.body.className.replace(' printing-bom', '') + ' printing-transmittal';
 
-    function expandAllSuppliers() {
-      const groups = document.querySelectorAll('.supplier-group');
-      const anyHidden = Array.from(groups).some(g => g.classList.contains('hidden'));
-      groups.forEach(g => anyHidden ? g.classList.remove('hidden') : g.classList.add('hidden'));
+      document.getElementById('print-out-client').innerText = document.getElementById('meta-client').value.trim() || "N/A";
+      document.getElementById('print-out-project').innerText = document.getElementById('meta-project').value.trim() || "N/A";
+      
+      const dateGenVal = document.getElementById('meta-date-gen').value;
+      if (dateGenVal) {
+        const parts = dateGenVal.split('-');
+        document.getElementById('print-out-gen-date').innerText = `Generated: ${parts[0]}-${parts[1]}-${parts[2]}`;
+      } else {
+        document.getElementById('print-out-gen-date').innerText = "";
+      }
+
+      document.getElementById('print-out-comp-date').innerText = document.getElementById('meta-date-comp').value.trim() || "N/A";
+      document.getElementById('print-out-buyer').innerText = document.getElementById('meta-buyer').value.trim() || "N/A";
+      
+      document.getElementById('print-out-inclusions').innerText = document.getElementById('meta-inclusions').value.trim() || "None specified";
+      document.getElementById('print-out-exclusions').innerText = document.getElementById('meta-exclusions').value.trim() || "None specified";
+
+      const printGroupsContainer = document.getElementById('print-job-groups-container');
+      printGroupsContainer.innerHTML = '';
+
+      const jobKeys = Object.keys(jobDataMap);
+      if (jobKeys.length > 0) {
+        jobKeys.forEach(jobId => {
+          let acRows = jobDataMap[jobId].acList.map(item => `
+            <tr>
+              <td style="width: 30%;">${item.num || '&nbsp;'}</td>
+              <td style="width: 70%;">${item.desc || '&nbsp;'}</td>
+            </tr>
+          `).join('');
+
+          let supRows = jobDataMap[jobId].supList.map(item => `
+            <tr>
+              <td style="width: 25%;">${item.category || '&nbsp;'}</td>
+              <td style="width: 25%;">${item.subCategory || '&nbsp;'}</td>
+              <td style="width: 30%;">${item.supplier || '&nbsp;'}</td>
+              <td style="width: 20%; font-weight: bold;">${item.po || '&nbsp;'}</td>
+            </tr>
+          `).join('');
+
+          printGroupsContainer.innerHTML += `
+            <div style="margin-bottom: 12px;">
+              <div style="background-color: #dc2626; color: #ffffff; font-weight: bold; font-size: 8pt; padding: 4px 6px;" class="print-header-banner">JOB ID: ${jobId}</div>
+              
+              <table style="width: 100%; table-layout: fixed; margin-bottom: 0 !important;">
+                <colgroup>
+                  <col style="width: 30%;">
+                  <col style="width: 70%;">
+                </colgroup>
+                <thead>
+                  <tr class="print-table-header" style="font-size: 8pt;">
+                    <th style="text-align: left; font-weight: bold;">AC NUMBER</th>
+                    <th style="text-align: left; font-weight: bold;">DESCRIPTION</th>
+                  </tr>
+                </thead>
+                <tbody>${acRows || '<tr><td colspan="2">&nbsp;</td></tr>'}</tbody>
+              </table>
+
+              <!-- SEPARATION GAP -->
+              <div style="height: 10px; font-size: 0; line-height: 0;">&nbsp;</div>
+
+              <table style="width: 100%; table-layout: fixed; margin-top: 0 !important;">
+                <colgroup>
+                  <col style="width: 25%;">
+                  <col style="width: 25%;">
+                  <col style="width: 30%;">
+                  <col style="width: 20%;">
+                </colgroup>
+                <thead>
+                  <tr class="print-table-header" style="font-size: 8pt;">
+                    <th style="text-align: left; font-weight: bold;">CATEGORY</th>
+                    <th style="text-align: left; font-weight: bold;">SUB-CATEGORY</th>
+                    <th style="text-align: left; font-weight: bold;">SUPPLIER</th>
+                    <th style="text-align: left; font-weight: bold;">PURCHASE ORDER</th>
+                  </tr>
+                </thead>
+                <tbody>${supRows || '<tr><td colspan="4">&nbsp;</td></tr>'}</tbody>
+              </table>
+            </div>
+          `;
+        });
+      } else {
+        printGroupsContainer.innerHTML = `<div style="font-size: 8.5pt; color: #64748b; font-style: italic;">No Job IDs allocated.</div>`;
+      }
+
+      window.print();
     }
 
-    function filterSuppliers() {
-      const q = document.getElementById('supplier-search').value.toLowerCase();
-      renderSuppliersAlphabetical(suppliersMaster.filter(s => {
-        const matchName = (s.name || "").toLowerCase().includes(q);
-        const matchFields = Object.values(s.rawFields).some(val => String(val).toLowerCase().includes(q));
-        return matchName || matchFields;
-      }));
+    function toggleDarkMode() {
+      const html = document.documentElement;
+      const circle = document.getElementById('toggle-circle');
+      
+      if (html.classList.contains('dark')) {
+        html.classList.remove('dark');
+        circle.style.transform = 'translateX(0px)';
+      } else {
+        html.classList.add('dark');
+        circle.style.transform = 'translateX(24px)';
+      }
     }
 
-    // Staff Directory Functions (Showing Name, Surname, Job Title, Phone, and Email)
-    function renderStaffGrid() {
-      const grid = document.getElementById('staff-grid');
-      grid.innerHTML = staffData.map(s => `
-        <div class="bg-zinc-50 dark:bg-zinc-950 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 space-y-2">
-          <h3 class="text-sm font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-1.5">
-            <i class="fa-solid fa-user text-brand-red text-xs"></i> ${s.firstName} ${s.surname}
-          </h3>
-          <p class="text-xs text-brand-red font-semibold">${s.role}</p>
-          <div class="space-y-1 pt-1 border-t border-zinc-200 dark:border-zinc-800/60 text-[11px] font-mono">
-            <p class="text-zinc-600 dark:text-zinc-400"><i class="fa-solid fa-phone mr-1.5 text-zinc-400"></i> ${s.phone || 'N/A'}</p>
-            <p class="text-zinc-600 dark:text-zinc-400"><i class="fa-solid fa-envelope mr-1.5 text-zinc-400"></i> ${s.email || 'N/A'}</p>
-          </div>
-        </div>
-      `).join('');
+    function switchTab(tab) {
+      ['suppliers', 'generator', 'bom', 'staff'].forEach(t => {
+        document.getElementById(`view-${t}`).classList.add('hidden');
+        document.getElementById(`tab-${t}`).className = "px-3 py-1.5 rounded-md text-zinc-400 hover:text-white";
+      });
+      document.getElementById(`view-${tab}`).classList.remove('hidden');
+      document.getElementById(`tab-${tab}`).className = "px-3 py-1.5 rounded-md bg-red-600 text-white";
     }
   </script>
 </body>
