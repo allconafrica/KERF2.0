@@ -1129,7 +1129,7 @@
               </span>
               <i class="fa-solid fa-chevron-down text-zinc-400 text-xs"></i>
             </button>
-            <div id="group-${letter}" class="divide-y divide-zinc-200 dark:divide-zinc-800 supplier-group">
+            <div id="group-${letter}" class="divide-y divide-zinc-200 dark:divide-zinc-800 supplier-group hidden">
               ${letterGroup.map(s => {
                 const fields = s.rawFields;
                 const entries = Object.entries(fields).filter(([k]) => {
