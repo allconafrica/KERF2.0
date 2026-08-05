@@ -588,6 +588,21 @@
   </main>
 
   <script>
+    // STANDARD PIPE MASS LOOKUP (KG/M) FOR SCHEDULE 40 & 80
+    const STANDARD_PIPES = {
+        '15nb': { 'sch40': 1.27, 'sch80': 1.62 },
+        '20nb': { 'sch40': 1.68, 'sch80': 2.20 },
+        '25nb': { 'sch40': 2.50, 'sch80': 3.24 },
+        '32nb': { 'sch40': 3.39, 'sch80': 4.47 },
+        '40nb': { 'sch40': 3.87, 'sch80': 5.41 },
+        '50nb': { 'sch40': 5.44, 'sch80': 7.48 },
+        '65nb': { 'sch40': 8.63, 'sch80': 11.11 },
+        '80nb': { 'sch40': 11.29, 'sch80': 15.27 },
+        '100nb': { 'sch40': 16.07, 'sch80': 22.32 },
+        '125nb': { 'sch40': 21.77, 'sch80': 30.97 },
+        '150nb': { 'sch40': 26.37, 'sch80': 38.26 }
+    };
+
     // GOOGLE SHEETS LIVE CSV URLS
     const GOOGLE_SHEETS_SUPPLIERS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSNynT5Snb9PgJp6ti3QpuHUr9fX8bGKEG10H8kjkbCna_ZfkEC7aM06QrwkjHwxR1n6uu3ZgvvaKu6/pub?gid=0&single=true&output=csv";
     const GOOGLE_SHEETS_STAFF_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSNynT5Snb9PgJp6ti3QpuHUr9fX8bGKEG10H8kjkbCna_ZfkEC7aM06QrwkjHwxR1n6uu3ZgvvaKu6/pub?gid=1666500445&single=true&output=csv";
@@ -825,7 +840,7 @@
       userPriceOverridden = true;
     }
 
-    // Density-Aware Calculation Engine (Supporting S355, Mild Steel, Stainless, Aluminum, Hardox)
+    // Density-Aware Calculation Engine (Supporting Standard Pipes, S355, Mild Steel, Stainless, Aluminum, Hardox)
     function triggerAutoCalculate() {
       const type = document.getElementById('bom-material-type').value;
       const qty = parseFloat(document.getElementById('bom-qty').value) || 0;
@@ -864,22 +879,39 @@
       else if (type === 'Linear') {
         let kgPerMeter = 5.8; // Default fallback
 
-        const angleMatch = desc.match(/(\d+)X(\d+)X(\d+(?:\.\d+)?)/);
-        if (angleMatch && (desc.includes('ANGLE') || desc.includes('EQUAL') || !desc.includes('TUBE'))) {
-          const leg1 = parseFloat(angleMatch[1]);
-          const thk = parseFloat(angleMatch[3]);
-          kgPerMeter = (leg1 * 2 - thk) * thk * densityFactor;
-        } 
-        else if (desc.includes('ROUND') || desc.includes('BAR')) {
-          const diaMatch = desc.match(/(\d+(?:\.\d+)?)/);
-          const dia = diaMatch ? parseFloat(diaMatch[1]) : 20;
-          const roundFactor = densityFactor * 0.785398;
-          kgPerMeter = dia * dia * roundFactor;
+        // Check standard pipe lookup first
+        let matchedSize = null;
+        let matchedSch = 'sch40';
+        if (desc.includes('SCH. 80') || desc.includes('SCH 80') || desc.includes('SCH80')) {
+          matchedSch = 'sch80';
         }
-        else if (desc.includes('SQUARE') && !desc.includes('TUBE')) {
-          const sideMatch = desc.match(/(\d+(?:\.\d+)?)/);
-          const side = sideMatch ? parseFloat(sideMatch[1]) : 50;
-          kgPerMeter = side * side * densityFactor;
+        for (let nb in STANDARD_PIPES) {
+          if (desc.includes(nb.toUpperCase())) {
+            matchedSize = nb;
+            break;
+          }
+        }
+
+        if (matchedSize && STANDARD_PIPES[matchedSize]) {
+          kgPerMeter = STANDARD_PIPES[matchedSize][matchedSch];
+        } else {
+          const angleMatch = desc.match(/(\d+)X(\d+)X(\d+(?:\.\d+)?)/);
+          if (angleMatch && (desc.includes('ANGLE') || desc.includes('EQUAL') || !desc.includes('TUBE'))) {
+            const leg1 = parseFloat(angleMatch[1]);
+            const thk = parseFloat(angleMatch[3]);
+            kgPerMeter = (leg1 * 2 - thk) * thk * densityFactor;
+          } 
+          else if (desc.includes('ROUND') || desc.includes('BAR')) {
+            const diaMatch = desc.match(/(\d+(?:\.\d+)?)/);
+            const dia = diaMatch ? parseFloat(diaMatch[1]) : 20;
+            const roundFactor = densityFactor * 0.785398;
+            kgPerMeter = dia * dia * roundFactor;
+          }
+          else if (desc.includes('SQUARE') && !desc.includes('TUBE')) {
+            const sideMatch = desc.match(/(\d+(?:\.\d+)?)/);
+            const side = sideMatch ? parseFloat(sideMatch[1]) : 50;
+            kgPerMeter = side * side * densityFactor;
+          }
         }
 
         estimatedWeight = kgPerMeter * lengthMeters * quantity;
@@ -1129,7 +1161,7 @@
               </span>
               <i class="fa-solid fa-chevron-down text-zinc-400 text-xs"></i>
             </button>
-            <div id="group-${letter}" class="divide-y divide-zinc-200 dark:divide-zinc-800 supplier-group hidden">
+            <div id="group-${letter}" class="divide-y divide-zinc-200 dark:divide-zinc-800 supplier-group">
               ${letterGroup.map(s => {
                 const fields = s.rawFields;
                 const entries = Object.entries(fields).filter(([k]) => {
