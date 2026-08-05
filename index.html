@@ -115,7 +115,7 @@
         <div>
           <span class="bg-brand-red text-white text-[10px] font-bold px-2 py-0.5 rounded tracking-wide uppercase">ALLCON PROCUREMENT ENGINE</span>
           <h1 class="text-2xl font-bold mt-2">Welcome to KERF Portal</h1>
-          <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-1">Centralized workspace for live supplier directories, project transmittals, material BOM estimation, and internal staff records.</p>
+          <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-1">Centralized workspace for live supplier directories, project transmittals, material BOM estimation (including mesh screens), and internal staff records.</p>
         </div>
         <div class="flex space-x-3">
           <button onclick="switchTab('transmittal')" class="bg-brand-red hover:bg-brand-redHover text-white text-xs font-semibold px-4 py-2.5 rounded-lg flex items-center gap-2 transition">
@@ -155,7 +155,7 @@
           <div>
             <p class="text-[11px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">BOM Estimates</p>
             <p class="text-3xl font-extrabold mt-1">Active</p>
-            <p class="text-[10px] text-zinc-400 mt-1">Linears, Plates & Hardware</p>
+            <p class="text-[10px] text-zinc-400 mt-1">Linears, Plates, Mesh & Hardware</p>
           </div>
           <div class="bg-red-50 dark:bg-red-950/40 p-3.5 rounded-xl border border-red-100 dark:border-red-900/40 text-brand-red">
             <i class="fa-solid fa-calculator text-xl"></i>
@@ -201,7 +201,7 @@
                 <i class="fa-solid fa-calculator"></i>
               </div>
               <h4 class="font-bold text-sm text-zinc-900 dark:text-zinc-100">BOM & Estimator</h4>
-              <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-1">Calculate linear/plate weights and pricing with live metal rates.</p>
+              <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-1">Calculate linear, plate, mesh screen & pricing with live metal rates.</p>
             </div>
             <div class="mt-4 flex items-center text-xs font-bold text-brand-red gap-1">
               Open Tool <i class="fa-solid fa-arrow-right text-[10px] group-hover:translate-x-1 transition"></i>
@@ -290,7 +290,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
           <div>
             <label class="text-[11px] font-bold text-zinc-500 dark:text-zinc-400">Inclusions</label>
-            <textarea id="trans-inclusions" rows="3" placeholder="e.g. MATERIAL S355, FABRICATION, MACHINING..." class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded-lg mt-1 focus:outline-none focus:border-brand-red resize-none"></textarea>
+            <textarea id="trans-inclusions" rows="3" placeholder="e.g. MATERIAL S355, MESH SCREENS, FABRICATION..." class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded-lg mt-1 focus:outline-none focus:border-brand-red resize-none"></textarea>
           </div>
           <div>
             <label class="text-[11px] font-bold text-zinc-500 dark:text-zinc-400">Exclusions</label>
@@ -315,7 +315,7 @@
             </div>
             <div>
               <label class="text-[10px] text-zinc-500 uppercase font-bold">Description</label>
-              <input type="text" id="job-desc" placeholder="e.g. PINION" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded mt-1 focus:outline-none focus:border-brand-red">
+              <input type="text" id="job-desc" placeholder="e.g. MESH SCREEN" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded mt-1 focus:outline-none focus:border-brand-red">
             </div>
           </div>
 
@@ -326,13 +326,14 @@
                 <option value="">-- Select Category --</option>
                 <option value="Structural">Structural</option>
                 <option value="Plate Work">Plate Work</option>
+                <option value="Mesh Screen">Mesh Screen</option>
                 <option value="Machining">Machining</option>
                 <option value="Hardware">Hardware</option>
               </select>
             </div>
             <div>
               <label class="text-[10px] text-zinc-500 uppercase font-bold">Sub-Category</label>
-              <input type="text" id="job-subcategory" placeholder="e.g. STRUCTURAL" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded mt-1 focus:outline-none focus:border-brand-red">
+              <input type="text" id="job-subcategory" placeholder="e.g. SCREENING" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded mt-1 focus:outline-none focus:border-brand-red">
             </div>
             <div>
               <label class="text-[10px] text-zinc-500 uppercase font-bold">Supplier Name</label>
@@ -372,7 +373,7 @@
         <h2 class="text-lg font-bold flex items-center gap-2 mb-2">
           <i class="fa-solid fa-calculator text-brand-red"></i> BOM & Material Requirement Calculator
         </h2>
-        <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-6">Capture drawing measurements on the fly. Weights and pricing calculate automatically based on standard steel density formulas (S355, Mild Steel, Stainless, Aluminum, Hardox).</p>
+        <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-6">Capture drawing measurements on the fly, including linear profiles, plates, and mesh screens. Weights and pricing calculate automatically based on live steel density and rates.</p>
 
         <!-- Calculator Header & Item Inputs -->
         <div class="bg-zinc-50 dark:bg-zinc-950 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 space-y-4">
@@ -405,28 +406,29 @@
                 <select id="bom-material-type" onchange="onBomMaterialTypeChange(); triggerAutoCalculate();" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1">
                   <option value="Linear">Linear (Angle/Pipe/Tube/Bar)</option>
                   <option value="Plate">Plate / Flat Bar</option>
+                  <option value="Mesh">Mesh / Wire Screen / Expanded Metal</option>
                   <option value="Hardware">Hardware / Fastener</option>
                 </select>
               </div>
               <div>
                 <label class="text-[10px] font-bold text-zinc-500 uppercase">Subject / Material Name *</label>
-                <input type="text" id="bom-desc" oninput="triggerAutoCalculate()" placeholder="E.G. 50X50X6 EQUAL ANGLE" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1">
+                <input type="text" id="bom-desc" oninput="triggerAutoCalculate()" placeholder="E.G. SS304 WELDED MESH 50X50X3MM" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1">
               </div>
               <div>
                 <label class="text-[10px] font-bold text-zinc-500 uppercase">Item / Mark</label>
-                <input type="text" id="bom-mark" placeholder="e.g. 1A or Gusset" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1">
+                <input type="text" id="bom-mark" placeholder="e.g. Screen A" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1">
               </div>
               <div>
                 <label class="text-[10px] font-bold text-zinc-500 uppercase">Quantity *</label>
                 <input type="number" id="bom-qty" oninput="triggerAutoCalculate()" placeholder="e.g. 1" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1">
               </div>
               <div>
-                <label class="text-[10px] font-bold text-zinc-500 uppercase">Length / Dim (mm)</label>
-                <input type="text" id="bom-dim" oninput="triggerAutoCalculate()" placeholder="e.g. 6000" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1">
+                <label class="text-[10px] font-bold text-zinc-500 uppercase">Length (mm)</label>
+                <input type="text" id="bom-dim" oninput="triggerAutoCalculate()" placeholder="e.g. 2000" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1">
               </div>
               <div>
                 <label id="bom-stock-label" class="text-[10px] font-bold text-zinc-500 uppercase">Stock Bar / Width (mm)</label>
-                <input type="text" id="bom-stockbar" oninput="triggerAutoCalculate()" value="6000" placeholder="e.g. 6000" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1">
+                <input type="text" id="bom-stockbar" oninput="triggerAutoCalculate()" value="1000" placeholder="e.g. 1000" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1">
               </div>
             </div>
 
@@ -434,7 +436,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-3">
               <div>
                 <label class="text-[10px] font-bold text-zinc-500 uppercase">Est. Weight (kg) <span class="text-[9px] text-emerald-500 font-normal">(Auto-calculated / Override)</span></label>
-                <input type="number" id="bom-weight" placeholder="e.g. 26.82" oninput="onWeightOverride()" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1 font-semibold">
+                <input type="number" id="bom-weight" placeholder="e.g. 10.00" oninput="onWeightOverride()" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1 font-semibold">
               </div>
               <div>
                 <label class="text-[10px] font-bold text-zinc-500 uppercase">Steel Grade / Rate (Live Feed)</label>
@@ -444,7 +446,7 @@
               </div>
               <div>
                 <label class="text-[10px] font-bold text-zinc-500 uppercase">Total Price (ZAR) <span class="text-[9px] text-emerald-500 font-normal">(Auto-calculated / Override)</span></label>
-                <input type="number" id="bom-rate" placeholder="e.g. 416.43" oninput="onPriceOverride()" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1 font-semibold">
+                <input type="number" id="bom-rate" placeholder="e.g. 331.96" oninput="onPriceOverride()" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2 rounded mt-1 font-semibold">
               </div>
             </div>
           </div>
@@ -482,7 +484,7 @@
           <label class="text-xs font-bold text-brand-red uppercase block mb-2 flex items-center gap-1.5">
             <i class="fa-solid fa-clipboard-list"></i> GENERAL NOTES & SPECIAL INSTRUCTIONS
           </label>
-          <textarea id="bom-notes" rows="3" placeholder="Enter any general project notes, material specifications, surface finishes, or delivery instructions..." class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded-lg focus:outline-none focus:border-brand-red resize-none"></textarea>
+          <textarea id="bom-notes" rows="3" placeholder="Enter any general project notes, mesh aperture specifications, surface finishes, or delivery instructions..." class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded-lg focus:outline-none focus:border-brand-red resize-none"></textarea>
         </div>
 
         <div class="flex justify-end mt-6">
@@ -533,7 +535,7 @@
 
             <div>
               <label class="text-[11px] font-bold text-zinc-500 dark:text-zinc-400">Items Required (List)</label>
-              <textarea id="rfq-items" rows="5" placeholder="• 1x 50x50x6 Equal Angle x 6m&#10;• 5x Profile Base Flanges as per DWG" onkeyup="generateRfqPreview()" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded-lg mt-1 resize-none focus:border-brand-red"></textarea>
+              <textarea id="rfq-items" rows="5" placeholder="• 1x SS304 Welded Mesh 50x50x3mm (2000x1000mm)&#10;• 5x Profile Base Flanges as per DWG" onkeyup="generateRfqPreview()" class="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 text-xs p-2.5 rounded-lg mt-1 resize-none focus:border-brand-red"></textarea>
             </div>
           </div>
 
@@ -816,6 +818,9 @@
       if (type === 'Plate') {
         label.innerText = 'Width (mm)';
         input.placeholder = 'e.g. 1200';
+      } else if (type === 'Mesh') {
+        label.innerText = 'Width (mm)';
+        input.placeholder = 'e.g. 1000';
       } else if (type === 'Linear') {
         label.innerText = 'Stock Bar (mm)';
         input.placeholder = 'e.g. 6000';
@@ -840,7 +845,7 @@
       userPriceOverridden = true;
     }
 
-    // Density-Aware Calculation Engine (Supporting Standard Pipes, S355, Mild Steel, Stainless, Aluminum, Hardox)
+    // Density-Aware Calculation Engine (Supporting Standard Pipes, S355, Mild Steel, Stainless, Aluminum, Hardox & Mesh Screens)
     function triggerAutoCalculate() {
       const type = document.getElementById('bom-material-type').value;
       const qty = parseFloat(document.getElementById('bom-qty').value) || 0;
@@ -876,6 +881,19 @@
           estimatedWeight = kgPerMeter * lengthMeters * quantity;
         }
       } 
+      else if (type === 'Mesh') {
+        // Mesh/Screen calculation based on area (m2) and default/custom mass per square meter
+        let kgPerSquareMeter = 5.0; // Default medium mesh weight per m2
+        if (desc.includes('HEAVY') || desc.includes('5MM') || desc.includes('6MM')) {
+          kgPerSquareMeter = 12.0;
+        } else if (desc.includes('LIGHT') || desc.includes('1MM') || desc.includes('2MM')) {
+          kgPerSquareMeter = 2.5;
+        }
+        
+        const widthMeters = (stockOrWidth > 0 ? stockOrWidth : 1000) / 1000;
+        const areaM2 = lengthMeters * widthMeters;
+        estimatedWeight = areaM2 * kgPerSquareMeter * quantity;
+      }
       else if (type === 'Linear') {
         let kgPerMeter = 5.8; // Default fallback
 
@@ -937,11 +955,11 @@
             document.getElementById('bom-rate').value = '';
           }
         } else {
-          document.getElementById('bom-rate').placeholder = 'e.g. 416.43';
+          document.getElementById('bom-rate').placeholder = 'e.g. 331.96';
         }
       } else {
-        document.getElementById('bom-weight').placeholder = 'e.g. 26.82';
-        document.getElementById('bom-rate').placeholder = 'e.g. 416.43';
+        document.getElementById('bom-weight').placeholder = 'e.g. 10.00';
+        document.getElementById('bom-rate').placeholder = 'e.g. 331.96';
       }
     }
 
@@ -1104,7 +1122,7 @@
       const supplier = suppliersMaster[supplierIndex];
       const ac = document.getElementById('rfq-ac').value || "AC2902";
       const proj = document.getElementById('rfq-project').value || "SHANTA NEW";
-      const items = document.getElementById('rfq-items').value || "• 1x 50x50x6 Equal Angle x 6m\n• 5x Profile Base Flanges as per DWG";
+      const items = document.getElementById('rfq-items').value || "• 1x SS304 Welded Mesh 50x50x3mm (2000x1000mm)\n• 5x Profile Base Flanges as per DWG";
       const pocName = supplier && supplier.rawFields ? (supplier.rawFields['poc'] || supplier.rawFields['contact person'] || supplier.rawFields['contact'] || supplier.name) : "Supplier";
 
       const subject = `${ac} - ${proj} - QUOTE`;
@@ -1161,7 +1179,7 @@
               </span>
               <i class="fa-solid fa-chevron-down text-zinc-400 text-xs"></i>
             </button>
-            <div id="group-${letter}" class="divide-y divide-zinc-200 dark:divide-zinc-800 supplier-group">
+            <div id="group-${letter}" class="hidden divide-y divide-zinc-200 dark:divide-zinc-800 supplier-group">
               ${letterGroup.map(s => {
                 const fields = s.rawFields;
                 const entries = Object.entries(fields).filter(([k]) => {
